@@ -1,0 +1,30 @@
+#!/bin/sh
+#PBS -S /bin/sh
+#PBS -A alauring_fluxm
+#PBS -N Hiseq6/23/15
+#PBS -q fluxm
+#PBS -M mccrone@umich.edu
+#PBS -m abe
+#PBS -j oe
+#PBS -V
+#PBS -l nodes=1:ppn=3,mem=70gb,walltime=15:00:00
+
+echo Running job name $PBS_JOBNAME with ID $PBS_JOBID on host $PBS_O_HOST;
+echo Working directory is $PBS_O_WORKDIR
+echo Start time: `date`;
+
+module add med
+module add fastqc
+module add java
+module add bowtie2
+module add samtools
+module add python
+module add R/3.1.1
+module add pysam/0.8.2.1
+
+
+cd $PBS_O_WORKDIR
+
+python ~/variant_pipeline/bin/variantPipeline.py -i ../data/raw/2015-6-23/ -o ../data/process/2015-6-23/ -r ../data/reference/wsn33_wt_plasmid -p Plasmid_control -d two.sided
+
+echo Finish time: `date`

@@ -1,0 +1,27 @@
+
+####################################################################################################
+# Starting pipeline at Wed Dec 30 15:25:53 EST 2015
+# Input files:  [/scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.2.1.fastq]
+# Output Log:  .bpipe/logs/22013.log
+# Stage bowtie2 [05_2]
+# Stage bowtie2 [05_1]
+# Stage bowtie2 [1_1]
+# Stage bowtie2 [PC]
+# Stage bowtie2 [2_2]
+# Stage bowtie2 [5_2]
+# Stage bowtie2 [2_1]
+# Stage bowtie2 [1_2]
+# Stage bowtie2 [5_1]
+# Stage bowtie2 [PC_4]
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.2.1.fastq -S ./03_align/05_1.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.2.1.fastq -S ./03_align/1_2.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.2.1.fastq -S ./03_align/2_1.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.2.1.fastq -S ./03_align/05_2.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.2.1.fastq -S ./03_align/PC.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.2.1.fastq -S ./03_align/5_1.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.2.1.fastq -S ./03_align/5_2.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.2.1.fastq -S ./03_align/2_2.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.2.1.fastq -S ./03_align/PC_4.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.2.1.fastq -S ./03_align/1_1.sam
+# ################ Finished at Wed Dec 30 15:25:54 EST 2015 Duration = 1.080 seconds #################
+
