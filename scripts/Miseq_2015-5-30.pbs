@@ -25,6 +25,6 @@ module add pysam/0.8.2.1
 
 cd $PBS_O_WORKDIR
 
-python ~/variant_pipeline/bin/variantPipeline.py -i ../data/raw/2014-5-30/ -o ../data/process/2014-5-30/ -r ../data/reference/pHW2000_PR8-N_A -p PR8_control -d two.sided
+python ~/variant_pipeline/bin/variantPipeline.py -i ../data/raw/2014-5-30/ -o ../data/process/2014-5-30/two.sided/ -r ../data/reference/pHW2000_PR8-N_A -p PR8_control -d two.sided
 
 echo Finish time: `date`
