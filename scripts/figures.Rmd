@@ -1,0 +1,265 @@
+---
+title: "Figures"
+author: "JT McCrone"
+date: "December 30, 2015"
+output: html_document
+---
+```{r,settings_and_lib}
+require(ggplot2)
+require("plyr")
+require("Biostrings")
+require(reshape2)
+require("pROC")
+require(gridExtra)
+theme_set(new = theme_classic(base_size=24))
+```
+
+
+## 1) Miseq out of the box
+### ROC skematic
+```{r, roc_skematic}
+set.seed(42) # make the figures reproducible
+example<-data.frame(Condition=c(rep(x = c(TRUE,FALSE),each=20)),test=c(runif(20,-10,-4),runif(20,-6,0))) # Make a dataframe of T and F positives with random p values that favors a lower distribution for the TP
+ex.roc<-roc(example$Condition~example$test) # make an ROC based on this data
+
+cord<-coords(ex.roc,x="all") # get the coordinates of the ROC
+cord.l<-melt(cord) # melt the coodinates for ease of plotting
+cord.l<- mutate(cord.l,Id=c(0,head(as.numeric(rownames(cord.l))%/%3,-1))) # Add an Id so that the specificity and sensitivity at a given threshold can be groupled together
+
+# Set an id column to group the threshold,specificity, and sensitivity together with the same number by integer division. I adjust with c(0, head ..., -1) since 3%/%3=1 but it should be grouped with the 0's.
+roc.df<-dcast(cord.l,Id~Var1) # dcast into columns of threshold, specificity and sensitivity
+roc.df<-roc.df[order(roc.df$sensitivity),] # So that the points connect nicely
+
+# Plot the roc to be used later
+roc.p<-ggplot(roc.df,aes(x=1-specificity,y=sensitivity))+geom_step(color="black",size=2)+xlab("1-Specificity")+ylab("Sensitivity")+theme(axis.title.y=element_text(vjust=1))
+
+# png("../../Talks/figures/roc.ex.png")
+# roc.p
+# dev.off()
+
+# plot the point distribution to be used later
+points.p<-ggplot(example,aes(x=1,y=test,fill=Condition))+geom_dotplot(binaxis = "y", stackdir = "center")+scale_fill_manual(values=c("white","black"),name="",breaks=c(T,F),labels=c("True Positive","False Positive"))+xlab("")+ylab("Log(p value)")+theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+
+
+#+scale_fill_brewer(palette="Set1")#+theme(text = element_text(size=30))
+
+#This function takes in a specificity and adds lines indicating where this specificity is found on the ROC plotted above
+plot.roc<-function(x){ 
+  above.sense.cut<-subset(roc.df,specificity>=x,select=c(threshold,specificity,sensitivity)) # get the points where specificity is above the cutoff
+  sense.min<-min(above.sense.cut$specificity) # get the minimum of these to get as close to desired sensitivity as possible
+  sense.cut<-subset(above.sense.cut,specificity==sense.min) # get all rows where sensitivity is at this point
+  spec.max<-max(sense.cut$sensitivity) # but there can be different FPR for each TPR so here we maximize specificity
+  output<-subset(sense.cut,sensitivity==spec.max)
+  lines<-data.frame(sense=c(output$sensitivity,output$sensitivity,0), # make a data frame with the coordinates for the lines whicha re to be added
+                    spec=c(0,1-output$specificity,1-output$specificity))
+  p1<-roc.p+geom_line(data=lines,aes(x=spec,y=sense),size=1.5,lty=2)+xlab("1-Specificity")+ylab("Sensitivity") # plot
+    
+  p1<-p1+theme(axis.title.y = element_text(vjust=1.2))+theme(axis.title.x = element_text(vjust=0))
+  print(p1)
+}
+
+#This function takes in a specificity and adds a line to show where this specificity is reached in the p value distribution above
+
+plot.pv<-function(x){
+  above.sense.cut<-subset(roc.df,specificity>=x,select=c(threshold,specificity,sensitivity)) # get the points where sensitivity is above the cutoff
+  sense.min<-min(above.sense.cut$specificity) # get the minimum of these to get as close to desired sensitivity as possible
+  sense.cut<-subset(above.sense.cut,specificity==sense.min) # get all rows where sensitivity is at this point
+  spec.max<-max(sense.cut$sensitivity) # but there can be different FPR for each TPR so here we maximize specificity
+  output<-subset(sense.cut,sensitivity==spec.max)
+  p2<-points.p+geom_hline(yintercept=output$threshold,
+                          size=1.5,lty=2)
+  p2<-p2+scale_x_continuous(breaks=c(1),labels=c(""))
+  p2<-p2+xlab("")+ylab("Log(p value)")
+  p2<-p2+theme(axis.title.y = element_text(vjust=1.2))
+  print(p2)
+}
+
+pdf("../results/figures/pv.1.pdf")
+plot.pv(0.35)
+dev.off()
+
+pdf("../results/figuresROC.1.pdf")
+plot.roc(0.35)
+m dev.off()
+
+pdf("../results/figures/pv.2.pdf")
+plot.pv(0.95)
+dev.off()
+
+pdf("../results/figures/ROC.2.pdf")
+plot.roc(0.95)
+dev.off()
+
+```
+Now it might also be useful to include a figure that has 2 cutoffs and outputs the plots side by side.
+
+```{r,roc_skematic_onplot}
+#Helper function that gets the threshold and sensitivity from and roc at a given speceificity
+helper.roc<-function(spec,roc.df){
+  above.sense.cut<-subset(roc.df,specificity>=spec,select=c(threshold,specificity,sensitivity)) # get the points where specificity is above the cutoff
+  sense.min<-min(above.sense.cut$specificity) # get the minimum of these to get as close to desired sensitivity as possible
+  sense.cut<-subset(above.sense.cut,specificity==sense.min) # get all rows where sensitivity is at this point
+  spec.max<-max(sense.cut$sensitivity) # but there can be different FPR for each TPR so here we maximize specificity
+  output<-subset(sense.cut,sensitivity==spec.max)
+}
+
+plot.ex<-function(spec1,spec2,roc.df,distribution){ 
+  cut1<-helper.roc(spec1,roc.df)#dataframe with the threshold,sensitivity and specificity at the given specificity
+  cut2<-helper.roc(spec2,roc.df)
+  output<-rbind(cut1,cut2)
+  lines<-data.frame(sense=c(output$sensitivity,output$sensitivity,0,0), # make a data frame with the coordinates for the lines whicha re to be added
+                    spec=c(0,0,1-output$specificity,1-output$specificity), # really 1-specificity
+                    group=rep(c(spec1,spec2),times=3))
+  
+  #plot the roc
+  roc.p<-ggplot(roc.df,aes(x=1-specificity,y=sensitivity))+geom_step(color="black",size=2)+xlab("1-Specificity")+ylab("Sensitivity")+theme(axis.title.y=element_text(vjust=1))
+  roc.p<-roc.p+geom_line(data=lines,aes(x=spec,y=sense,color=as.factor(group)),size=c(1.5),lty=c(2))+scale_color_brewer(palette="Set1")
+    
+ roc.p<-roc.p+theme(axis.title.y = element_text(vjust=1.2))+theme(axis.title.x = element_text(vjust=0))+theme(legend.position="none")
+  
+ 
+ #plot the points and cut offs
+ points.p<-ggplot(distribution,aes(x=1,y=test,fill=Condition))+geom_dotplot(binaxis = "y", stackdir = "center")+scale_fill_manual(values=c("white","black"),name="",breaks=c(T,F),labels=c("True Positive","False Positive"))+xlab("")+ylab("Log(p value)")+theme(axis.ticks = element_blank(), axis.text.x = element_blank(),axis.title.y = element_text(vjust=1.2))
+ 
+ points.p<-points.p+geom_hline(yintercept=output$threshold,
+                          size=1.5,lty=2,color=c("#e41a1c","#377eb8")) # these are the first 2 colors in set 1
+  
+ grid.arrange(points.p,roc.p,ncol=2)
+ 
+}
+plot.ex(0.35,0.95,roc.df,example)
+
+pdf("../results/figures/roc.example.pdf")
+plot.ex(0.35,0.95,roc.df,example)
+dev.off()
+
+```
+### Experimental setup diagram
+
+
+
+
+### DeepSNV ROC 
+
+```{r,Miseq_out_of_the_box}
+find_freq<-function(Id){ # helper function to get the expected frequency from the sample name
+  if(Id=="Covaris_5"){
+    x=0.05} else if ( Id=="Covaris_25"){
+    x=0.025} else if ( Id=="Covaris_125"){
+    x=0.0125} else if ( Id=="Covaris_063"){
+    x=0.0063} else if ( Id=="Covaris_016"){
+    x=0.0016}
+}
+find_freq.v<-Vectorize(find_freq) # vectorized version of the helper function above
+
+
+
+sum.df<-read.csv("../data/process/2014-5-30/Variants/all.sum.csv",stringsAsFactors=F,comment.char = '#')
+  
+true_snv<-read.csv("../data/reference/PR8_WSN33.csv",comment.char = '#') # read in a csv of the differences in PR8 and WSN33 as determined by sanger
+true_snv<-subset(true_snv,Ref!="-" & Allele.1!="-") # remove any indels as we are not concerned with them here
+mutate(true_snv,mutant=paste0(Name,"_",Ref,Ref.Pos,Allele.1))->true_snv #make a column that has names the variants as segment_ReferencePositionVariant
+  
+PR8_var<-read.csv("../data/reference/PR8_variants.csv",comment.char = "#") # read in differences between plasmid control on viral PR8 used in dilutions
+  
+mutate(PR8_var,mutant=paste0(Name,"_",Ref,Ref.Pos,Allele.1))->PR8_var #make a column that has names the variants as segment_ReferencePositionVariant
+sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants to variant calls
+sum.df$category[sum.df$mutation %in% PR8_var$mutant]<-"PR8" # id the variants found in PR8
+sum.df<-mutate(sum.df,exp.freq=find_freq.v(Id)) # add the expected frequency of the true variants
+
+
+# Get information about the reference genome from the fasta file
+reference.fasta<-"../data/reference/pHW2000_PR8-N_A.fa"
+segments <- fasta.seqlengths(reference.fasta)
+regions.bed <- data.frame(chr = gsub("[ ].*","", names(segments)), start=1, stop=segments, row.names=NULL)
+regions.bed<-mutate(regions.bed,chr=as.character(chr))
+
+possible_vars<-sum(regions.bed$stop)*3 # three possible variants/ position
+id<-function(x){
+  x<-strsplit(x,".",fixed=T)[[1]][1]
+}
+
+prior.seg.length<-c()
+
+for(k in 1:length(regions.bed$chr)){ 
+  prior.seg.length[k]<-sum(regions.bed$stop[1:k])  # the end positions of each segment relative to one sequence not including the trimming step
+}
+
+prior.seg.length<-c(0,prior.seg.length)
+
+
+mutate(regions.bed,concat.start=start+prior.seg.length[match(chr,regions.bed$chr)],concat.stop=concat.start+stop)->regions.bed
+
+melt(subset(regions.bed,select=-c(stop,start)),id.vars="chr")->regions.l
+
+seg<-function (x) {
+  x <- strsplit(x, ".", fixed = T)[[1]][2]
+}  
+
+## These functions make an ROC by allowing pROC to calculate the positions based on only the variants that are provided, and then we adjust the senesitivity for with what we know.  For example if only 3 TP are found in one sample pROC will call that 100% Sensitivity but we will adjust it to 3/possible_tp and so forth.
+sum_roc<-function(x){
+  sum.df<-subset(x,category %in% c(TRUE,FALSE),select=c(category,p.val))# get the TRUE and false variant calls and p.vals
+  if(length(which(sum.df$category==T))>0){ # filter out cases where there aren't any TP found
+    if(length(which(sum.df$category==F))==0){
+      sum.df<-rbind(sum.df,data.frame(category=F,p.val=1))
+    }  
+    roc(sum.df$category~sum.df$p.val,plot=F,CI=T)
+  }
+}
+
+roc_df<-function(roc_analysis){ # get the coordinates and cut offs for all the points in the ROC object
+  roc_analysis<-roc_analysis[unlist(lapply(roc_analysis,is.null))==F]
+  all<-lapply(roc_analysis,coords,x="all")
+  all.long<-lapply(all, melt) 
+  all.long<-lapply(all.long, function(x){ 
+    mutate(x, 
+           Id=c(0,head(as.numeric(rownames(x))%/%3,-1))
+    )
+  }) # Set an id column to group the threshold,specificity, and sensitivity together with the same number by integer division. I adjust with c(0, head ..., -1) since 3%/%3=1 but it should be grouped with the 0's.
+  roc.ls<-lapply(all.long,function(x) dcast(x,Id~Var1)) # dcast into columns of threshold, specificity and sensitivity
+  roc.df<-do.call(rbind,roc.ls) # combine into data frame
+  roc.df$samp<-unlist(lapply(rownames(roc.df),id)) # add sample id column
+  
+  mutate(roc.df, exp.freq=find_freq.v(samp))-> roc.df
+}  
+tp<-unique(true_snv$mutant)
+possible_tp<-length(tp)
+adjust.coords<-function(roc.df,sum.df){ # adjsut the sensitivity and specificity called by pROC  
+  samp<-roc.df$samp[1]
+  samp.df<-subset(sum.df,Id==samp)
+  sense.factor<-length(which(samp.df$category==T))/possible_tp
+  TN.samp<-length(which(samp.df$category==F))
+  mutate(roc.df,adj.sensitivity=sensitivity*sense.factor,FP=(TN.samp-TN.samp*specificity),TP=sense.factor*possible_tp,adj.specificity=(possible_vars-possible_tp-FP)/((possible_vars-possible_tp)))
+}
+
+roc.ls<-dlply(sum.df,~Id,sum_roc)
+
+roc.df<-roc_df(roc.ls,"all")
+
+roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df)
+roc.df.adj<-roc.df.adj[order(roc.df.adj$adj.sensitivity),]
+roc.df.adj<-mutate(roc.df.adj,exp.freq=as.factor(find_freq.v(samp)))
+roc.df.adj$exp.freq <- factor(roc.df.adj$exp.freq, levels = rev(levels(roc.df.adj$exp.freq)))
+miseq.roc<-ggplot(roc.df.adj,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.001))
+
+miseq.roc
+
+roc_df.one<-function(roc_analysis,thr){ # get the coordinates and cut offs for all the points in the ROC object
+  roc_analysis<-roc_analysis[unlist(lapply(roc_analysis,is.null))==F]
+  all<-lapply(roc_analysis,coords,x=thr,input="thr")
+
+  #roc.ls<-lapply(all.long,function(x) dcast(x,Id~Var1)) # dcast into columns of threshold, specificity and sensitivity
+  roc.df<-as.data.frame(do.call(rbind,all)) # combine into data frame
+  roc.df$samp<-rownames(roc.df) # add sample id column
+  
+  mutate(roc.df, exp.freq=find_freq.v(samp))-> roc.df
+} 
+
+roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df)
+roc.df.adj<-roc.df.adj[order(roc.df.adj$exp.freq,decreasing = T),]
+
+
+knitr::kable(subset(roc.df.adj,select=c(exp.freq,TP,FP)))
+
+
+```
