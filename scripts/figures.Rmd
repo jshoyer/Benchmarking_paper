@@ -154,43 +154,46 @@ find_freq.v<-Vectorize(find_freq) # vectorized version of the helper function ab
 
 
 
-sum.df<-read.csv("../data/process/2014-5-30/Variants/all.sum.csv",stringsAsFactors=F,comment.char = '#')
+sum.df<-read.csv("../data/process/2014-5-30/one.sided/Variants/all.sum.csv",stringsAsFactors=F,comment.char = '#')
   
 true_snv<-read.csv("../data/reference/PR8_WSN33.csv",comment.char = '#') # read in a csv of the differences in PR8 and WSN33 as determined by sanger
 true_snv<-subset(true_snv,Ref!="-" & Allele.1!="-") # remove any indels as we are not concerned with them here
 mutate(true_snv,mutant=paste0(Name,"_",Ref,Ref.Pos,Allele.1))->true_snv #make a column that has names the variants as segment_ReferencePositionVariant
-  
+true_snv<-rename(true_snv,c("Name"="chr","Ref.Pos"="pos")) # rename the columns for use later
 PR8_var<-read.csv("../data/reference/PR8_variants.csv",comment.char = "#") # read in differences between plasmid control on viral PR8 used in dilutions
-  
+
+
 mutate(PR8_var,mutant=paste0(Name,"_",Ref,Ref.Pos,Allele.1))->PR8_var #make a column that has names the variants as segment_ReferencePositionVariant
+PR8_var<-rename(PR8_var,c("Name"="chr","Ref.Pos"="pos")) # rename the columns for use later  
 sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants to variant calls
 sum.df$category[sum.df$mutation %in% PR8_var$mutant]<-"PR8" # id the variants found in PR8
 sum.df<-mutate(sum.df,exp.freq=find_freq.v(Id)) # add the expected frequency of the true variants
 
 
-# Get information about the reference genome from the fasta file
-reference.fasta<-"../data/reference/pHW2000_PR8-N_A.fa"
-segments <- fasta.seqlengths(reference.fasta)
-regions.bed <- data.frame(chr = gsub("[ ].*","", names(segments)), start=1, stop=segments, row.names=NULL)
-regions.bed<-mutate(regions.bed,chr=as.character(chr))
+# Get information about the regions we can investigate based on the primer sites
 
-possible_vars<-sum(regions.bed$stop)*3 # three possible variants/ position
+
+regions.bed <-read.csv("../data/reference/pr8_noprimingsites.bed.csv",stringsAsFactors = F,comment.char = "#")
+regions.bed<-mutate(regions.bed,length=stop-start-1) #because the numbers in the csv are the inner most binding sites of the primers and represent the last positiions that cannot be interogated.
+
+possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
+
+# limit the PR8 and the true positive data.frames to those not excluded by the priming sites
+
+primer.cut<-function(x){ # a helper function to do this
+  chr<-unique(x$chr)
+  start<-regions.bed$start[match(x$chr,regions.bed$chr)]
+  stop<-regions.bed$stop[match(x$chr,regions.bed$chr)]
+  
+  subset(x,pos>start & pos<stop)
+}
+sum.df<-ddply(sum.df,~chr,primer.cut) # interogating only the sites within primer location removes 244 called variants for two sided and 406 for one sided test
+true_snv<-ddply(true_snv,~chr,primer.cut) # interogating only the sites within primer location removes 8 potential true positive (491)
+PR8_var<-ddply(PR8_var,~chr,primer.cut) # interogating only the sites within primer location removes 12 potential PR8 differences (15)
+
 id<-function(x){
   x<-strsplit(x,".",fixed=T)[[1]][1]
 }
-
-prior.seg.length<-c()
-
-for(k in 1:length(regions.bed$chr)){ 
-  prior.seg.length[k]<-sum(regions.bed$stop[1:k])  # the end positions of each segment relative to one sequence not including the trimming step
-}
-
-prior.seg.length<-c(0,prior.seg.length)
-
-
-mutate(regions.bed,concat.start=start+prior.seg.length[match(chr,regions.bed$chr)],concat.stop=concat.start+stop)->regions.bed
-
-melt(subset(regions.bed,select=-c(stop,start)),id.vars="chr")->regions.l
 
 seg<-function (x) {
   x <- strsplit(x, ".", fixed = T)[[1]][2]
@@ -224,7 +227,7 @@ roc_df<-function(roc_analysis){ # get the coordinates and cut offs for all the p
 }  
 tp<-unique(true_snv$mutant)
 possible_tp<-length(tp)
-adjust.coords<-function(roc.df,sum.df){ # adjsut the sensitivity and specificity called by pROC  
+adjust.coords<-function(roc.df,sum.df){ # adjust the sensitivity and specificity called by pROC  
   samp<-roc.df$samp[1]
   samp.df<-subset(sum.df,Id==samp)
   sense.factor<-length(which(samp.df$category==T))/possible_tp
@@ -234,15 +237,19 @@ adjust.coords<-function(roc.df,sum.df){ # adjsut the sensitivity and specificity
 
 roc.ls<-dlply(sum.df,~Id,sum_roc)
 
-roc.df<-roc_df(roc.ls,"all")
+roc.df<-roc_df(roc.ls)
 
 roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df)
 roc.df.adj<-roc.df.adj[order(roc.df.adj$adj.sensitivity),]
 roc.df.adj<-mutate(roc.df.adj,exp.freq=as.factor(find_freq.v(samp)))
 roc.df.adj$exp.freq <- factor(roc.df.adj$exp.freq, levels = rev(levels(roc.df.adj$exp.freq)))
-miseq.roc<-ggplot(roc.df.adj,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.001))
+miseq.roc<-ggplot(roc.df.adj,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.001))
 
 miseq.roc
+
+pdf("../results/figures/miseq_roc.one.sided.pdf")
+miseq.roc
+dev.off()
 
 roc_df.one<-function(roc_analysis,thr){ # get the coordinates and cut offs for all the points in the ROC object
   roc_analysis<-roc_analysis[unlist(lapply(roc_analysis,is.null))==F]
@@ -255,11 +262,12 @@ roc_df.one<-function(roc_analysis,thr){ # get the coordinates and cut offs for a
   mutate(roc.df, exp.freq=find_freq.v(samp))-> roc.df
 } 
 
+roc.df<-roc_df.one(roc.ls,0.001)
 roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df)
 roc.df.adj<-roc.df.adj[order(roc.df.adj$exp.freq,decreasing = T),]
 
 
-knitr::kable(subset(roc.df.adj,select=c(exp.freq,TP,FP)))
+knitr::kable(subset(roc.df.adj,select=c(exp.freq,adj.sensitivity,TP,adj.specificity,FP)))
 
 
 ```
