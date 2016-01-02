@@ -410,5 +410,17 @@ ggplot(subset(sig.cut.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point
 
 ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,fill=category))+geom_histogram(position='dodge')
 
+
+cut.read.df<-subset(cut.df,Read_pos>32 & Read_pos<94)
+
+h.cut.read.df<-hiseq.roc(cut.read.df,possible_tp,possible_vars)
+
+ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+
+
+h.cut.read.table<-hiseq.roc.table(cut.read.df,0.001,possible_tp,possible_vars)
+
+knitr::kable(subset(h.cut.read.table,gc==5))
+
 ```
 
