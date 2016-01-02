@@ -375,9 +375,9 @@ knitr::kable(subset(h.table.df,gc==5))
 ## 3) Phred and MapQ filters
 
 ```{r, phred_mapq filter}
-ggplot(subset(sig.df,gc==5 & category %in% c(T,F)),aes(x=Phred,y=MapQ,color=category))+geom_point()
-
 sig.df<-subset(sum.df,p.val<0.001)
+
+ggplot(subset(sig.df,category %in% c(T,F)),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=0.5)+facet_wrap(~gc)
 
 ggplot(subset(sig.df,gc==5 & category %in% c(T,F)),aes(x=Phred,y=MapQ,color=category))+geom_point()
 
@@ -393,8 +393,9 @@ h.cut.table<-hiseq.roc.table(cut.df,0.001,possible_tp,possible_vars)
 knitr::kable(subset(h.cut.table,gc==4))
 ```
 
-## 4) Read position
+## Figure 4 
 
+### Read Position
 ```{r,read_pos}
 ggplot(sig.df,aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 ggplot(subset(sig.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
@@ -415,12 +416,98 @@ cut.read.df<-subset(cut.df,Read_pos>32 & Read_pos<94)
 
 h.cut.read.df<-hiseq.roc(cut.read.df,possible_tp,possible_vars)
 
-ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
 
 
 h.cut.read.table<-hiseq.roc.table(cut.read.df,0.001,possible_tp,possible_vars)
-
 knitr::kable(subset(h.cut.read.table,gc==5))
+```
+### Lofreq out of the box
+```{r,lofreq}
+
+lofreq.df<-read.csv("../data/process/2015-6-23/lofreq/all.removed.mapq_vcf.vcf_csv.csv")
+
+lofreq.df$p.val<-lofreq.df$QUAL # to make the roc based on the quality scores given by lofreq
+
+
+lofreq.roc<-hiseq.roc(cut.df,possible_tp,possible_vars)
+
+ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity (adjusted)")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+
+
+
+#lofreq claims no further monkey bussiness is needed to we'll just make a table with all its output
+ddply(lofreq.df,~Id,summarize,gc=gc[1],exp.freq=exp.freq[1],TP=length(which(category==T)),FP=length(which(category==F)))->lofreq.table
+lofreq.table<-lofreq.table[order(lofreq.table$exp.freq,decreasing = T),]
+
+knitr::kable(subset(lofreq.table,gc==5,select=c(exp.freq,TP,FP)))
 
 ```
+### Frequency accuracy
+```{r, frequency_accuracy}
+# Here we'll just be using 
 
+## Frequency
+cut.read.sig.df<-subset(cut.read.df,p.val<0.01)
+medians<-ddply(subset(cut.read.sig.df,category==T ),~exp.freq+gc, summarize, median=median(freq.var))
+
+# ac_freq<-ggplot(subset(sum.df,category==T),aes(x=exp.freq,y=freq.var,fill=as.factor(exp.freq)))+facet_wrap(~gc)
+
+#cut.read.sig.df$exp.freq<-as.factor(cut.read.sig.df$exp.freq)
+#cut.read.sig.df$exp.freq <- factor(cut.read.sig.df$exp.freq, levels = rev(levels(cut.read.sig.df$exp.freq)))
+
+ac_freq<-ggplot(subset(cut.read.sig.df,category==T & gc=="5"),aes(x=exp.freq,y=freq.var,fill=factor(exp.freq,levels=rev(levels(as.factor(exp.freq))))))
+
+ac_freq<-ac_freq+geom_dotplot(binaxis = "y", stackdir = "center",dotsize=1)+scale_fill_brewer(palette="Set1")
+
+ac_freq<-ac_freq+scale_y_log10(limits=c(0.001,0.1),breaks=c(0.001,0.002,0.005,0.01,0.02,0.05,0.1))#+theme(axis.text.y = element_text(colour = c("red","chartreuse4","black","chocolate2","azure4","blue","black"),face="bold"))
+ac_freq<-ac_freq+scale_x_log10(limits=c(0.001,0.1),breaks=c(0.001,0.002,0.005,0.01,0.02,0.050,0.1))#+theme(axis.text.x = element_text(colour = c("red","chartreuse4","black","chocolate2","azure4","blue","black"),face="bold"))
+ac_freq<-ac_freq+geom_abline(intercept = 0, slope = 1,linetype=2,size=1)
+ac_freq<-ac_freq+xlab("Expected Frequency")+ylab("Measured Frequency")+theme(legend.position="none")
+
+ac_freq<-ac_freq+geom_point(data=subset(medians,gc=="5"),mapping=aes(x=exp.freq,y=median),shape=95,size=30)
+ac_freq
+```
+
+
+## Figure 5 Lower inputs
+
+```{r,roc lower_inputs}
+ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+
+ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+```
+
+### Duplicates
+
+```{r,duplicates}
+sum.df<-read.csv("../data/process/2015-11-14/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#")
+pat<-"([0-9]+)_([0-9]+)"
+mutate(sum.df, exp.freq = sub(pat,"\\1",Id),
+       dup = as.numeric(sub(pat,"\\2",Id)),
+)-> sum.df
+mutate(sum.df,exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq)/1000,no = as.numeric(exp.freq)/100))->sum.df
+
+sum.df<-subset(sum.df,Id!="PC") # remove the plasmid control that was run
+
+sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
+sum.df$category[sum.df$mutation %in% wt_mut]<-"wt"
+
+cut.df<-subset(sum.df,Phred>35 & MapQ>30 & Read_pos<94 & Read_pos>32)
+
+dups<-ddply(cut.df,~exp.freq+mutation,summarize,freq1=freq.var[1],freq2=freq.var[2],p.val1=p.val[1],p.val2=p.val[2],category=category[1],Id=Id[1])
+dups$freq2[is.na(dups$freq2)]<-0
+dups$p.val2[is.na(dups$p.val2)]<-1
+
+dups<-mutate(dups,p.val=pmax(p.val1,p.val2),Id=gsub(pat,'\\1',Id),gc=4)
+
+
+dups.roc<-hiseq.roc(dups,possible_tp,possible_vars)
+
+ggplot(dups.roc,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+
+
+dups.table<-hiseq.roc.table(dups,0.001,possible_tp,possible_vars)
+knitr::kable(subset(dups.table))
+
+```
