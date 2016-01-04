@@ -127,6 +127,7 @@ adjust.coords<-function(roc.df,sum.df,possible_tp,possible_vars){ # adjust the s
   TN.samp<-length(which(samp.df$category==F))
   mutate(roc.df,adj.sensitivity=sensitivity*sense.factor,FP=(TN.samp-TN.samp*specificity),TP=adj.sensitivity*possible_tp,adj.specificity=(possible_vars-possible_tp-FP)/((possible_vars-possible_tp)))
 }
+
 roc_df.one<-function(roc_analysis,thr){ # get the coordinates and cut offs for all the points in the ROC object
   roc_analysis<-roc_analysis[unlist(lapply(roc_analysis,is.null))==F]
   all<-lapply(roc_analysis,coords,x=thr,input="thr")
@@ -257,9 +258,9 @@ possible_tp<-length(tp)
 
 m.roc.df<-miseq.roc(sum.df,possible_tp,possible_vars)
 
-miseq.roc<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.001))
+miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.001))
 
-miseq.roc
+miseq.roc.p
 
 # pdf("../results/figures/miseq_roc.one.sided.pdf")
 # miseq.roc
@@ -268,7 +269,37 @@ miseq.roc
 m.roc.table<-miseq.roc.table(sum.df,0.01,possible_tp,possible_vars)
 knitr::kable(m.roc.table)
 
+ggplot(subset(sum.df,p.val<0.01),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)+geom_hline(yintercept=c(63,188))
+
+
+ggplot(sum.df,aes(x=Read_pos,fill=category))+geom_histogram(position="dodge")
+
+
+
+
+```
+
+### With read position cut off 63 and 188
+
+```{r}
+read.df<-subset(sum.df,Read_pos>63 & Read_pos<188)
+m.roc.df<-miseq.roc(read.df,possible_tp,possible_vars)
+
+miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.001))
+
+miseq.roc.p
+
+# pdf("../results/figures/miseq_roc.one.sided.pdf")
+# miseq.roc
+# dev.off()
+
+m.roc.table<-miseq.roc.table(read.df,0.01,possible_tp,possible_vars)
+knitr::kable(m.roc.table)
+
+ggplot(subset(sum.df,p.val<0.01),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=0.5)
+
 rm(list = setdiff(ls(), lsf.str())) # remove all variables except the functions
+
 ```
 
 
@@ -447,6 +478,8 @@ ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+g
 
 knitr::kable(subset(h.cut.read.table,gc==4))
 ```
+
+### 10^3
 ```{r,roc_lower_inputs3}
 ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
 
@@ -497,7 +530,7 @@ This is so much better than before. Is there really that much variability betwee
 > tables are right but does the ROC make sense?
 
 ### Ordinations
-```{r}
+```{r,eval=F}
 # No wt variants for this work. I'll start with the out of the box data p<0.01
 
 sig.df<-subset(sig.df,category!="wt" & freq.var>0.01 & exp.freq>0.005) # no need to look at the samples were we expect things to be less than 1%
