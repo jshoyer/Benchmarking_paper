@@ -160,6 +160,12 @@ miseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars){
   return(roc.table)
 }
 
+# The ROC data only includes points there the sensitivity changes.  At this point I have limitted our analysis to variants with p<0.05. So the lines in some plots stop short. For the final draft I will not apply this cut off. Even in that future case this step may be need as the ROC data only includes points where the sensitivity changes.  For now   This function extents the lines by adding a data point at the specificity of 0.002 and appropriate sensitivity. At the most it hurts us as we do not increase sensitivity and it might , but I doubt it. Anyway it is of no concern as we only care about the p=0.01 case which is well contained before this extension is needed
+fill_in_plots<-function(x){
+  spec<-min(x$specificity[which(x$specificity>0.998)])
+  sense<-max(x$sensitivity[x$specificity==spec]) # incase there is a step right here
+  y<-data.frame(threshold=NA,Id=NA,specificity=0.9981,sensitivity=sense,samp=unique(x$samp))
+}
 
 ######### Hiseq roc functions ##########
 hiseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the roc calculations and adjustments
@@ -170,7 +176,7 @@ hiseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the r
 
   roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df,possible_tp,possible_vars)
   roc.df.adj<-roc.df.adj[order(roc.df.adj$adj.sensitivity),]
-
+######START HERE WITH THE FILL IN  AND DO IT FOR THE MISEQ ABOVE##############
   mutate(roc.df.adj, gc = as.numeric(sub(pat,"\\1",samp)),
        exp.freq = sub(pat,"\\2",samp)
   )-> roc.df.adj
@@ -258,7 +264,7 @@ possible_tp<-length(tp)
 
 m.roc.df<-miseq.roc(sum.df,possible_tp,possible_vars)
 
-miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.001))
+miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.002))
 
 miseq.roc.p
 
@@ -285,7 +291,7 @@ ggplot(sum.df,aes(x=Read_pos,fill=category))+geom_histogram(position="dodge")
 read.df<-subset(sum.df,Read_pos>63 & Read_pos<188)
 m.roc.df<-miseq.roc(read.df,possible_tp,possible_vars)
 
-miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.001))
+miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.002)
 
 miseq.roc.p
 
@@ -350,7 +356,7 @@ possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
 
 h.roc.df<-hiseq.roc(sum.df,possible_tp,possible_vars)
 
-Hiseq.roc<-ggplot(subset(h.roc.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1));Hiseq.roc
+Hiseq.roc<-ggplot(subset(h.roc.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.002));Hiseq.roc
 
 h.table.df<-hiseq.roc.table(sum.df,0.01,possible_tp,possible_vars)
 
@@ -374,7 +380,7 @@ cut.df<-subset(sum.df,MapQ>30 & Phred>35)
 
 h.cut.df<-hiseq.roc(cut.df,possible_tp,possible_vars)
 
-ggplot(subset(h.cut.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+ggplot(subset(h.cut.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.002))
 
 
 h.cut.table<-hiseq.roc.table(cut.df,0.01,possible_tp,possible_vars)
@@ -410,7 +416,7 @@ cut.read.df<-subset(cut.df,Read_pos>32 & Read_pos<94)
 
 h.cut.read.df<-hiseq.roc(cut.read.df,possible_tp,possible_vars)
 
-ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.002))
 
 
 h.cut.read.table<-hiseq.roc.table(cut.read.df,0.01,possible_tp,possible_vars)
@@ -430,7 +436,7 @@ lofreq.df$p.val<-lofreq.df$QUAL # to make the roc based on the quality scores gi
 
 lofreq.roc<-hiseq.roc(cut.df,possible_tp,possible_vars)
 
-ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity (adjusted)")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity (adjusted)")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.002))
 
 
 
@@ -474,14 +480,14 @@ ac_freq
 ## Figure 5 Lower inputs
 ### 10^4
 ```{r,roc_lower_inputs4}
-ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.002))
 
 knitr::kable(subset(h.cut.read.table,gc==4))
 ```
 
 ### 10^3
 ```{r,roc_lower_inputs3}
-ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.002))
 
 knitr::kable(subset(h.cut.read.table,gc==3))
 ```
@@ -515,7 +521,7 @@ dups<-subset(dups,p.val!=1)
 
 dups.roc<-hiseq.roc(dups,possible_tp,possible_vars)
 
-ggplot(dups.roc,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))
+ggplot(dups.roc,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.002))
 
 
 dups.table<-hiseq.roc.table(dups,0.01,possible_tp,possible_vars)
