@@ -86,6 +86,18 @@ The accuracy of DeepSNV algorithm has been extensively benchmarked using a regio
 
 ### DeepSNV ROC 
 ```{r,roc_helper_runctions}
+find_freq<-function(Id){ # helper function to get the expected frequency from the sample name
+  if(Id=="Covaris_5"){
+    x=0.05} else if ( Id=="Covaris_25"){
+    x=0.025} else if ( Id=="Covaris_125"){
+    x=0.0125} else if ( Id=="Covaris_063"){
+    x=0.0063} else if ( Id=="Covaris_016"){
+    x=0.0016}
+}
+
+find_freq.v<-Vectorize(find_freq) # vectorized version of the helper function above
+
+
 id<-function(x){
   x<-strsplit(x,".",fixed=T)[[1]][1]
 }
@@ -93,6 +105,18 @@ id<-function(x){
 seg<-function (x) {
   x <- strsplit(x, ".", fixed = T)[[1]][2]
 }  
+
+fill_in_plots<-function(x){
+  spec<-min(x$adj.specificity[which(x$adj.specificity>0.998)])
+  sense<-max(x$adj.sensitivity[x$adj.specificity==spec]) # incase there is a step right here
+  
+  y<-data.frame(threshold=x$threshold[1],Id=x$Id[1],adj.specificity=0.9980001,adj.sensitivity=sense,samp=unique(x$samp),exp.freq=x$exp.freq[1],FP=x$FP[1],TP=x$TP[1],sensitivity=x$sensitivity[1],specificity=x$specificity[1])
+  
+  if("gc" %in% names(x)){
+    y$gc=x$gc[1]
+  }
+  return(y)
+}
 
 sum_roc<-function(x){
   sum.df<-subset(x,category %in% c(TRUE,FALSE),select=c(category,p.val))# get the TRUE and false variant calls and p.vals
@@ -143,11 +167,14 @@ miseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the r
   roc.ls<-dlply(sum.df,~Id,sum_roc)
 
   roc.df<-roc_df(roc.ls)
-
+  
 
   roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df,possible_tp,possible_vars)
-  roc.df.adj<-roc.df.adj[order(roc.df.adj$adj.sensitivity),]
+  
   roc.df.adj<-mutate(roc.df.adj,exp.freq=as.factor(find_freq.v(samp)))
+  fills<-ddply(roc.df.adj,~samp,fill_in_plots) # take out these lines to not fill in the plots
+  roc.df.adj<-rbind(fills,roc.df.adj) # here too
+  roc.df.adj<-roc.df.adj[order(roc.df.adj$adj.sensitivity),]
   roc.df.adj$exp.freq <- factor(roc.df.adj$exp.freq, levels = rev(levels(roc.df.adj$exp.freq)))
   return(roc.df.adj)
 }
@@ -161,11 +188,6 @@ miseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars){
 }
 
 # The ROC data only includes points there the sensitivity changes.  At this point I have limitted our analysis to variants with p<0.05. So the lines in some plots stop short. For the final draft I will not apply this cut off. Even in that future case this step may be need as the ROC data only includes points where the sensitivity changes.  For now   This function extents the lines by adding a data point at the specificity of 0.002 and appropriate sensitivity. At the most it hurts us as we do not increase sensitivity and it might , but I doubt it. Anyway it is of no concern as we only care about the p=0.01 case which is well contained before this extension is needed
-fill_in_plots<-function(x){
-  spec<-min(x$specificity[which(x$specificity>0.998)])
-  sense<-max(x$sensitivity[x$specificity==spec]) # incase there is a step right here
-  y<-data.frame(threshold=NA,Id=NA,specificity=0.9981,sensitivity=sense,samp=unique(x$samp))
-}
 
 ######### Hiseq roc functions ##########
 hiseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the roc calculations and adjustments
@@ -176,10 +198,12 @@ hiseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the r
 
   roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df,possible_tp,possible_vars)
   roc.df.adj<-roc.df.adj[order(roc.df.adj$adj.sensitivity),]
-######START HERE WITH THE FILL IN  AND DO IT FOR THE MISEQ ABOVE##############
   mutate(roc.df.adj, gc = as.numeric(sub(pat,"\\1",samp)),
        exp.freq = sub(pat,"\\2",samp)
   )-> roc.df.adj
+  fills<-ddply(roc.df.adj,~samp,fill_in_plots) # take out these lines to not fill in the plots
+  roc.df.adj<-rbind(fills,roc.df.adj) # here too
+  roc.df.adj$exp.freq<-as.character(roc.df.adj$exp.freq) # so that teh calculations below work since it is a factor here
   mutate(roc.df.adj,exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq)/1000,no = as.numeric(exp.freq)/100))->roc.df.adj
   roc.df.adj$exp.freq<-as.factor(roc.df.adj$exp.freq)
   roc.df.adj$exp.freq <- factor(roc.df.adj$exp.freq, levels = rev(levels(roc.df.adj$exp.freq)))
@@ -193,6 +217,7 @@ hiseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars){
 mutate(roc.df.adj, gc = as.numeric(sub(pat,"\\1",samp)),
        exp.freq = sub(pat,"\\2",samp)
 )-> roc.df.adj
+
 mutate(roc.df.adj,exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq)/1000,no = as.numeric(exp.freq)/100))->roc.df.adj
 roc.df.adj<-roc.df.adj[order(roc.df.adj$exp.freq,decreasing = T),]
 roc.table<-subset(roc.df.adj,select=c(gc,exp.freq,adj.sensitivity,TP,adj.specificity,FP))
@@ -205,17 +230,6 @@ The initial ROC of DeepSNV applied the viral dilutions above. Note for these ana
 > Uniform ROC axis?
 
 ```{r,Miseq_out_of_the_box}
-find_freq<-function(Id){ # helper function to get the expected frequency from the sample name
-  if(Id=="Covaris_5"){
-    x=0.05} else if ( Id=="Covaris_25"){
-    x=0.025} else if ( Id=="Covaris_125"){
-    x=0.0125} else if ( Id=="Covaris_063"){
-    x=0.0063} else if ( Id=="Covaris_016"){
-    x=0.0016}
-}
-find_freq.v<-Vectorize(find_freq) # vectorized version of the helper function above
-
-
 
 sum.df<-read.csv("../data/process/2014-5-30/one.sided/Variants/all.sum.csv",stringsAsFactors=F,comment.char = '#')
   
