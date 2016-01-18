@@ -7,7 +7,7 @@
 #PBS -m abe
 #PBS -j oe
 #PBS -V
-#PBS -l nodes=1:ppn=3,mem=70gb,walltime=15:00:00
+#PBS -l nodes=1:ppn=3,mem=70gb,walltime=4:00:00
 
 echo Running job name $PBS_JOBNAME with ID $PBS_JOBID on host $PBS_O_HOST;
 echo Working directory is $PBS_O_WORKDIR
@@ -25,6 +25,6 @@ module add pysam/0.8.2.1
 
 cd $PBS_O_WORKDIR
 
-python ~/variant_pipeline/bin/variantPipeline.py -i ../data/raw/2015-11-14/ -o ../data/process/2015-11-14/ -r ../data/reference/wsn33_wt_plasmid -p PC -d two.sided
+python ~/variant_pipeline/bin/variantPipeline.py -i ../data/raw/2015-11-14/ -o ../data/process/2015-11-14/ -r ../data/reference/wsn33_wt_plasmid -p PC -d two.sided -m fisher -a 0.9
 
 echo Finish time: `date`
