@@ -13,10 +13,17 @@ require("Biostrings")
 require(reshape2)
 require("pROC")
 require(gridExtra)
+require(cowplot)
+require(gtable)
+require(png)
 theme_set(new = theme_classic())
 require(knitr)
 opts_chunk$set(fig.align = "center", warning = FALSE, echo = FALSE, fig.width = 10, 
-    fig.height = 7,message=F)
+    fig.height = 7,message=F,cache=T)
+
+rhg_cols<-c("#08519cff","#3182b4ff","#6baed6ff","#b1bdc5ff","#787878ff")
+
+
 ```
 
 
@@ -78,6 +85,7 @@ plot.ex(0.35,0.95,roc.df,example)
 # dev.off()
 
 ```
+
 ### Experimental setup diagram
 
 The accuracy of DeepSNV algorithm has been extensively benchmarked using a region of the HIV genome (?kb); however, we wanted to determine its accuracy in calling variants accross the entire influenza A genome ( 8 segments totally roughly 13kb).  To this end we diluted one lab strain WSN33 into another PR8 at decreasing frequencies. 491 single nucleotide variants were confirmed between these strains using sanger sequencing of plaque isolated samples.
@@ -171,8 +179,8 @@ miseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the r
   roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df,possible_tp,possible_vars)
   
   roc.df.adj<-mutate(roc.df.adj,exp.freq=as.factor(find_freq.v(samp)))
-  fills<-ddply(roc.df.adj,~samp,fill_in_plots) # take out these lines to not fill in the plots
-  roc.df.adj<-rbind(fills,roc.df.adj) # here too
+  #fills<-ddply(roc.df.adj,~samp,fill_in_plots) # take out these lines to not fill in the plots
+  #roc.df.adj<-rbind(fills,roc.df.adj) # here too
   roc.df.adj<-roc.df.adj[order(roc.df.adj$adj.sensitivity),]
   roc.df.adj$exp.freq <- factor(roc.df.adj$exp.freq, levels = rev(levels(roc.df.adj$exp.freq)))
   return(roc.df.adj)
@@ -200,8 +208,8 @@ hiseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the r
   mutate(roc.df.adj, gc = as.numeric(sub(pat,"\\1",samp)),
        exp.freq = sub(pat,"\\2",samp)
   )-> roc.df.adj
-  fills<-ddply(roc.df.adj,~samp,fill_in_plots) # take out these lines to not fill in the plots
-  roc.df.adj<-rbind(fills,roc.df.adj) # here too
+  #fills<-ddply(roc.df.adj,~samp,fill_in_plots) # take out these lines to not fill in the plots
+  #roc.df.adj<-rbind(fills,roc.df.adj) # here too
   roc.df.adj$exp.freq<-as.character(roc.df.adj$exp.freq) # so that teh calculations below work since it is a factor here
   mutate(roc.df.adj,exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq)/1000,no = as.numeric(exp.freq)/100))->roc.df.adj
   roc.df.adj$exp.freq<-as.factor(roc.df.adj$exp.freq)
@@ -228,6 +236,7 @@ The initial ROC of DeepSNV applied the viral dilutions above. Note for these ana
 
 > Uniform ROC axis?
 
+## Figure 2
 ```{r,Miseq_out_of_the_box}
 
 sum.df<-read.csv("../data/process/2014-5-30/one.sided/Variants/all.sum.csv",stringsAsFactors=F,comment.char = '#')
@@ -277,34 +286,69 @@ possible_tp<-length(tp)
 
 m.roc.df<-miseq.roc(sum.df,possible_tp,possible_vars)
 
-miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))
+miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position=c(0.8,.5))
 
-miseq.roc.p
+#miseq.roc.p
 
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/miseq_roc.one.sided.pdf")
- miseq.roc
- dev.off()
+
+
+
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/miseq_roc.one.sided.pdf")
+#  miseq.roc.p
+# dev.off()
 
 m.roc.table<-miseq.roc.table(sum.df,0.01,possible_tp,possible_vars)
-knitr::kable(m.roc.table)
-
-ggplot(subset(sum.df,p.val<0.01),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)+geom_hline(yintercept=c(63,188))
 
 
-ggplot(sum.df,aes(x=Read_pos,fill=category))+geom_histogram(position="dodge")
+#knitr::kable(m.roc.table)
+m.roc.table<-rename(m.roc.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))
+
+m.roc.table$Frequency<-c("5.0%","2.5%","1.25%","0.63%","0.016%")
+m.roc.table$Sensitivity<-round(m.roc.table$Sensitivity,digits=3)
+m.roc.table$Specificity<-round(m.roc.table$Specificity,digits=3)
+
+tbl<-tableGrob(m.roc.table,rows=NULL,theme=ttheme_minimal()) # Make table
+
+readPNG("../results/pictures/miseq_setup.png")->img # read in set up png
+g <- rasterGrob(img, interpolate=TRUE)
+qplot(1:1, 1:1, geom="blank") +
+annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+geom_blank()+xlab("")+ylab("")+
+theme(line = element_blank(),
+text = element_blank(),
+line = element_blank(),
+title = element_blank())->miseq.setup # empty plot with setup png a background
+
+
+
+#plot_grid(miseq.setup,miseq.roc.p, tbl, labels=c("A", "B","C"), ncol = 3, nrow = 1)
+# Figure 2
+ggdraw() +
+  draw_plot(miseq.setup, 0, .5, .5, .5) +
+  draw_plot(miseq.roc.p, .5, .5, .5, .5) +
+  draw_plot(tbl, 0, 0, 1, .5) +
+  draw_plot_label(c("A", "B", "C"), c(0, 0.5, 0), c(1, 1, 0.5), size = 15)
+
+
+#ggplot(subset(sum.df,p.val<0.01),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)+geom_hline(yintercept=c(63,188))
+
+
+#ggplot(sum.df,aes(x=Read_pos,fill=category))+geom_histogram(position="dodge")
+
 
 
 
 
 ```
 
-### With read position cut off 63 and 188
 
-```{r}
+
+```{r,Miseq_read.cut,eval=F}
+### With read position cut off 63 and 188
 read.df<-subset(sum.df,Read_pos>63 & Read_pos<188)
 m.roc.df<-miseq.roc(read.df,possible_tp,possible_vars)
 
-miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.005)
+miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.005)
 
 miseq.roc.p
 
@@ -322,14 +366,13 @@ rm(list = setdiff(ls(), lsf.str())) # remove all variables except the functions
 ```
 
 
-## Figure 2
 
 ### Hiseq expermintal setup
 
 
 To test our accuracy under conditions that more closely resemble those found in patient derived samples, 20 single point mutants were mixed and diluted into wild type decreasing frequencies. This mixtures were then diltued into viral media to yeild a spectrum of known variants at a range of input levels.
 
-### ROC
+### Figure 3
 Out of the box here is how we do for the $10^5$ sample.
 
 ```{r,hiseq_roc}
@@ -370,24 +413,44 @@ possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
 
 h.roc.df<-hiseq.roc(sum.df,possible_tp,possible_vars)
 
-Hiseq.roc<-ggplot(subset(h.roc.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1",name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5));Hiseq.roc
+Hiseq.roc<-ggplot(subset(h.roc.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
 
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/hiseq.roc.pdf")
-Hiseq.roc
-dev.off()
-
-Hiseq.roc.4<-ggplot(subset(h.roc.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1",name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005));Hiseq.roc.4
-
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/hiseq.roc.4.pdf")
-Hiseq.roc.4
-dev.off()
-
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/hiseq.roc.pdf")
+# Hiseq.roc
+# dev.off()
 
 h.table.df<-hiseq.roc.table(sum.df,0.01,possible_tp,possible_vars)
 
-knitr::kable(subset(h.table.df,gc==5))
+#knitr::kable(subset(h.table.df,gc==5))
 
-knitr::kable(subset(h.table.df,gc==4))
+h.table.df<-rename(h.table.df,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))
+
+h.table.df<-subset(h.table.df,gc==5,select=-c(gc))
+h.table.df$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
+h.table.df$Sensitivity<-round(h.table.df$Sensitivity,digits=3)
+h.table.df$Specificity<-round(h.table.df$Specificity,digits=3)
+
+tbl<-tableGrob(h.table.df,rows=NULL,theme=ttheme_minimal()) # Make table
+
+readPNG("../results/pictures/hiseq_setup.png")->img # read in set up png
+g <- rasterGrob(img, interpolate=TRUE)
+qplot(1:1, 1:1, geom="blank") +
+annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+geom_blank()+xlab("")+ylab("")+
+theme(line = element_blank(),
+text = element_blank(),
+line = element_blank(),
+title = element_blank())->hiseq.setup 
+
+ggdraw() +
+  draw_plot(hiseq.setup, 0, .5, .5, .5) +
+  draw_plot(Hiseq.roc, .5, .5, .5, .5) +
+  draw_plot(tbl, 0, 0, 1, .5) +
+  draw_plot_label(c("A", "B", "C"), c(0, 0.5, 0), c(1, 1, 0.5), size = 15)
+
+
+# 
+# knitr::kable(subset(h.table.df,gc==4))
 ```
 
 ## 3) Phred and MapQ filters
@@ -399,39 +462,39 @@ It is common practice to account for base and mapping quality scores when callin
 ```{r, phred_mapq filter}
 sig.df<-subset(sum.df,p.val<0.01)
 
-mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=1)+geom_hline(yintercept=20)+geom_vline(xintercept=30)+scale_x_continuous(limits=c(30,40))+scale_color_hue(name="",labels=c("False posivite","True positive"))+ylab("Mapping Quality")+xlab("Base Qualtiy (Phred) ")
+mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_hue(name="",labels=c("False posivite","True positive"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ")
 
-mapq_phred.normal
+#mapq_phred.normal
 
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/mapq_phred.normal.pdf")
-mapq_phred.normal
-dev.off()
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/mapq_phred.normal.pdf")
+# mapq_phred.normal
+# dev.off()
 
-mapq_phred.stingy<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=1)+scale_x_continuous(limits=c(30,40))+geom_hline(yintercept=30)+geom_vline(xintercept=35)+scale_color_hue(name="",labels=c("False positive","True positive"))+ylab("Mapping Quality")+xlab("Base Qualtiy (Phred) ")
-
-mapq_phred.stingy
-
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/mapq_phred.stingy.pdf")
-mapq_phred.stingy
-dev.off()
+# mapq_phred.stingy<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=1)+scale_x_continuous(limits=c(30,40))+geom_hline(yintercept=30)+geom_vline(xintercept=35)+scale_color_hue(name="",labels=c("False positive","True positive"))+ylab("Mapping Quality")+xlab("Base Qualtiy (Phred) ")
+# 
+# mapq_phred.stingy
+# 
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/mapq_phred.stingy.pdf")
+# mapq_phred.stingy
+# dev.off()
 
 #ggplot(subset(sig.df,gc==5 & category %in% c(T,F)),aes(x=Phred,y=MapQ,color=category))+geom_point()
 
 cut.df<-subset(sum.df,MapQ>30 & Phred>35)
 
-h.cut.df<-hiseq.roc(cut.df,possible_tp,possible_vars)
-
-mapq_phred.roc<-ggplot(subset(h.cut.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1",name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))
-
-mapq_phred.roc
-
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/mapq_phred.rocpdf")
-mapq_phred.roc
-dev.off()
-
-h.cut.table<-hiseq.roc.table(cut.df,0.01,possible_tp,possible_vars)
-
-knitr::kable(subset(h.cut.table,gc==5))
+# h.cut.df<-hiseq.roc(cut.df,possible_tp,possible_vars)
+# 
+# mapq_phred.roc<-ggplot(subset(h.cut.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1",name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))
+# 
+# mapq_phred.roc
+# 
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/mapq_phred.rocpdf")
+# mapq_phred.roc
+# dev.off()
+# 
+# h.cut.table<-hiseq.roc.table(cut.df,0.01,possible_tp,possible_vars)
+# 
+# knitr::kable(subset(h.cut.table,gc==5))
 ```
 
 This is still for p<0.01 and 10^5 genomes/ul viral transport media.
@@ -451,31 +514,50 @@ This is still for p<0.01 and 10^5 genomes/ul viral transport media.
 
 sig.cut.df<-subset(cut.df,p.val<0.01)
 
-ggplot(sig.cut.df,aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
+#ggplot(sig.cut.df,aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 # ggplot(subset(sig.cut.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 
 
 read.pos<-ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,fill=category))+geom_histogram(position='dodge')+scale_fill_hue(name="",labels=c("False positive","True positive"))+xlab("Average position on read")+ylab("Number of variants")+theme(legend.position=c(.5,.7))
-read.pos
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/read.pos.pdf")
-read.pos
-dev.off()
+# read.pos
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/read.pos.pdf")
+# read.pos
+# dev.off()
 
 
 cut.read.df<-subset(cut.df,Read_pos>32 & Read_pos<94)
 
 h.cut.read.df<-hiseq.roc(cut.read.df,possible_tp,possible_vars)
 
-read.roc<-ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1",name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))
+read.roc<-ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
 
-read.roc
-
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/read.roc.pdf")
-read.roc
-dev.off()
+# read.roc
+# 
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/read.roc.pdf")
+# read.roc
+# dev.off()
 
 h.cut.read.table<-hiseq.roc.table(cut.read.df,0.01,possible_tp,possible_vars)
-knitr::kable(subset(h.cut.read.table,gc==5))
+#knitr::kable(subset(h.cut.read.table,gc==5))
+
+h.cut.read.table.5<-subset(h.cut.read.table,gc==5,select=-c(gc))
+rename(h.cut.read.table.5,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.5
+h.cut.read.table.5$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
+h.cut.read.table.5$Sensitivity<-round(h.cut.read.table.5$Sensitivity,digits=3)
+h.cut.read.table.5$Specificity<-round(h.cut.read.table.5$Specificity,digits=3)
+
+tbl<-tableGrob(h.cut.read.table.5,rows=NULL,theme=ttheme_minimal()) # Make table
+
+
+ggdraw() +
+  draw_plot(mapq_phred.normal, 0, .5, .5, .5) +
+  draw_plot(read.pos, .5, .5, .5, .5) +
+  draw_plot(read.roc, 0, 0, 0.5, .5) +
+  draw_plot(tbl, 0.5, 0, 0.5, .5)+
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0.5, 0,0.5), c(1, 1, 0.5,0.5), size = 15)
+
+
+
 ```
 
 Same as above just with an added read cut off at 32 and 94 (middle 50%). p<0.01
@@ -491,7 +573,7 @@ lofreq.df$p.val<-lofreq.df$QUAL # to make the roc based on the quality scores gi
 
 lofreq.roc<-hiseq.roc(cut.df,possible_tp,possible_vars)
 
-ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1")+xlab("1-Specificity (adjusted)")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005))
+ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab("1-Specificity (adjusted)")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005))+theme(legend.position="none")
 
 
 
@@ -520,7 +602,7 @@ medians<-ddply(subset(cut.read.sig.df,category==T ),~exp.freq+gc, summarize, med
 
 ac_freq<-ggplot(subset(cut.read.sig.df,category==T & gc=="5"),aes(x=exp.freq,y=freq.var,fill=factor(exp.freq,levels=rev(levels(as.factor(exp.freq))))))
 
-ac_freq<-ac_freq+geom_dotplot(binaxis = "y", stackdir = "center",dotsize=1)+scale_fill_brewer(palette="Set1")
+ac_freq<-ac_freq+geom_dotplot(binaxis = "y", stackdir = "center",dotsize=1)+scale_color_manual(values=rhg_cols)
 
 ac_freq<-ac_freq+scale_y_log10(limits=c(0.001,0.1),breaks=c(0.001,0.002,0.005,0.01,0.02,0.05,0.1))#+theme(axis.text.y = element_text(colour = c("red","chartreuse4","black","chocolate2","azure4","blue","black"),face="bold"))
 ac_freq<-ac_freq+scale_x_log10(limits=c(0.001,0.1),breaks=c(0.001,0.002,0.005,0.01,0.02,0.050,0.1))#+theme(axis.text.x = element_text(colour = c("red","chartreuse4","black","chocolate2","azure4","blue","black"),face="bold"))
@@ -538,32 +620,57 @@ dev.off()
 
 
 ## Figure 5 Lower inputs
-### 10^4
+
 ```{r,roc_lower_inputs4}
-roc.4<-ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1",name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))
+roc.4<-ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
 
-roc.4
+# roc.4
+# 
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.4.pdf")
+# roc.4
+# dev.off()
+# 
+# knitr::kable(subset(h.cut.read.table,gc==4))
 
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.4.pdf")
-roc.4
-dev.off()
+roc.3<-ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005))+theme(legend.position="none")
 
-knitr::kable(subset(h.cut.read.table,gc==4))
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.3.pdf")
+# roc.3
+# dev.off()
+# 
+# 
+# knitr::kable(subset(h.cut.read.table,gc==3))
+
+
+h.cut.read.table.4<-subset(h.cut.read.table,gc==4,select=-c(gc))
+rename(h.cut.read.table.4,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.4
+h.cut.read.table.4$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
+h.cut.read.table.4$Sensitivity<-round(h.cut.read.table.4$Sensitivity,digits=3)
+h.cut.read.table.4$Specificity<-round(h.cut.read.table.4$Specificity,digits=3)
+
+tbl.4<-tableGrob(h.cut.read.table.4,rows=NULL,theme=ttheme_minimal()) # Make table
+
+
+h.cut.read.table.3<-subset(h.cut.read.table,gc==3,select=-c(gc))
+rename(h.cut.read.table.3,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.3
+h.cut.read.table.3$Frequency<-c("5.0%","2.0%","1.0%")
+h.cut.read.table.3$Sensitivity<-round(h.cut.read.table.3$Sensitivity,digits=3)
+h.cut.read.table.3$Specificity<-round(h.cut.read.table.3$Specificity,digits=3)
+
+tbl.3<-tableGrob(h.cut.read.table.3,rows=NULL,theme=ttheme_minimal()) # Make table
+
+
+ggdraw() +
+  draw_plot(roc.4, 0, .5, .5, .5) +
+  draw_plot(tbl.4, .5, .5, .5, .5) +
+  draw_plot(roc.3, 0, 0, 0.5, .5) +
+  draw_plot(tbl.3, 0.5, 0, 0.5, .5)+
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0.5, 0,0.5), c(1, 1, 0.5,0.5), size = 15)
+
+
 ```
 
-### 10^3
-```{r,roc_lower_inputs3}
-roc.3<-ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1",name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005))
-
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.3.pdf")
-roc.3
-dev.off()
-
-
-knitr::kable(subset(h.cut.read.table,gc==3))
-```
-
-### Duplicates
+### Figure 6
 
 ```{r,duplicates}
 sum.df<-read.csv("../data/process/2015-11-14/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#")
@@ -592,15 +699,38 @@ dups<-subset(dups,p.val!=1)
 
 dups.roc<-hiseq.roc(dups,possible_tp,possible_vars)
 
-dups.roc.p<-ggplot(dups.roc,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_brewer(palette = "Set1",name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))
+dups.roc.p<-ggplot(dups.roc,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
 
-dups.roc.p
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/dups.roc.pdf")
-dups.roc.p
-dev.off()
+# dups.roc.p
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/dups.roc.pdf")
+# dups.roc.p
+# dev.off()
 
 dups.table<-hiseq.roc.table(dups,0.01,possible_tp,possible_vars)
-knitr::kable(subset(dups.table))
+#knitr::kable(subset(dups.table))
+
+rename(dups.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->dups.table
+subset(dups.table,select=-c(gc))->dups.table
+dups.table$Frequency<-c("5.0%","2.0%","1.0%","0.5%")
+dups.table$Sensitivity<-round(dups.table$Sensitivity,digits=3)
+dups.table$Specificity<-round(dups.table$Specificity,digits=3)
+
+tbl<-tableGrob(dups.table,rows=NULL,theme=ttheme_minimal()) # Make table
+
+ggdraw() +
+  draw_plot(dups.roc.p, 0, .5, 0.5, .5) +
+  draw_plot(tbl, 0.5, 0.5, 0.5, .5) +
+  draw_plot_label(c("A", "B"), c(0, 0.5), c(1, 1), size = 15)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -612,12 +742,12 @@ exp.meas.freq<-ddply(cut.df,~exp.freq+mutation+category, function(x){
                                                                                       out=data.frame(freq1=freq1,freq2=freq2)})
 
 
-ggplot(subset(exp.meas.freq),aes(x=freq1,y=freq2,color=category))+geom_point(aes(size=3))+scale_y_log10()+scale_x_log10()+xlab("Frequency in sample 1")+ylab("Frequency in sample 2")+scale_color_hue(name="",labels=c("False positive","True positive"))+theme(legend.position=c(0.5,0.95))+geom_abline(intercept=0,slope=1,lty=2)->dup.freq
-dup.freq
-
-pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/dup.freq.pdf")
-dup.freq
-dev.off()
+# ggplot(subset(exp.meas.freq),aes(x=freq1,y=freq2,color=category))+geom_point(aes(size=3))+scale_y_log10()+scale_x_log10()+xlab("Frequency in sample 1")+ylab("Frequency in sample 2")+scale_color_hue(name="",labels=c("False positive","True positive"))+theme(legend.position=c(0.5,0.95))+geom_abline(intercept=0,slope=1,lty=2)->dup.freq
+# dup.freq
+# 
+# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/dup.freq.pdf")
+# dup.freq
+# dev.off()
 
 ```
 
