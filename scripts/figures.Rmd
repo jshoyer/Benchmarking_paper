@@ -573,7 +573,7 @@ lofreq.df$p.val<-lofreq.df$QUAL # to make the roc based on the quality scores gi
 
 lofreq.roc<-hiseq.roc(cut.df,possible_tp,possible_vars)
 
-ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab("1-Specificity (adjusted)")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005))+theme(legend.position="none")
+ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab("1-Specificity (adjusted)")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")->lofreq.roc.p
 
 
 
@@ -581,7 +581,15 @@ ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom
 ddply(lofreq.df,~Id,summarize,gc=gc[1],exp.freq=exp.freq[1],TP=length(which(category==T)),FP=length(which(category==F)))->lofreq.table
 lofreq.table<-lofreq.table[order(lofreq.table$exp.freq,decreasing = T),]
 
-knitr::kable(subset(lofreq.table,gc==5,select=c(exp.freq,TP,FP)))
+#knitr::kable(subset(lofreq.table,gc==5,select=c(exp.freq,TP,FP)))
+
+
+tbl<-tableGrob(lofreq.table,rows=NULL,theme=ttheme_minimal()) # Make table
+
+ggdraw() +
+  draw_plot(lofreq.roc.p, 0, .5, 0.5, .5) +
+  draw_plot(tbl, 0.5, 0.5, 0.5, .5) +
+  draw_plot_label(c("A", "B"), c(0, 0.5), c(1, 1), size = 15)
 
 ```
 
@@ -632,7 +640,7 @@ roc.4<-ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitiv
 # 
 # knitr::kable(subset(h.cut.read.table,gc==4))
 
-roc.3<-ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005))+theme(legend.position="none")
+roc.3<-ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
 
 # pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.3.pdf")
 # roc.3
