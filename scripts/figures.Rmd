@@ -23,10 +23,10 @@ opts_chunk$set(fig.align = "center", warning = FALSE, echo = FALSE, fig.width = 
 
 rhg_cols<-c("#08519cff","#3182b4ff","#6baed6ff","#b1bdc5ff","#787878ff")
 
-
+dd=4 # digits in tables
 ```
 
-
+> make sure the possible fp accounts for the fact that we aren't looking at the priming regions for both Miseq and Hiseq
 ## Figure 1 
 
 The accuracy of variants callers is most appropiately described by the sensitivity and specificity of a the caller at a given qualtiy threshold.  The sensitivity of a caller is the proportion of true, known variants identified by the algorith. The specificty is the the propotion of false variants corrected ignored. There is a trade off between sensitivity and specificity.  One may be able to correctly identify all known variants from a data; however, if in doing the the algorithm identifies a large number of false positives then a sensitivity of 1 is of little use in practive. Conversly it is possible to increase the stringency of a caller to the point that it does not identify any erroneous variants however, if in doing so all the true variants are also removed, perfect specificity is of no use.  A reciever operator curve (ROC) is a common way of visualizing the trade off between sensitivity and specificity. The DeepSNV algorithm returns a p value for each called variant. Figure 1 A depicts the relationship between various p value thresholds, and the resulting ROC using a hypothetical data set.
@@ -304,10 +304,28 @@ m.roc.table<-miseq.roc.table(sum.df,0.01,possible_tp,possible_vars)
 m.roc.table<-rename(m.roc.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))
 
 m.roc.table$Frequency<-c("5.0%","2.5%","1.25%","0.63%","0.016%")
-m.roc.table$Sensitivity<-round(m.roc.table$Sensitivity,digits=3)
-m.roc.table$Specificity<-round(m.roc.table$Specificity,digits=3)
+m.roc.table$Sensitivity<-round(m.roc.table$Sensitivity,digits=dd)
+m.roc.table$Specificity<-round(m.roc.table$Specificity,digits=dd)
 
 tbl<-tableGrob(m.roc.table,rows=NULL,theme=ttheme_minimal()) # Make table
+tbl<-gtable_add_grob(tbl,
+        grobs = segmentsGrob( # line across the bottom
+            x0 = unit(0,"npc"),
+            y0 = unit(0,"npc"),
+            x1 = unit(1,"npc"),
+            y1 = unit(0,"npc"),
+            gp = gpar(lwd = 2.0)),
+        t = 1, b = 1, l = 1, r = ncol(tbl))
+
+tbl<-gtable_add_grob(tbl,
+        grobs = segmentsGrob( # line across the bottom
+            x0 = unit(0,"npc"),
+            y0 = unit(0,"npc"),
+            x1 = unit(0,"npc"),
+            y1 = unit(0,"npc"),
+            gp = gpar(lwd = 2.0)),
+        t = 1, b = 1, l = 1, r = ncol(tbl))
+
 
 readPNG("../results/pictures/miseq_setup.png")->img # read in set up png
 g <- rasterGrob(img, interpolate=TRUE)
@@ -324,8 +342,8 @@ title = element_blank())->miseq.setup # empty plot with setup png a background
 #plot_grid(miseq.setup,miseq.roc.p, tbl, labels=c("A", "B","C"), ncol = 3, nrow = 1)
 # Figure 2
 ggdraw() +
-  draw_plot(miseq.setup, 0, .5, .5, .5) +
-  draw_plot(miseq.roc.p, .5, .5, .5, .5) +
+  draw_plot(miseq.setup, 0.01, .53, .45, .42) +
+  draw_plot(miseq.roc.p, .5, .5, .45, .45) +
   draw_plot(tbl, 0, 0, 1, .5) +
   draw_plot_label(c("A", "B", "C"), c(0, 0.5, 0), c(1, 1, 0.5), size = 15)
 
@@ -427,8 +445,8 @@ h.table.df<-rename(h.table.df,c("exp.freq"="Frequency","adj.sensitivity"="Sensit
 
 h.table.df<-subset(h.table.df,gc==5,select=-c(gc))
 h.table.df$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
-h.table.df$Sensitivity<-round(h.table.df$Sensitivity,digits=3)
-h.table.df$Specificity<-round(h.table.df$Specificity,digits=3)
+h.table.df$Sensitivity<-round(h.table.df$Sensitivity,digits=dd)
+h.table.df$Specificity<-round(h.table.df$Specificity,digits=dd)
 
 tbl<-tableGrob(h.table.df,rows=NULL,theme=ttheme_minimal()) # Make table
 
@@ -529,7 +547,7 @@ cut.read.df<-subset(cut.df,Read_pos>32 & Read_pos<94)
 
 h.cut.read.df<-hiseq.roc(cut.read.df,possible_tp,possible_vars)
 
-read.roc<-ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
+read.roc<-ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.0025),breaks=c(0,0.001,0.002),labels=c(0:2))+theme(legend.position="none")
 
 # read.roc
 # 
@@ -543,8 +561,8 @@ h.cut.read.table<-hiseq.roc.table(cut.read.df,0.01,possible_tp,possible_vars)
 h.cut.read.table.5<-subset(h.cut.read.table,gc==5,select=-c(gc))
 rename(h.cut.read.table.5,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.5
 h.cut.read.table.5$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
-h.cut.read.table.5$Sensitivity<-round(h.cut.read.table.5$Sensitivity,digits=3)
-h.cut.read.table.5$Specificity<-round(h.cut.read.table.5$Specificity,digits=3)
+h.cut.read.table.5$Sensitivity<-round(h.cut.read.table.5$Sensitivity,digits=dd)
+h.cut.read.table.5$Specificity<-round(h.cut.read.table.5$Specificity,digits=dd)
 
 tbl<-tableGrob(h.cut.read.table.5,rows=NULL,theme=ttheme_minimal()) # Make table
 
@@ -630,7 +648,7 @@ dev.off()
 ## Figure 5 Lower inputs
 
 ```{r,roc_lower_inputs4}
-roc.4<-ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
+roc.4<-ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.0025),breaks=c(0,0.001,0.002),labels=c(0:2))+theme(legend.position="none")
 
 # roc.4
 # 
@@ -640,7 +658,7 @@ roc.4<-ggplot(subset(h.cut.read.df,gc==4),aes(x=1-adj.specificity,y=adj.sensitiv
 # 
 # knitr::kable(subset(h.cut.read.table,gc==4))
 
-roc.3<-ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
+roc.3<-ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.0025),breaks=c(0,0.001,0.002),labels=c(0:2))+theme(legend.position="none")
 
 # pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.3.pdf")
 # roc.3
@@ -653,8 +671,8 @@ roc.3<-ggplot(subset(h.cut.read.df,gc==3),aes(x=1-adj.specificity,y=adj.sensitiv
 h.cut.read.table.4<-subset(h.cut.read.table,gc==4,select=-c(gc))
 rename(h.cut.read.table.4,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.4
 h.cut.read.table.4$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
-h.cut.read.table.4$Sensitivity<-round(h.cut.read.table.4$Sensitivity,digits=3)
-h.cut.read.table.4$Specificity<-round(h.cut.read.table.4$Specificity,digits=3)
+h.cut.read.table.4$Sensitivity<-round(h.cut.read.table.4$Sensitivity,digits=dd)
+h.cut.read.table.4$Specificity<-round(h.cut.read.table.4$Specificity,digits=dd)
 
 tbl.4<-tableGrob(h.cut.read.table.4,rows=NULL,theme=ttheme_minimal()) # Make table
 
@@ -662,8 +680,8 @@ tbl.4<-tableGrob(h.cut.read.table.4,rows=NULL,theme=ttheme_minimal()) # Make tab
 h.cut.read.table.3<-subset(h.cut.read.table,gc==3,select=-c(gc))
 rename(h.cut.read.table.3,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.3
 h.cut.read.table.3$Frequency<-c("5.0%","2.0%","1.0%")
-h.cut.read.table.3$Sensitivity<-round(h.cut.read.table.3$Sensitivity,digits=3)
-h.cut.read.table.3$Specificity<-round(h.cut.read.table.3$Specificity,digits=3)
+h.cut.read.table.3$Sensitivity<-round(h.cut.read.table.3$Sensitivity,digits=dd)
+h.cut.read.table.3$Specificity<-round(h.cut.read.table.3$Specificity,digits=dd)
 
 tbl.3<-tableGrob(h.cut.read.table.3,rows=NULL,theme=ttheme_minimal()) # Make table
 
@@ -707,7 +725,7 @@ dups<-subset(dups,p.val!=1)
 
 dups.roc<-hiseq.roc(dups,possible_tp,possible_vars)
 
-dups.roc.p<-ggplot(dups.roc,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
+dups.roc.p<-ggplot(dups.roc,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.001),breaks=c(0,0.0005,0.001),labels=c(0,0.5,1))+theme(legend.position="none")
 
 # dups.roc.p
 # pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/dups.roc.pdf")
@@ -720,8 +738,8 @@ dups.table<-hiseq.roc.table(dups,0.01,possible_tp,possible_vars)
 rename(dups.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->dups.table
 subset(dups.table,select=-c(gc))->dups.table
 dups.table$Frequency<-c("5.0%","2.0%","1.0%","0.5%")
-dups.table$Sensitivity<-round(dups.table$Sensitivity,digits=3)
-dups.table$Specificity<-round(dups.table$Specificity,digits=3)
+dups.table$Sensitivity<-round(dups.table$Sensitivity,digits=dd)
+dups.table$Specificity<-round(dups.table$Specificity,digits=dd)
 
 tbl<-tableGrob(dups.table,rows=NULL,theme=ttheme_minimal()) # Make table
 
