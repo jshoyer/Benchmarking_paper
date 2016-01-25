@@ -451,12 +451,16 @@ possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
 h.roc.df<-hiseq.roc(sum.df,possible_tp,possible_vars)
 
 
-x<-ddply(h.roc.df,~Id,fill_in_plots)
+x<-ddply(h.roc.df,~samp,fill_in_plots)
 
 x<-mutate(x,frequency=find_freq.v.h(exp.freq))
 
+x<-subset(x,gc==5)
 
-Hiseq.roc<-ggplot(subset(h.roc.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1.1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")+geom_text(data=subset(x,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity,label=frequency),hjust=-0.2,position=position_jitter(h=0.1,w=0))
+x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.01
+#x$adj.sensitivity[x$frequency=="5.0%"]<-x$adj.sensitivity[x$frequency=="5.0%"]+0.0
+
+Hiseq.roc<-ggplot(subset(h.roc.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")+geom_text(data=subset(x,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity,label=frequency),hjust=-0.2)
 
 # This is so that the text is not cut off
 Hiseq.roc <- ggplot_gtable(ggplot_build(Hiseq.roc))
@@ -493,7 +497,7 @@ ggdraw() +
   draw_plot(hiseq.setup, 0, .1, 0.4, 0.8) + #x y width height
   draw_plot(Hiseq.roc, 0.43, 0.43, 0.5, 0.5) +
   draw_plot(tbl, 0.45, 0, 0.53, 0.47) +
-  draw_plot_label(c("A", "B", "C"), c(0.05, 0.4, 0.42), c(0.95, 0.95, 0.46), size = 15)
+  draw_plot_label(c("A", "B", "C"), c(0.05, 0.42, 0.42), c(0.95, 0.95, 0.46), size = 15)
 
 
 pdf("../results/figures/hiseq1.pdf",width=7,height=5)
@@ -501,7 +505,7 @@ ggdraw() +
   draw_plot(hiseq.setup, 0, .1, 0.4, 0.8) + #x y width height
   draw_plot(Hiseq.roc, 0.43, 0.43, 0.5, 0.5) +
   draw_plot(tbl, 0.45, 0, 0.53, 0.47) +
-  draw_plot_label(c("A", "B", "C"), c(0.05, 0.4, 0.42), c(0.95, 0.95, 0.46), size = 15)
+  draw_plot_label(c("A", "B", "C"), c(0.05, 0.42, 0.42), c(0.95, 0.95, 0.46), size = 15)
 dev.off()
 
 # 
@@ -511,7 +515,7 @@ dev.off()
 ```{r, phred_mapq filter}
 sig.df<-subset(sum.df,p.val<0.01)
 
-mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_hue(name="",labels=c("False posivite","True positive"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ") 
+mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_hue(name="",labels=c("False posivite","True positive"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ")+theme(legend.position="top") 
 
 #mapq_phred.normal
 
@@ -568,7 +572,7 @@ sig.cut.df<-subset(cut.df,p.val<0.01)
 # ggplot(subset(sig.cut.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 
 
-read.pos<-ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,fill=category))+geom_histogram(position='dodge')+scale_fill_hue(name="",labels=c("False positive","True positive"))+xlab("Average position on read")+ylab("Number of variants")+theme(legend.position=c(.5,.7))
+read.pos<-ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,fill=category))+geom_histogram(position='dodge')+scale_fill_hue(name="",labels=c("False positive","True positive"))+xlab("Average position on read")+ylab("Number of variants")+theme(legend.position="top")
 # read.pos
 # pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/read.pos.pdf")
 # read.pos
@@ -582,13 +586,25 @@ cut.read.df.all$p.val[cut.read.df.all$Read_pos<32 | cut.read.df.all$Read_pos>94]
 
 h.cut.read.df<-hiseq.roc(cut.read.df.all,possible_tp,possible_vars)
 
-read.roc<-ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
 
-# read.roc
-# 
-# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/read.roc.pdf")
-# read.roc
-# dev.off()
+x<-ddply(h.cut.read.df,~samp,fill_in_plots)
+
+x<-mutate(x,frequency=find_freq.v.h(exp.freq))
+
+x<-subset(x,gc==5)
+
+x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.05
+#x$adj.sensitivity[x$frequency=="5.0%"]<-x$adj.sensitivity[x$frequency=="5.0%"]+0.0
+
+
+
+
+read.roc<-ggplot(subset(h.cut.read.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")+geom_text(data=x,aes(x=1-adj.specificity,y=adj.sensitivity,label=frequency),hjust=-0.2)
+
+# This is so that the text is not cut off
+read.roc <- ggplot_gtable(ggplot_build(read.roc))
+read.roc$layout$clip[read.roc$layout$name == "panel"] <- "off"
+
 
 h.cut.read.table<-hiseq.roc.table(cut.read.df.all,0.01,possible_tp,possible_vars)
 #knitr::kable(subset(h.cut.read.table,gc==5))
@@ -609,8 +625,14 @@ ggdraw() +
   draw_plot(tbl, 0.5, 0, 0.5, .5)+
   draw_plot_label(c("A", "B", "C","D"), c(0, 0.5, 0,0.5), c(1, 1, 0.5,0.5), size = 15)
 
-
-
+pdf("../results/figures/figure4.pdf",width=7,height=6)
+ggdraw() +
+  draw_plot(mapq_phred.normal, 0, .5, .5, .48) + 
+  draw_plot(read.pos, .5, .5, .5, .48) +
+  draw_plot(read.roc, 0, 0, 0.42, .5) +
+  draw_plot(tbl, 0.47, 0, 0.52, 0.47) +
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0.5, 0,0.5), c(0.95, 0.95, 0.55,0.45), size = 15)
+dev.off()
 ```
 
 
@@ -644,6 +666,11 @@ tbl<-make.table(lofreq.table,tt1) # Make table
 #   draw_plot_label(c("A", "B"), c(0, 0.5), c(1, 1), size = 15)
 
 plot_grid(lofreq.roc.p, tbl, labels=c("A", "B"), ncol = 1, nrow = 2)
+
+
+pdf("../results/figures/lofreq1.pdf",width=7,height=2.5)
+plot_grid(lofreq.roc.p, tbl, labels=c("A", "B"), ncol = 2, nrow = 1)
+dev.off()
 
 ```
 
