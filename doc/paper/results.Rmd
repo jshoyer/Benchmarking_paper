@@ -1,0 +1,15 @@
+---
+title: "Results"
+author: "JT McCrone"
+date: "January 26, 2016"
+output: pdf_document
+---
+```{r.message=F,echo=F}
+xamp_roc<-"figure 1"
+```
+
+There are two major components to the accuracy of a variant caller. The first, sensitivity, describes how well a variant caller can identify variants that are know to be real. In other words what proportion of the true positives are found.  The second, specificity, measures how well a variant caller can correctly identify true negatives. For example, the influenza genome is roughly 13KB. There is potential for 3 variant nucleotides at each position leaving a variant caller with about 39,000 potential variants that can be called. The vast majority of these potential variants will not be present in the starting population and are potential false positives. A variant caller that correctly identifies all potential false positives as true negatives has a specificity of 1.
+
+There is an obvious trade off between sensitivity and specificity. It may be the case that a variant caller has near perfect sensitivity, ie. it finds all the true positives in a sample. However, if in the process it has low specificity and identifies many false positives that will confound down stream analysis then the high sensitivity is all for naught. Conversely, a variant caller may have perfect specificity and identify no false positives; however, if in process it has low sensitivity and identifies only a few true positives again it will have limited applications. 
+
+The trade off between sensitivity and specificity can be represented as a reciter operator curve or ROC (`r xamp_roc`). A ROC plots the sensitivity of an assay along the y axis and 1-specificity along the x axis. Therefore a perfect assay with a sensitivity and specificity of 1 will lie in at the coordinates (0,1) in the top left hand corner of the plot. 
