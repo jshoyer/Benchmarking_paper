@@ -5,7 +5,6 @@ date: "December 30, 2015"
 output: html_document
 ---
 
-Here are the figures (or figure panels) we are thinking of using in the Benchmarking paper.  I will include my comments and decriptions on each and perhaps over time this will develop into the results section
 ```{r,settings_and_lib,echo=F,message=F,}
 require(ggplot2)
 require("plyr")
@@ -79,6 +78,7 @@ plot.ex(0.35,0.95,roc.df,example)
 
 ```
 
+Figure 1. An example ROC. A) Hypothetical variants are stratified by p value. True variants are shown as filled cirlces, while those corresponding to RT, PCR, or sequencing errors are shown as open circles. Potential thresholds are indicated as colored lines. B) An ROC made from the data shown in A. The colored lines indicate the points made by the thresholds in A. 
 
 ```{r,roc_helper_runctions}
 find_freq<-function(Id){ # helper function to get the expected frequency from the sample name
@@ -385,6 +385,7 @@ ggdraw() +
 
 ```
 
+Figure 2. Initial DeepSNY accuracy. A) RT-PCR amplified WSN33 genomes were diluted into PR8 at decreasing frequencies and sequenced on an Illumina Miseq. B) An ROC showing our ability to identify WSN33 SNV relative to PR8 at the indicated frequencies. C) A table of the DeepSNV accuracy at a p value threshold of 0.01.
 
 
 ```{r,Miseq_read.cut,eval=F}
@@ -441,7 +442,7 @@ wt2_mut<-subset(sum.df,Id=="WT2",select=mutation)
 
 wt_mut<-intersect(wt1_mut$mutation,wt2_mut$mutation)
 
-length(wt_mut)
+#length(wt_mut) How many wt muts do we find.
 sum.df$category[sum.df$mutation %in% wt_mut]<-"wt"
 sum.df<-subset(sum.df,!(grepl("WT",Id))) # remove the WT samples
 
@@ -460,7 +461,7 @@ x<-mutate(x,frequency=find_freq.v.h(exp.freq))
 
 x<-subset(x,gc==5)
 
-x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.01
+x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.03
 #x$adj.sensitivity[x$frequency=="5.0%"]<-x$adj.sensitivity[x$frequency=="5.0%"]+0.0
 
 Hiseq.roc<-ggplot(subset(h.roc.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")+geom_text(data=subset(x,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity,label=frequency),hjust=-0.2)
@@ -514,6 +515,7 @@ ggdraw() +
 # knitr::kable(subset(h.table.df,gc==4))
 ```
 
+Figure 3. DeepSNV accuracy under condition that more accurately mimic those found in patient dervived samples. A) 20 known single point mutants were diluted into wt at decreasing frequencies.
 
 ### Figure 4 
 ```{r, phred_mapq filter}
@@ -593,8 +595,8 @@ x<-mutate(x,frequency=find_freq.v.h(exp.freq))
 
 x<-subset(x,gc==5)
 
-x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.05
-#x$adj.sensitivity[x$frequency=="5.0%"]<-x$adj.sensitivity[x$frequency=="5.0%"]+0.0
+x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.01
+x$adj.sensitivity[x$frequency=="2.0%"]<-x$adj.sensitivity[x$frequency=="2.0%"]+0.08
 
 
 
@@ -653,8 +655,8 @@ x<-mutate(x,frequency=find_freq.v.h(exp.freq))
 
 x<-subset(x,gc==5)
 
-x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.1
-x$adj.sensitivity[x$frequency=="2.0%"]<-x$adj.sensitivity[x$frequency=="2.0%"]-0.03
+x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.04
+x$adj.sensitivity[x$frequency=="2.0%"]<-x$adj.sensitivity[x$frequency=="2.0%"]-0.12
 
 
 
@@ -854,8 +856,8 @@ x<-ddply(dups.roc,~samp,fill_in_plots)
 
 x<-mutate(x,frequency=find_freq.v.h(exp.freq))
 
-x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.15
-x$adj.sensitivity[x$frequency=="2.0%"]<-x$adj.sensitivity[x$frequency=="2.0%"]-0.08
+x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.18
+x$adj.sensitivity[x$frequency=="2.0%"]<-x$adj.sensitivity[x$frequency=="2.0%"]-0.09
 
 
 dups.roc.p<-ggplot(dups.roc,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")+geom_text(data=x,aes(x=1-adj.specificity,y=adj.sensitivity,label=frequency),hjust=-0.2)
@@ -918,7 +920,3 @@ ggdraw() +
 # dev.off()
 
 ```
-
-These are variants that pass mapq,phred, and read cut and p<0.01 in both samples.10^4
-
-This is so much better than before. 
