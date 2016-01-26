@@ -1,8 +1,8 @@
 ---
 title: "Figures"
 author: "JT McCrone"
-date: "December 30, 2015"
-output: html_document
+date: "January 25, 2015"
+output: pdf_document
 ---
 
 ```{r,settings_and_lib,echo=F,message=F,}
@@ -80,7 +80,7 @@ plot.ex(0.35,0.95,roc.df,example)
 
 
 Figure 1. An example ROC. A) Hypothetical variants are stratified by p value. True variants are shown as filled circles, while those corresponding to RT, PCR, or sequencing errors are shown as open circles. Potential thresholds are indicated as colored lines. B) An ROC made from the data shown in A. The colored lines indicate the points made by the thresholds in A. 
-
+\pagebreak
 ```{r,roc_helper_runctions}
 find_freq<-function(Id){ # helper function to get the expected frequency from the sample name
   if(Id=="Covaris_5"){
@@ -387,8 +387,8 @@ ggdraw() +
 ```
 
 
-Figure 2. Initial DeepSNY accuracy. A) RT-PCR amplified WSN33 genomes were diluted into PR8 at decreasing frequencies and sequenced on an Illumina Miseq. B) An ROC showing our ability to identify WSN33 SNV relative to PR8 at the indicated frequencies. C) A table of the DeepSNV accuracy at a p value threshold of 0.01.
-
+Figure 2. Initial DeepSNV accuracy. A) RT-PCR amplified WSN33 genomes were diluted into PR8 at decreasing frequencies and sequenced on an Illumina Miseq. B) An ROC showing our ability to identify WSN33 SNV relative to PR8 at the indicated frequencies. C) A table of the DeepSNV accuracy at a p value threshold of 0.01.
+\pagebreak
 
 ```{r,Miseq_read.cut,eval=F}
 ### With read position cut off 63 and 188
@@ -519,6 +519,8 @@ ggdraw() +
 
 Figure 3. DeepSNV accuracy under conditions that more accurately mimic those found in patient derived samples. A) 20 known single point mutants were diluted into wild type at decreasing frequencies. These were diluted further into viral media to match the genomes concentration found in patent samples (10$^5$-10$^3$ genomes/$\mu$l). B) An ROC indicating our ability to accurately identify the 20 known variants at 10 $^5$ genomes/$\mu$l. C) A table of the accuracy of our variant calling for the 10 $^5$ genomes/$\mu$l samples at a p value threshold of 0.01.
 
+\pagebreak
+
 ### Figure 4 
 ```{r, phred_mapq filter}
 sig.df<-subset(sum.df,p.val<0.01)
@@ -638,6 +640,8 @@ ggdraw() +
 
 Figure 4. Investigating the quality of variants in the the 10 $^5$ genomes/$\mu$l samples. A) All called variants from the 10 $^5$ genomes/$\mu$l samples with p<0.01 stratified by the mean mapping quality of the reads containing the variants and the mean Phred scores of the variant bases. Dashed lines indicate the common cutoffs of 20 and 30 for mapping quality and Phred respectively. B) A histogram of all called variants from the 10 $^5$ genomes/$\mu$l samples with p<0.01 binned by the average position of the variant relative to the Hiseq reads on which it is found. C) An ROC of the accuracy of the variant caller when the following quality cut offs are applied : mean mapping quality of 30, mean Phred of 35, and an average read position between 32 and 94 (the middle 50% of the read). D) A table summarizing the ROC in C at a p value threshold of 0.01.
 
+\pagebreak
+
 ### Figure 5
 
 ```{r,lofreq,fig.height=5,fig.width=3.4}
@@ -702,7 +706,9 @@ ggdraw() +
 
 ```
 
-Figure 5. The accuracy of the common variant caller Lofreq. The variant caller Lofreq was applied to the 10 $^5$ genomes/$\mu$l samples. A) An ROC of the accuracy of Lofreq using standard parameters. The specificity of the caller was scaled to account for the same number of tests as the DeepSNV algorithm. Lofreq provides qualtiy scores instead of p values. These were used to set cutoffs for the ROC. B) A table summarizing the accuracy of the ROC A.
+Figure 5. The accuracy of the common variant caller Lofreq. The variant caller Lofreq was applied to the 10 $^5$ genomes/$\mu$l samples. A) An ROC of the accuracy of Lofreq using standard parameters. The specificity of the caller was scaled to account for the same number of tests as the DeepSNV algorithm. Lofreq provides quality scores instead of p values. These were used to set cutoffs for the ROC. B) A table summarizing the accuracy of the ROC A.
+
+\pagebreak
 
 ### Figure 6
 
@@ -737,6 +743,8 @@ dev.off()
 ```
 
 Figure 6. The accuracy of the frequency measurements for the known variants in the 10 $^5$ genomes/$\mu$l samples. The median of each distribution is shown as a black bar.
+
+\pagebreak
 
 ### Figure 7 
 
@@ -825,6 +833,8 @@ ggdraw() +
 ```
 
 Figure 7. The accuracy of DeepSNV at lower input levels. A) An ROC depicting the accuracy of our method when applied to the 10 $^4$ genomes/$\mu$l samples. B) A table summarizing the ROC in A at a p value threshold of 0.01. C) An ROC depicting the accuracy of our method when applied to the 10 $^3$ genomes/$\mu$l samples. B) A table summarizing the ROC in C at a p value threshold of 0.01.
+
+\pagebreak
 
 ### Figure 8
 
@@ -926,4 +936,4 @@ ggdraw() +
 
 ```
 
-Figure 8. The accucary of DeepSNV at lower input levels when run in duplicate. A subset of the 10 $^4$ genomes/$\mu$l samples were processed in duplicate to control for RT-PCR errors. A) The accuracy of our varant calling method at 10 $^4$ genomes/$\mu$l is greatly enhanced by requiring putative variants to be found in duplicate RT-PCR reactions. B) A table summarizing the ROC in C at a p value threshold of 0.01.
+Figure 8. The accuracy of DeepSNV at lower input levels when run in duplicate. A subset of the 10 $^4$ genomes/$\mu$l samples were processed in duplicate to control for RT-PCR errors. A) The accuracy of our variant calling method at 10 $^4$ genomes/$\mu$l is greatly enhanced by requiring putative variants to be found in duplicate RT-PCR reactions. B) A table summarizing the ROC in C at a p value threshold of 0.01.
