@@ -1,17 +1,25 @@
 ---
 title: "Results"
 author: "JT McCrone"
-date: "January 26, 2016"
+date: "Figure 1, 2016"
 output: pdf_document
 ---
 ```{r.message=F,echo=F}
 xamp_roc<-"figure 1"
+miseq<-"figure 2"
+Miseq<-"Figure 2"
 ```
 
 There are two major components to the accuracy of a variant caller. The first, sensitivity, describes how well a variant caller can identify variants that are known to be real. In other words what proportion of the true positives are found. A sensitivity of 1 indicates that all true positives are found. The second, specificity, measures how well a variant caller can correctly identify true negatives. For example, the influenza genome is roughly 13KB. There are 3  potential variant nucleotides at each position leaving a variant caller with about 39,000 potential variants that can be called. The vast majority of these potential variants will not be present in the starting population and are potential false positives. A variant caller that correctly identifies all potential false positives as true negatives has a specificity of 1. A perfect variant caller will have a sensitivity and specificity of 1. It will identify all true variants and only the true variants.
 
-There is an obvious trade off between sensitivity and specificity. It may be the case that a variant caller has near perfect sensitivity, and  can find all the true positives in a sample. However, if in the process it has low specificity and identifies many false positives down stream analysis will be confounded. Conversely, a variant caller may have perfect specificity and identify no false positives; however, if in process it has low sensitivity and identifies only a few true positives again it will have limited applications. 
+There is an obvious trade off between sensitivity and specificity. It may be the case that a variant caller has near perfect sensitivity, and  can find all the true positives in a sample. However, if in the process it has low specificity and identifies many false positives downstream analysis will be confounded. Conversely, a variant caller may have perfect specificity and identify no false positives; however, if in process it has low sensitivity and identifies only a few true positives again it will have limited applications. 
 
-The trade off between sensitivity and specificity can be represented as a receiver operator curve or ROC (`r xamp_roc`). An ROC plots the sensitivity of an assay along the y axis and 1-specificity along the x axis. To make a ROC for a variant caller one must test an assay on known data. The outcomes can then be stratified according to some metric that represents our belief that a given variant is real. Often this is a p value or quality score. Cut offs can then be set (`r xamp_roc` A) and because the true outcomes are known one can calculate the sensitivity and specificity. The curve is then made up of points representing the sensitivity and specificity of the variant caller at various cut offs. A perfect ROC in which all the true positives can be separated from all potential false positives is a right angle that follows the upper left perimeter of the plot and passes through the point (0,1)  (`r xamp_roc` B).
+The trade off between sensitivity and specificity can be represented as a receiver operator curve or ROC (`r xamp_roc`). An ROC plots the sensitivity of an assay along the y axis and 1-specificity along the x axis. To make a ROC for a variant caller one must test an assay on known data. The outcomes can then be stratified according to some metric that represents our belief that a given variant is real. Often this is a p value or quality score. Because the true are known, the senesitivity and specificity can be calculated at various cut offs (`r xamp_roc` A). The points are used to construct the curve (`r xamp_roc` B). A perfect ROC in which all the true positives can be separated from all potential false positives is a right angle that follows the upper left perimeter of the plot and passes through the point (0,1).
+
+DeepSNV has been previously benchmarked using small genomic regions involving minimal PCR. WSN33 and PR8, two lab strains that differ at roughly 500 positions, were mixed  (`r miseq` A) to ensure this algorith would be applicable to whole length influenza genomes that require an error prone RT-PCR reaction. Genomes were amplified separately in  segment specific RT-PCR reactions. This was done to avoid biases in amplification that may schew the down stream analysis. The products were mixed in a equimolar fashion to yield reconstituted DNA genomes. WSN33 was then serially diluted into PR8. These mixtures were sequenced using 2x250 reads on an Illumina Miseq and variants were called using DeepSNV. 
+Because these are defined mixtures and the 491 true variants are known it is possible to measure the accuracy of our sequencing pipeline. We can see from `r miseq` B that as our sensitivity decreases with the the frequency of the vriants. `r Miseq` C summarize the accuracy of the pipeline at a p value cut off of 0.01. It should be noted that although the specificity is well above 99% for all samples seqeunced out of the box, we were finding 40-80 false positives per sample which is unacceptable. The fact that there are over 39,000 potential false positives inflates the specificity measurements.
+
+Encouraged by these results we endeavored to determined the accruacy of our sequencing under conditions that might more accurately represent those found in patient derived samples.
+
 
 
