@@ -25,7 +25,7 @@ dd=4 # digits in tables
 ```
 
 ### Figure 1
-```{r, roc_skematic,fig.height=5,fig.width=3.4}
+```{r, roc_skematic,fig.height=4,fig.width=3.4}
 set.seed(42) # make the figures reproducible
 example<-data.frame(Condition=c(rep(x = c(TRUE,FALSE),each=20)),test=c(runif(20,-10,-4),runif(20,-6,0))) # Make a dataframe of T and F positives with random p values that favors a lower distribution for the TP
 ex.roc<-roc(example$Condition~example$test) # make an ROC based on this data
@@ -63,15 +63,24 @@ plot.ex<-function(spec1,spec2,roc.df,distribution){
   
  
  #plot the points and cut offs
- points.p<-ggplot(distribution,aes(x=1,y=test,fill=Condition))+geom_dotplot(binaxis = "y", stackdir = "center",dotsize = 1.5)+scale_fill_manual(values=c("white","black"),name="",breaks=c(T,F),labels=c("True Positive","False Positive"))+xlab("")+ylab("Log(p value)")+theme(axis.ticks = element_blank(), axis.text.x = element_blank(),axis.title.y = element_text(vjust=1.2),legend.position=c(0.8,0.6))+xlab("")
+ points.p<-ggplot(distribution,aes(x=1,y=test,fill=Condition))+geom_dotplot(binaxis = "y", stackdir = "center",dotsize = 1.5)+scale_fill_manual(values=c("white","black"),name="",breaks=c(T,F),labels=c("True Positive","False Positive"))+xlab("")+ylab("Log(p value)")+theme(axis.ticks = element_blank(), axis.text.x = element_blank(),axis.title.y = element_text(vjust=1.2),legend.position=c(0.9,0.65),legend.background = element_rect(fill = alpha("white",0)))+xlab("")
  
  points.p<-points.p+geom_hline(yintercept=output$threshold,
-                          size=1,lty=2,color=c("#e41a1c","#377eb8")) # these are the first 2 colors in set 1
+                          size=1,lty=2,color=c("#08519cff","#787878ff")) # these are the first 2 colors in set 1
   
- plot_grid(points.p, roc.p, labels=c("A", "B"), ncol = 1, nrow = 2)
+ggdraw() +
+  draw_plot(points.p, 0, .45, .8, 0.48) + #x y width height
+  draw_plot(roc.p, 0, 0, .8, 0.48) +
+  draw_plot_label(c("A", "B"), c(0.05, 0.05), c(1, 0.55), size = 15)
+
+ 
  
 }
 plot.ex(0.35,0.95,roc.df,example)
+
+pdf("../results/figures/roc.example.pdf",width=3.4,height=4)
+plot.ex(0.35,0.95,roc.df,example)
+dev.off()
 # pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.ex.pdf",width = 12,height = 8)
 # plot.ex(0.35,0.95,roc.df,example)
 # dev.off()
@@ -238,7 +247,7 @@ return(roc.table)
 
 
 ### tableGrob functions and settings #####
-tt1<-ttheme_minimal(colhead=list(fg_params=list(fontface=1,cex=0.75,fontfamily="serif")),core=list(fg_params=list(cex=0.75,fontfamily="serif")))
+tt1<-ttheme_minimal(colhead=list(fg_params=list(fontface=1,cex=0.75)),core=list(fg_params=list(cex=0.75)))#,fontfamily="serif")))
 make.table<-function(df,theme){
   tbl<-tableGrob(df,rows=NULL,theme=theme) # Make table
   tbl$widths <- unit(rep(1/ncol(tbl), ncol(tbl)), "npc")
@@ -271,7 +280,7 @@ make.table<-function(df,theme){
 
 
 ### Figure 2
-```{r,Miseq_out_of_the_box,fig.width=7,fig.height=5}
+```{r,Miseq_out_of_the_box,fig.width=3.4,fig.height=7}
 
 sum.df<-read.csv("../data/process/2014-5-30/one.sided/Variants/all.sum.csv",stringsAsFactors=F,comment.char = '#')
   
@@ -320,7 +329,7 @@ possible_tp<-length(tp)
 
 m.roc.df<-miseq.roc(sum.df,possible_tp,possible_vars)
 
-miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.5%","1.25%","0.63%","0.016%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position=c(1,.5))
+miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.5%","1.25%","0.63%","0.016%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
 
 #miseq.roc.p
 
@@ -335,7 +344,7 @@ m.roc.table<-miseq.roc.table(sum.df,0.01,possible_tp,possible_vars)
 
 
 #knitr::kable(m.roc.table)
-m.roc.table<-rename(m.roc.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))
+m.roc.table<-rename(m.roc.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True\nPositives","adj.specificity"="Specificity","FP"="False\nPositives"))
 
 m.roc.table$Frequency<-c("5.0%","2.5%","1.25%","0.63%","0.016%")
 m.roc.table$Sensitivity<-round(m.roc.table$Sensitivity,digits=dd)
@@ -360,19 +369,19 @@ title = element_blank())->miseq.setup # empty plot with setup png a background
 #plot_grid(miseq.setup,miseq.roc.p, tbl, labels=c("A", "B","C"), ncol = 3, nrow = 1)
 # Figure 2
 
-pdf("../results/figures/miseq1.pdf",width=7,height=5)
+pdf("../results/figures/miseq1.pdf",width=3.4,height=7)
 ggdraw() +
-  draw_plot(miseq.setup, 0.01, .1, 0.4, 0.8) + #x y width height
-  draw_plot(miseq.roc.p, 0.43, 0.42, 0.5, 0.51) +
-  draw_plot(tbl, 0.45, 0, 0.53, 0.47) +
-  draw_plot_label(c("A", "B", "C"), c(0.01, 0.42, 0.42), c(0.78, 0.95, 0.46), size = 15)
+  draw_plot(miseq.setup, 0.2, .66, .6, 0.33) + #x y width height
+  draw_plot(miseq.roc.p, 0.05, 0.33, .9, 0.33) +
+  draw_plot(tbl, 0.05, 0, .9, 0.33) +
+  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(0.95, 0.7, 0.35), size = 15)
 dev.off()
 
 ggdraw() +
-  draw_plot(miseq.setup, 0.01, .1, 0.4, 0.8) + #x y width height
-  draw_plot(miseq.roc.p, 0.43, 0.42, 0.5, 0.51) +
-  draw_plot(tbl, 0.45, 0, 0.53, 0.47) +
-  draw_plot_label(c("A", "B", "C"), c(0.01, 0.42, 0.42), c(0.78, 0.95, 0.46), size = 15)
+  draw_plot(miseq.setup, 0.2, .66, .6, 0.33) + #x y width height
+  draw_plot(miseq.roc.p, 0.05, 0.33, .9, 0.33) +
+  draw_plot(tbl, 0.05, 0, .9, 0.33) +
+  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(0.95, 0.7, 0.35), size = 15)
 
 
 #ggplot(subset(sum.df,p.val<0.01),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)+geom_hline(yintercept=c(63,188))
@@ -414,9 +423,9 @@ ggplot(subset(sum.df,p.val<0.01),aes(x=Phred,y=MapQ,color=category))+geom_point(
 
 ### Figure 3
 
-```{r,hiseq_roc,fig.width=7,fig.height=5}
+```{r,hiseq_roc,fig.width=3.4,fig.height=7}
 #rm(list = setdiff(ls(), lsf.str())) # remove all variables except the functions
-tt1<-ttheme_minimal(colhead=list(fg_params=list(fontface=1,cex=0.75,fontfamily="serif")),core=list(fg_params=list(cex=0.75,fontfamily="serif")))
+#tt1<-ttheme_minimal(colhead=list(fg_params=list(fontface=1,cex=0.75,fontfamily="serif")),core=list(fg_params=list(cex=0.75,fontfamily="serif")))
 
 
 sum.df<-read.csv("../data/process/2015-6-23/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#") # reading in the variants from the pipeline output
@@ -478,7 +487,7 @@ h.table.df<-hiseq.roc.table(sum.df,0.01,possible_tp,possible_vars)
 
 #knitr::kable(subset(h.table.df,gc==5))
 
-h.table.df<-rename(h.table.df,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))
+h.table.df<-rename(h.table.df,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True\nPositives","adj.specificity"="Specificity","FP"="False\nPositives"))
 
 h.table.df<-subset(h.table.df,gc==5,select=-c(gc))
 h.table.df$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
@@ -499,20 +508,19 @@ text = element_blank(),
 line = element_blank(),
 title = element_blank())->hiseq.setup 
 
-pdf("../results/figures/hiseq1.pdf",width=7,height=5)
+pdf("../results/figures/hiseq1.pdf",width=3.4,height=7)
 ggdraw() +
-  draw_plot(hiseq.setup, 0, .1, 0.4, 0.8) + #x y width height
-  draw_plot(Hiseq.roc, 0.43, 0.43, 0.5, 0.5) +
-  draw_plot(tbl, 0.45, 0, 0.53, 0.47) +
-  draw_plot_label(c("A", "B", "C"), c(0.05, 0.42, 0.42), c(0.95, 0.95, 0.46), size = 15)
+  draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
+  draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
+  draw_plot(tbl, 0.05, 0, .9, 0.33) +
+  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
 dev.off()
 
 ggdraw() +
-  draw_plot(hiseq.setup, 0, .1, 0.4, 0.8) + #x y width height
-  draw_plot(Hiseq.roc, 0.43, 0.43, 0.5, 0.5) +
-  draw_plot(tbl, 0.45, 0, 0.53, 0.47) +
-  draw_plot_label(c("A", "B", "C"), c(0.05, 0.42, 0.42), c(0.95, 0.95, 0.46), size = 15)
-
+  draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
+  draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
+  draw_plot(tbl, 0.05, 0, .9, 0.33) +
+  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
 # 
 # knitr::kable(subset(h.table.df,gc==4))
 ```
@@ -525,7 +533,7 @@ Figure 3. DeepSNV accuracy patient sample conditions A) 20 known single point mu
 ```{r, phred_mapq filter}
 sig.df<-subset(sum.df,p.val<0.01)
 
-mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(size=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_hue(name="",labels=c("False posivite","True positive"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ")+theme(legend.position="top") 
+mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(size=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_manual(name="",labels=c("False posivite","True positive"),values=c("#787878ff","#08519cff"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ")+theme(legend.position="top") 
 
 #mapq_phred.normal
 
@@ -563,7 +571,7 @@ cut.df.all$p.val[cut.df.all$MapQ<30 | cut.df.all$Phred<35]<-1
 # knitr::kable(subset(h.cut.table,gc==5))
 ```
 
-```{r,read_pos,fig.width=7,fig.height=6}
+```{r,read_pos,fig.width=3.4,fig.height=9}
 # ggplot(sig.df,aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 # ggplot(subset(sig.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 # 
@@ -576,7 +584,7 @@ sig.cut.df<-subset(cut.df,p.val<0.01)
 # ggplot(subset(sig.cut.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 
 
-read.pos<-ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,fill=category))+geom_histogram(position='dodge')+scale_fill_hue(name="",labels=c("False positive","True positive"))+xlab("Average position on read")+ylab("Number of variants")+theme(legend.position="top")
+read.pos<-ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,fill=category))+geom_histogram(position='dodge')+scale_fill_manual(name="",labels=c("False positive","True positive"),values=c("#787878ff","#08519cff"))+xlab("Average position on read")+ylab("Number of variants")+theme(legend.position="top")
 # read.pos
 # pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/read.pos.pdf")
 # read.pos
@@ -614,28 +622,30 @@ h.cut.read.table<-hiseq.roc.table(cut.read.df.all,0.01,possible_tp,possible_vars
 #knitr::kable(subset(h.cut.read.table,gc==5))
 
 h.cut.read.table.5<-subset(h.cut.read.table,gc==5,select=-c(gc))
-rename(h.cut.read.table.5,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.5
+rename(h.cut.read.table.5,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True\nPositives","adj.specificity"="Specificity","FP"="False\nPositives"))->h.cut.read.table.5
 h.cut.read.table.5$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
 h.cut.read.table.5$Sensitivity<-round(h.cut.read.table.5$Sensitivity,digits=dd)
 h.cut.read.table.5$Specificity<-round(h.cut.read.table.5$Specificity,digits=dd)
 
+h.cut.read.table.5$Specificity[h.cut.read.table.5$Specificity>0.9999]<-">0.9999"
+
 tbl<-make.table(h.cut.read.table.5,tt1) # Make table
 
-pdf("../results/figures/figure4.pdf",width=7,height=6)
+pdf("../results/figures/figure4.pdf",width=3.4,height=9)
 ggdraw() +
-  draw_plot(mapq_phred.normal, 0, .5, .5, .48) + 
-  draw_plot(read.pos, .5, .5, .5, .48) +
-  draw_plot(read.roc, 0, 0, 0.42, .5) +
-  draw_plot(tbl, 0.47, 0, 0.52, 0.47) +
-  draw_plot_label(c("A", "B", "C","D"), c(0, 0.5, 0,0.5), c(0.95, 0.95, 0.55,0.45), size = 15)
+  draw_plot(mapq_phred.normal,0.03, 0.77, .85, 0.23) + 
+  draw_plot(read.pos, 0.03, .53, .85, .25) +
+  draw_plot(read.roc, 0.03, 0.23, 0.85, .3) +
+  draw_plot(tbl,   0.025, 0, 0.95, .25) +
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(1, 0.78, 0.55,0.25), size = 15)
 dev.off()
 
 ggdraw() +
-  draw_plot(mapq_phred.normal, 0, .5, .5, .48) + 
-  draw_plot(read.pos, .5, .5, .5, .48) +
-  draw_plot(read.roc, 0, 0, 0.42, .5) +
-  draw_plot(tbl, 0.47, 0, 0.52, 0.47) +
-  draw_plot_label(c("A", "B", "C","D"), c(0, 0.5, 0,0.5), c(0.95, 0.95, 0.55,0.45), size = 15)
+  draw_plot(mapq_phred.normal,0.03, 0.77, .85, 0.23) + 
+  draw_plot(read.pos, 0.03, .53, .85, .25) +
+  draw_plot(read.roc, 0.03, 0.23, 0.85, .3) +
+  draw_plot(tbl,   0.025, 0, 0.95, .25) +
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(1, 0.78, 0.55,0.25), size = 15)
 ```
 
 Figure 4. Investigating the quality of variants in the the 10 $^5$ genomes/$\mu$l samples. A) All called variants from the 10 $^5$ genomes/$\mu$l samples with p<0.01 stratified by the mean mapping quality of the reads containing the variant and the mean Phred scores of the variant bases. Dashed lines indicate  common cutoffs of 20 and 30 for mapping quality and Phred respectively. B) A histogram of all called variants from the 10 $^5$ genomes/$\mu$l samples with p<0.01 binned by the average position of the variant relative to the Hiseq reads on which it is found. C) An ROC of the accuracy of the variant caller when the following quality cut offs are applied : mean mapping quality of 30, mean Phred of 35, and an average read position between 32 and 94 (the middle 50% of the read). D) A table summarizing the ROC in C at a p value threshold of 0.01.
@@ -677,14 +687,14 @@ lofreq.table<-lofreq.table[order(lofreq.table$exp.freq,decreasing = T),]
 
 #knitr::kable(subset(lofreq.table,gc==5,select=c(exp.freq,TP,FP)))
 lofreq.table<-head(subset(lofreq.table,gc==5,select=-c(gc,Id)),n=-1) # don't need the 0.1% sample
-rename(lofreq.table,c("exp.freq"="Frequency","TP"="True Positives","FP"="False Positives"))->lofreq.table
+rename(lofreq.table,c("exp.freq"="Frequency","TP"="True\nPositives","FP"="False\nPositives"))->lofreq.table
 lofreq.table$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
 lofreq.table$Sensitivity<-round(lofreq.table$Sensitivity,digits=dd)
 lofreq.table$Specificity<-round(lofreq.table$Specificity,digits=dd)
-
+lofreq.table<-subset(lofreq.table,select=c("Frequency","Sensitivity","True\nPositives","Specificity","False\nPositives"))
 tt2<-ttheme_minimal(colhead=list(fg_params=list(fontface=1,cex=0.65,fontfamily="serif")),core=list(fg_params=list(cex=0.65,fontfamily="serif")))
 
-tbl<-make.table(lofreq.table,tt2) # Make table
+tbl<-make.table(lofreq.table,tt1) # Make table
 
 # ggdraw() +
 #   draw_plot(lofreq.roc.p, 0, .5, 0.5, .5) +
@@ -728,10 +738,10 @@ ac_freq<-ggplot(subset(cut.read.sig.df,category==T & gc=="5"),aes(x=exp.freq,y=f
 
 ac_freq<-ac_freq+geom_dotplot(binaxis = "y", stackdir = "center",dotsize=1)+scale_fill_manual(values=rhg_cols)
 
-ac_freq<-ac_freq+scale_y_log10(limits=c(0.001,0.1),breaks=c(0.001,0.002,0.005,0.01,0.02,0.05,0.1),label=c("0.1%","0.2%","0.5%","1.0%","2.0%","5.0%","10%"))#+theme(axis.text.y = element_text(colour = c("red","chartreuse4","black","chocolate2","azure4","blue","black"),face="bold"))
-ac_freq<-ac_freq+scale_x_log10(limits=c(0.001,0.1),breaks=c(0.001,0.002,0.005,0.01,0.02,0.050,0.1),label=c("0.1%","0.2%","0.5%","1.0%","2.0%","5.0%","10%"))#+theme(axis.text.x = element_text(colour = c("red","chartreuse4","black","chocolate2","azure4","blue","black"),face="bold"))
+ac_freq<-ac_freq+scale_y_log10(limits=c(0.001,0.1),breaks=c(0.001,0.002,0.005,0.01,0.02,0.05,0.1))#+theme(axis.text.y = element_text(colour = c("red","chartreuse4","black","chocolate2","azure4","blue","black"),face="bold"))
+ac_freq<-ac_freq+scale_x_log10(limits=c(0.001,0.1),breaks=c(0.001,0.002,0.005,0.01,0.02,0.050,0.1))#+theme(axis.text.x = element_text(colour = c("red","chartreuse4","black","chocolate2","azure4","blue","black"),face="bold"))
 ac_freq<-ac_freq+geom_abline(intercept = 0, slope = 1,linetype=2,size=1)
-ac_freq<-ac_freq+xlab("Expected Frequency")+ylab("Measured Frequency")+theme(legend.position="none")
+ac_freq<-ac_freq+xlab("Expected Frequency")+ylab("Measured Frequency")+theme(legend.position="none",axis.text.x = element_text(angle = 45, hjust = 1))
 
 ac_freq<-ac_freq+geom_point(data=subset(medians,gc=="5"),mapping=aes(x=exp.freq,y=median),shape=95,size=20)
 ac_freq
@@ -748,7 +758,7 @@ Figure 6. The accuracy of the frequency measurements for the known variants in t
 
 ### Figure 7 
 
-```{r,roc_lower_inputs4,fig.width=7,fig.height=5}
+```{r,roc_lower_inputs4,fig.width=3.4,fig.height=9}
 
 x<-ddply(h.cut.read.df,~samp,fill_in_plots)
 x<-subset(x,gc==4)
@@ -798,7 +808,7 @@ roc.3$layout$clip[roc.3$layout$name == "panel"] <- "off"
 
 
 h.cut.read.table.4<-subset(h.cut.read.table,gc==4,select=-c(gc))
-rename(h.cut.read.table.4,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.4
+rename(h.cut.read.table.4,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True\nPositives","adj.specificity"="Specificity","FP"="False\nPositives"))->h.cut.read.table.4
 h.cut.read.table.4$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
 h.cut.read.table.4$Sensitivity<-round(h.cut.read.table.4$Sensitivity,digits=dd)
 h.cut.read.table.4$Specificity<-round(h.cut.read.table.4$Specificity,digits=dd)
@@ -807,29 +817,28 @@ tbl.4<-make.table(h.cut.read.table.4,tt1) # Make table
 
 
 h.cut.read.table.3<-subset(h.cut.read.table,gc==3,select=-c(gc))
-rename(h.cut.read.table.3,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->h.cut.read.table.3
+rename(h.cut.read.table.3,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True\nPositives","adj.specificity"="Specificity","FP"="False\nPositives"))->h.cut.read.table.3
 h.cut.read.table.3$Frequency<-c("5.0%","2.0%","1.0%")
 h.cut.read.table.3$Sensitivity<-round(h.cut.read.table.3$Sensitivity,digits=dd)
 h.cut.read.table.3$Specificity<-round(h.cut.read.table.3$Specificity,digits=dd)
 
 tbl.3<-make.table(h.cut.read.table.3,tt1) # Make table
 
-pdf("../results/figures/lower.pdf",width=7,height=5)
+pdf("../results/figures/lower.pdf",width=3.4,height=9)
 ggdraw() +
-  draw_plot(roc.4, 0, .48, .43, .5) +
-  draw_plot(tbl.4, 0.47, 0.55, 0.52, 0.47) +
-  draw_plot(roc.3, 0, 0, 0.43, .5) +
-  draw_plot(tbl.3, 0.47, 0, 0.52, 0.47)+
-  draw_plot_label(c("A", "B", "C","D"), c(0, 0.5, 0,0.5), c(1, 1, 0.5,0.5), size = 15)
+  draw_plot(roc.4,0.03, 0.69, .85, 0.25) + 
+  draw_plot(tbl.4, 0.025, .47,  0.95, .25) +
+  draw_plot(roc.3, 0.03, 0.22, 0.85, .25) +
+  draw_plot(tbl.3,   0.025, 0, 0.95, .25) +
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(0.97, 0.73, 0.5,0.23), size = 15)
 dev.off()
 
 ggdraw() +
-  draw_plot(roc.4, 0, .48, .43, .5) +
-  draw_plot(tbl.4, 0.47, 0.55, 0.52, 0.47) +
-  draw_plot(roc.3, 0, 0, 0.43, .5) +
-  draw_plot(tbl.3, 0.47, 0, 0.52, 0.47)+
-  draw_plot_label(c("A", "B", "C","D"), c(0, 0.5, 0,0.5), c(1, 1, 0.5,0.5), size = 15)
-
+  draw_plot(roc.4,0.03, 0.69, .85, 0.25) + 
+  draw_plot(tbl.4, 0.025, .47,  0.95, .25) +
+  draw_plot(roc.3, 0.03, 0.22, 0.85, .25) +
+  draw_plot(tbl.3,   0.025, 0, 0.95, .25) +
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(0.97, 0.73, 0.5,0.23), size = 15)
 ```
 
 Figure 7. The accuracy of DeepSNV at lower input levels. A) An ROC depicting the accuracy of our method when applied to the 10 $^4$ genomes/$\mu$l samples. B) A table summarizing the accuracy at 10 $^4$ genomes/$\mu$l with a  p value threshold of 0.01. C) An ROC depicting the accuracy of our method when applied to the 10 $^3$ genomes/$\mu$l samples. B) A table summarizing the accuracy at 10 $^3$ genomes/$\mu$l with a  p value threshold of 0.01
