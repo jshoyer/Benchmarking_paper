@@ -1,8 +1,8 @@
 ---
 title: "Results"
 author: "JT McCrone"
-date: "Febuary 8, 2016"
-output: pdf_document
+date: "Febuary 9, 2016"
+output: word_document
 ---
 ```{r.message=F,echo=F}
 xamp_roc<-"figure 1"
