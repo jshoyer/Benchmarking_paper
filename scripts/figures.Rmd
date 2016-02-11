@@ -1,7 +1,7 @@
 ---
 title: "Figures"
 author: "JT McCrone"
-date: "January 25, 2015"
+date: "February 11, 2015"
 output: pdf_document
 ---
 
@@ -23,7 +23,7 @@ rhg_cols<-c("#08519cff","#3182b4ff","#6baed6ff","#b1bdc5ff","#787878ff")
 
 dd=4 # digits in tables
 ```
-
+ 
 ### Figure 1
 ```{r, roc_skematic,fig.height=4,fig.width=3.4}
 set.seed(42) # make the figures reproducible
@@ -57,7 +57,7 @@ plot.ex<-function(spec1,spec2,roc.df,distribution){
   
   #plot the roc
   roc.p<-ggplot(roc.df,aes(x=1-specificity,y=sensitivity))+geom_step(color="black",size=1.5)+xlab("1-Specificity")+ylab("Sensitivity")+theme(axis.title.y=element_text(vjust=1))
-  roc.p<-roc.p+geom_line(data=lines,aes(x=spec,y=sense,color=as.factor(group)),size=c(1),lty=c(2))+scale_color_brewer(palette="Set1")
+  roc.p<-roc.p+geom_line(data=lines,aes(x=spec,y=sense,group=as.factor(group),color=rep(c("#08519cff","#787878ff"),times=3)),size=c(1),lty=c(2))+scale_color_manual(values=c("#08519cff","#787878ff"))
     
  roc.p<-roc.p+theme(axis.title.y = element_text(vjust=1.2))+theme(axis.title.x = element_text(vjust=0))+theme(legend.position="none")
   
@@ -848,21 +848,21 @@ Figure 7. The accuracy of DeepSNV at lower input levels. A) An ROC depicting the
 ### Figure 8
 
 ```{r,duplicates,fig.height=5,fig.width=3.4}
-sum.df<-read.csv("../data/process/2015-11-14/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#")
+dup.df<-read.csv("../data/process/2015-11-14/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#")
 #sum.df<-read.csv("~/Box Sync/Lab_work/NGS/Benchmarking/data/2015-11-14/all.sum.csv")
 pat<-"([0-9]+)_([0-9]+)"
-mutate(sum.df, exp.freq = sub(pat,"\\1",Id),
+mutate(dup.df, exp.freq = sub(pat,"\\1",Id),
        dup = as.numeric(sub(pat,"\\2",Id)),
-)-> sum.df
+)-> dup.df
 
-sum.df<-subset(sum.df,Id!="PC") # remove the plasmid control that was run
-mutate(sum.df,Id=paste(4,exp.freq,sep="_"),exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq)/1000,no = as.numeric(exp.freq)/100))->sum.df
+dup.df<-subset(dup.df,Id!="PC") # remove the plasmid control that was run
+mutate(dup.df,Id=paste(4,exp.freq,sep="_"),exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq)/1000,no = as.numeric(exp.freq)/100))->dup.df
 
 
-sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
-sum.df$category[sum.df$mutation %in% wt_mut]<-"wt"
+dup.df<-mutate(dup.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
+dup.df$category[dup.df$mutation %in% wt_mut]<-"wt"
 
-cut.df<-subset(sum.df,Phred>35 & MapQ>30 & Read_pos<94 & Read_pos>32)
+cut.df<-subset(dup.df,Phred>35 & MapQ>30 & Read_pos<94 & Read_pos>32)
 
 dups<-ddply(cut.df,~exp.freq+mutation,summarize,freq1=freq.var[1],freq2=freq.var[2],p.val1=p.val[1],p.val2=p.val[2],category=category[1],Id=Id[1])
 dups$freq2[is.na(dups$freq2)]<-0
@@ -946,3 +946,105 @@ ggdraw() +
 ```
 
 Figure 8. The accuracy of DeepSNV at lower input levels when run in duplicate. A subset of the 10 $^4$ genomes/$\mu$l samples were processed in duplicate to control for RT-PCR errors. A) An ROC of  10 $^4$ genomes/$\mu$l samples processed in duplicate. A variant was required to be found in both duplicates to be considered. B) A table summarizing the accuracy when applied to duplicate samples with 10 $^4$ genomes/$\mu$l input, p<0.01. 
+
+\pagebreak
+
+### Table 1
+
+
+Richness
+Inverse Simpsons D ( without replacement)
+Shannon Entropy
+For these I'm assuming all varaints are independent
+
+```{r}
+perfect<-data.frame(mutation=rep(true_snv$mutant,times=4),freq.var=rep(c(0.05,0.02,0.01,0.005),each=20))
+dups<-subset(dups,p.val<0.01)
+dups<-mutate(dups,freq.var=pmax(freq1,freq2))
+
+rich<-function(x){
+  dim(x)[1]  
+}
+
+H<-function(x){
+  p=x$freq.var*log(x$freq.var)
+  -sum(p)
+}
+
+D<-function(x){
+  p=(x$freq.var)^2
+  1/sum(p)
+}
+
+euc<-function(x,ref){
+  x$Id="test"
+  ref$Id="ref"
+  all<-rbind(subset(x,select=c(mutation,freq.var,Id)),ref)
+  tab<-as.matrix(subset(dcast(all,mutation ~ Id, value.var = "freq.var"),select=-c(mutation)))
+  tab[is.na(tab)]<-0
+  as.dist(dist(tab))
+}
+get_data<-function(x,setting){
+  if(length(unique(x$freq.var))==1){
+    exp.freq=unique(x$freq.var)
+  }else{
+  exp.freq=unique(x$exp.freq)
+  }
+  out<-data.frame(Richness=rich(x), Entropy=H(x),Simpson=D(x))#,dist=euc(x,subset(perfect,freq.var==exp.freq))[1])
+  rownames(out)<-setting
+  return(t(out))
+}
+tabulate<-function(input,freq){
+get_data(subset(perfect,freq.var==freq),"Perfect")->perf
+get_data(subset(sum.df,gc==input & exp.freq==freq),"DeepSNV")->deepSNV
+get_data(subset(lofreq.df,gc==input & exp.freq==freq),"Lofreq")->lo
+get_data(subset(cut.read.sig.df,gc==input & exp.freq==freq),"DeepSNV Final")->deepSNV.f
+knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f),digits = 2)
+}
+tabulate.4<-function(input,freq){
+get_data(subset(perfect,freq.var==freq),"Perfect")->perf
+get_data(subset(sum.df,gc==input & exp.freq==freq),"DeepSNV")->deepSNV
+get_data(subset(lofreq.df,gc==input & exp.freq==freq),"Lofreq")->lo
+get_data(subset(cut.read.sig.df,gc==input & exp.freq==freq),"DeepSNV Final")->deepSNV.f
+get_data(subset(dups,exp.freq==freq),"DeepSNV duplicates")->deepSNV.d
+
+knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f,deepSNV.d),digits = 2)
+}
+
+```
+
+$10^5$ 5%
+
+```{r}
+tabulate(5,0.05)
+```
+
+$10^5$ 1%
+
+```{r}
+tabulate(5,0.01)
+```
+
+$10^5$ 0.5%
+
+```{r}
+tabulate(5,0.005)
+```
+
+$10^4$ 5%
+
+```{r}
+tabulate.4(4,0.05)
+```
+
+$10^4$ 1%
+
+```{r}
+tabulate.4(4,0.01)
+```
+
+$10^4$ 0.5%
+
+```{r}
+tabulate.4(4,0.005)
+```
