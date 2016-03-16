@@ -1,0 +1,169 @@
+---
+output: 
+  word_document:
+    reference_docx: style.docx
+
+
+---
+
+```{r message=F,echo=FALSE,cache=T,results='hide',warning=FALSE}
+xamp_roc<-"figure 1"
+Xamp_roc<-"Figure 1"
+miseq<-"figure 2"
+Miseq<-"Figure 2"
+hiseq<-"figure 3"
+Hiseq<-"Figure 3"
+qual<-"figure 4"
+Qual<-"Figure 4"
+freq<-"figure 5"
+Freq<-"Figure 5"
+lofreq<-"Figure 6"
+Lofreq<-"figure 6"
+lower<-"figure 7"
+Lower<-"Figure 7"
+dups<-"figure 8"
+Dups<- "Figure 8"
+Table<-"Table 1"
+
+require("Biostrings")
+require(plyr)
+ 
+knitr::knit("../scripts/figures.Rmd",tangle = T)
+source("./figures.R")
+#this is so the cache resets
+# 
+# bibliography: bib.bib
+# csl: journal-of-virology.csl
+
+```
+
+```{r,message=F,echo=FALSE,cache=T}
+
+miseq_vars<-format(miseq_vars,scientific=F)
+miseq_kb<-format(miseq_kb*1000,scientific = F)
+
+hiseq_vars<-format(hiseq_vars,scientific=F)
+hiseq_kb<-format(hiseq_kb*1000,scientific = F)
+
+st_error="XXX"
+false_p_phred<-round(false_p_phred,digits=1)
+corr_coef<-round(corr_coef,digits=4)
+mean_fold<-round(mean_fold,digits=2)*100
+read_depth<-"a lot"
+#print(interest)
+#csl: journal-of-virology.csl
+```
+
+```{r,echo=F}
+ ####################### To do List #######################
+# Is it clear that I'm only talking about the 10^5 samples until we get to the lower input section?
+
+# verfy # of Tp in 0.5% 10^5 sample - done
+
+# verity that the possible variants in each case accounts for the wt and carry over variants - done
+
+#Mapq exploration - concordant vs nonconcordant pairs
+
+# add mfe raw data to repo. currently pulls data from desktop directory.
+```
+
+
+##Introduction
+
+The advent of next generation sequencing (NGS) is revolutionizing the study of viral evolution and molecular epidemiology through high-throughput measures of intrahost diversity. Until recently investigations of viral diversity were limited by labor intensive sequencing approaches; however, it is now feasible to sequence patient-derived samples at sufficient read depth to detect rare single nucleotide variants (SNV) (cite examples?). The high-throughput, cost-effective nature of NGS has lead to an explosion of studies that quantify viral diversity within and between hosts (cite examples?). Given the increasing contribution of NGS to the field of virology it is important to reflect on the accuracy of these methods and the controls that are needed to ensure robust conclusions.
+
+
+Because next generation sequencing of viral populations often produces tens of thousands of reads per genomic position, the sensitivity of these approaches has been assumed to be quite robust (cite). However, patient derived samples often differ in input titer by orders of magnitude, and this variability can have drastic impacts on the sensitivity of detecting rare events. Furthermore, some library preparations result in variable sequencing coverage both within and between samples. These sources of ascertainment bias are often  overlooked in NGS based studies of viral diversity.
+
+The specificity of NGS is another factor to consider when designing an experiment using patient-derived samples. Each sequencing platform has inherent error profiles (cite), and sample collection, target amplification, and library preparation are additional processes whereby errors can be introduced and propagated. The next generation sequencing of viral populations, in particular those of RNA viruses, is error prone, and these errors must be accounted for to ensure accurate secondary analysis.
+
+Many sample preparation pipelines have been developed to control for errors in NGS based studies of RNA virus populations; however, each approach has its own caveats that ultimately limit its application. For example, Cirseq is an ingenious approach in which  template RNA is sheared and circularized prior to reverse transcription  [@Acevedo:2014ej]. Rolling circle cDNA synthesis produces tandem reads, generating a consensus sequence for each RNA fragment. While this method is likely to be highly sensitive for rare variant detection and can control for reverse transcription, PCR, and sequencing errors, the requirement for a large and relatively pure population of viral RNA limits its applicability to patient derived samples [@Acevedo:2014df].
+
+"Primer Id" based methods, on the other hand, require less input and target sequencing to the viral genome. These methods use bar-coded primers to construct consensus sequences for each cDNA template and can control for PCR and sequencing errors  [@Jabara:2011eo]. Primer Id based methods require each bar code be physically attached to a PCR product and are most easily applied to a small targeted regions of the genome. As such, they have limited application in whole genome sequencing.
+
+An adapted form of sequence independent single primer amplification (SISPA) is an alternative approach that allows for whole genome sequencing and controls for errors propagated during library preparation [@Djikeng:2008cd]. In this method RT-PCR products are sheared and tagged with bar-coded random primers in a klenow reaction, prior to library preparation. SISPA controls for any errors that may arise during the library amplification and controls for PCR biases. This method has been used in conjunction with statistical algorithms to control for accuracy in studies of intrahost influenza diversity (cite). However, the bar-coding reaction used in SISPA is biased and results in uneven coverage and sensitivity across the genome  [@Rosseel:2013dn]. 
+
+
+Given the above limitations, many statistical approaches have been developed to distinguish true variants from sequencing errors [@Gerstung:1js; @Isakov:2015gq; @Wilm:2012br; @Macalalad:2012fx; @Koboldt:2009dk]. In general, these algorithms calculate base specific error rates from various metrics including but not limited to: mapping quality (MapQ), base quality (Phred), strand bias, and sequence context. True variants are identified as those with frequencies exceeding the expected error rate according to some predetermined statistical test. Despite being employed in many NGS based studies of viral diversity (cite?), few of these algorithms have been benchmarked using defined viral populations, and to our knowledge none have been tested under conditions that mimic those found in patient-derived samples. The accuracy of such algorithms in the context of NGS studies of patient-derived viral populations is not known.
+
+Here, we use defined populations of Influenza A and variable input titers to indirectly determine the accuracy of rare variant detection in patient-derived samples. We highlight the challenges that accompany NGS based studies of viral diversity and include a few means for improved the accuracy. This work exemplifies the controls that should be run prior to any NGS based study of viral populations and provides a comprehensive data set for benchmarking other pipelines.
+
+
+##Results
+
+The ability to reliably distinguish true from false single nucleotide variants (SNV) is integral to accurate NGS based studies of viral diversity. The accuracy of any SNV calling pipeline can be described in terms of its sensitivity and specificity. Sensitivity is the proportion of true variants that are properly identified; while, specificity is the proportion of true negatives that are properly identified. A closely related concept is the false positive rate, which is 1-specificity, and gives the ratio of false positive variants to true negatives. A sensitivity and specificity of 1 describe perfect accuracy in which all the true variants are found and only true variants are found.
+
+There is an obvious trade off between sensitivity and specificity. Improved sensitivity often requires less stringent criteria in variant calling which reduces specificity. Conversely, increased stringency can improve specificity but often reduces sensitivity. This relationship can be visualized using a receiver operating characteristic (ROC) curve (`r Xamp_roc`). An ROC curve plots the sensitivity of an assay along the y axis and 1-specificity along the x axis. A variant calling pipeline must be tested against known data in order to construct an ROC curve. The outcomes can then be stratified according to a metric that quantifies the probability that a given variant is real, often a p value or quality score. In a controlled benchmarking experiment, all true variants are known, and the sensitivity and specificity can be calculated at different cut-offs (`r Xamp_roc`A). These points are then used to construct the curve (`r Xamp_roc`B). A perfect ROC curve in which all the true positives can be separated from all false positives is a right angle that follows the upper left perimeter of the plot.
+
+
+###Initial accuracy
+
+A comprehensive comparison of SNV calling approaches is beyond the scope of this work. Instead, we robustly benchmark one variant caller, DeepSNV, and highlight approaches for improving its accuracy. In doing so we demonstrate the importance of robustly benchmarking any variant calling method under the experimental conditions to which it is being applied. 
+ 
+DeepSNV is a variant calling algorithm that uses a clonal, plasmid-derived, control to estimate local error rates across the genome [@Gerstung:1js]. Because it is clonal, the sequence of the control is known with a high degree of confidence, and any nonconsensus base is indicative of an error. Additionally, the control and experimental samples are processed together and are assumed to have identical noise characteristics. DeepSNV then applies a hierarchical binomial model at each genomic position and identifies true variants as those with frequencies significantly above the noise found in the plasmid control. Like many variant calling methods, the accuracy of DeepSNV was initially determined using samples that required minimal PCR amplification. However, the accuracy has not been tested when applied to whole genome sequencing of a viral population amplified by reverse transcription PCR (RT-PCR). 
+
+In our first benchmarking data set we created defined mixtures of two influenza strains,WSN33 and PR8. We plaque purified and expanded WSN33 and PR8 populations. Complementary DNA from both viruses were mixed serially such that WSN33 cDNA was present at frequencies of 5, 2.5, 1.25, 0.63 and 0.16\% (`r Miseq`A). These viruses differ at 491 positions (primer sites used in RT-PCR were excluded from analysis), providing 491 true positives in each dilution. On plasmids subjected to limited PCR, DeepSNV identified known variants at 0.1\% frequency with a sensitivity of 0.860 and  specificity of 1.0 [@Gerstung:1js]. Under our experimental conditions and with a slightly more stringent p value (p=0.01 vs. p=0.05) we found a moderate reduction in sensitivity  (0.830 for variants at 0.63\% and 0.14 for variants at 0.16\%). The specificity was above 0.998 in all dilutions. While the drop in specificity appears small, a false positive rate of 0.002 corresponds to 78 false positives when applied across the `r miseq_vars` potential variants present in the `r miseq_kb` bp of the influenza genome we analyzed.
+
+###An experimental intrahost population
+
+Although our first benchmarking experiment validated our ability to accurately detect rare variants in influenza populations, the experiment was run under relatively artificial conditions. Patient-derived populations are typically less divergent than WSN33 and PR8 (cite?), and the number of viral genomes in patient samples is much lower than in cell-culture derived populations (data not shown). To mimic these conditions, we generated 20 viral clones, each with a single point mutation in the WSN33 background. We sequenced these mutants on the Illumina Miseq platform to account for any additional mutations that might have arisen between transfection and the passage 1 stock. Four additional mutations were found above 1% frequency (frequencies 1.2%-3.7%). We also determined the genome copy number of each stock using quantitative RT-PCR. We then mixed equal genome equivalents of these 20 viruses, to generate an artificial population with $10^5$ copies per microliter with each mutation  present at 5\% frequency. This population was serially diluted into a stock of WSN33, generating artificial populations with all 20 mutations present a 2, 1, 0.5, 0.2, and 0.1\% frequency (`r Hiseq` A). We then serially diluted these populations into basal media to obtain mixtures with lower nucleic acid input. The range ($10^3-10^5$ copies per microliter) matches the inputs typically found in patient-derived samples (data not shown). We sequenced the samples on the Illumina Hiseq platform, and called variants using DeepSNV. We also processed and sequenced the WSN33 stock in duplicate to control for any mutations in the viral dilutent. 
+
+The 20 mutations present in our initial viral mixture were the only true positives considered in our analysis. Any SNV that was present in both duplicates of the wild type stock or in one of the viral clones (>1.0%) was masked and  considered neither a true positive nor a true negative. 
+
+In these populations with lower diversity and input titer, we maintained greater than 0.85 sensitivity for SNV at 1% frequency or higher. Our sensitivity was considerably lower for variants at or below 0.5% frequency (`r Hiseq`B and C). We observed an average read depth of over 10,000 reads/bp in these samples. Therefore, the drop in sensitivity is most likely due to the 1,000-fold decrease in nucleaic acid concentration compared to the first data set and the fact that library preparation requires a number of sampling steps that may limit detection. During library preparation, a disproportionate amount of the 2.0\% sample was lost compared to the others, which likely accounts for the reduced sensitivity relative to the 1.0\% sample. 
+
+The specificity was greater than 0.99 in all the samples with $10^5$ genomes per microliter. As above, while 0.99 specificity appears robust, a false positive rate of 0.01 results in over 200 false positive variants when applied to the `r hiseq_vars` potential variants in the influenza genome. The false positives outnumber the true positives by 100-fold in this population with realistic diversity and input. We were able to increased our specificity  by applying a more stringent p-value cutoff. However, as shown by the ROC curves in `r Hiseq`, this move towards the y axis markedly reduces sensitivity. Our data demonstrate that with moderate concentrations of input nucleic acid, even statistically significant p-values from a robust variant caller are not sufficient to accurately separate true from false positive variants.
+
+###Additional filtering criteria
+
+Many next generation sequencing studies utilize mapping quality (MapQ) and/or base quality (Phred) cut-offs to ensure that only the highest caliber sequencing data is used to call variants. Mapping quality measures the probability that a given read is mapped to the correct position in the genome while base quality estimates the likelihood that the base call by the sequencer is correct. In the above analysis we masked bases that had a Phred  score less than 30 (0.001 probability of being incorrect) and did not apply any MapQ cut-offs. In an initial analysis, we applied frequently employed cut-offs such as a MapQ of 20 and a Phred of 30 to our data. These criteria were unable to distinguish true from false positives in our $10^5$ samples (`r Qual`A) and indicate that many false positives occur on well mapped reads with high quality base calls.
+
+We further parsed our false variant calls by locating them within individual sequencing reads. It is well known that sequence quality drops near the end of a read (cite?), and we found that our false positives clustered at the termini of our paired end reads (`r Qual`B). The average Phred score of these false positives was `r false_p_phred`, further demonstrating that filtering on quality score alone is insufficient. In contrast, true positives were uniformly distributed across the reads resulting in an average read position near the middle of the read. 
+
+
+Based on these data we applied a number of empirically determined cut-offs and markedly improved our specificity to >0.999 without sacrificing sensitivity (`r Qual` C and D). For a variant to be considered in our analysis we required a mean mapping quality of 30, a mean phred score of 35, and an average read position within the middle 50\% of the read. Under these conditions we found 10 or fewer false positives in 4 of the 5 samples. Given this success we applied a number of strategies to further increase our accuracy, including but not limited to: Benjamin Hochman p-value correction,  more stringent p values (<0.01) or frequency cut-offs (>0.2%), retaining PCR duplicate reads, trimming the ends of the influenza genome, and employing various distributions to estimate the error rate in the control sample. The impact of various filtering criteria on our data can be visualized in an interactive shiny application available for download at  \emph{https://github.com/lauringlab/benchmarking_shiny.git}.
+
+We also benchmarked the accuracy of our DeepSNV pipeline in estimating the frequency of the true positive variants (`r Freq`). Although the median of the measured frequencies match the expected values, we found substantial spread in each sample and the overall the fit was quite poor ( R^2^=`r corr_coef`). The mean percent difference between the measured frequency and the expected was `r mean_fold`\%. This error is likely due to stochastic PCR biases (cite?) in the initial RT-PCR reaction and should be kept in mind when employing down stream analysis that depend on frequency measurements such as variant fitness and diversity metrics that incorporate species abundance (e.g. Shannon entropy).
+
+###Alternative variant callers
+
+DeepSNV is one of many variant callers that use a combination of empiric and statistical approaches to model error rates and separate true from false variants. We asked whether the decreased accuracy observed in our data set was due simply to peculiarities specific to  DeepSNV. We therefore analyzed our $10^5$ input populations using Lofreq, another variant caller that is commonly used in next generation sequencing studies, and has been reported to have perfect specificity [@Wilm:2012br]. Under our experimental conditions, Lofreq had marginally reduced sensitivity compared to DeepSNV when applied to the variant frequencies $\geq$ 1.0\% but marginally increased sensitivity when applied to variant frequencies $<$ 1.0\% (`r Lofreq`). The specificity of LoFreq was comparable to what we observed with DeepSNV in our high-input cell culture-derived populations (`r Miseq`), and better than DeepSNV in our initial implementation (`r Hiseq` prior to Phred, MapQ, and read position filtering). This increased specificity is most likely due to the fact that the LoFreq algorithm already takes MapQ and Phred scores into account when calling variants and has a stringent strand bias filter that removes many of the variants found only at one end of a paired-end read. However even with these additional characteristics, the specificity of LoFreq was lower than our improved DeepSNV pipeline (`r Qual`), with over 40 false positives per sample. It appears that higher than expected false positive rates are not specific to DeepSNV and most likely plague many variant callers applied to patient-derived viral samples.
+
+
+###Lower input levels
+
+Host-derived viral populations vary in copy number and titer by several orders of magnitude. This variability can be attributed to a variety of factors including, but not limited to: collection site, ease of of nucleic acid isolation, the presence of host nucleic acid, efficiency of library preparation, and host and viral factors. To ensure accuracy across a range of input levels, we diluted our experimental populations serially into basal media (`r Hiseq`A) and identified variants using our modified DeepSNV analysis pipeline (`r Lower`). As expected, our sensitivity was lower in populations with fewer genomes. For example, a variant with a 0.5\% frequency in a $10^4$ genomes per microliter sample is expected to present on only 700 genomes in the initial RT-PCR, many of these will be lost due to bottlenecks in the amplification and library preparation process. In addition to reduced sensitivity we found reduced specificity in samples with lower starting input. The increase in false positives is presumably due to a greater dependence on RT-PCR amplification and consequent propagation of errors. These data highlight the importance of controlling for input levels when comparing diversity across experimental samples.
+
+In most cases, RT-PCR errors should be sporadic and randomly distributed across the amplified region. If RT-PCR errors are responsible for the reduced specificity found at lower input levels, they should be easily identified as variants present in only one of two RT-PCR reactions performed on the same RNA. To test this hypothesis, we performed RT-PCR reactions and sequenced duplicates of the  5, 2, 1, and 0.5\% variant frequency samples from our $10^4$ genomes per microliter collection. The duplicates were processed separately, but sequenced on the same lane of an Illumina Hiseq. We applied the previously mentioned quality cut-offs and required that a given variant be found in both duplicates. By running samples in duplicates we reduced the number of false positives in each sample to 10 or fewer resulting in and a specificity of 0.9998 or greater (`r Dups`). This increased specificity was not accompanied by a decreased sensitivity. In fact, we found a slight increase in sensitivity most likely due to variability in library preparation. Thus, accurate analysis of low input samples can be achieved through duplicate RT-PCR and careful benchmarking experiments.
+
+###The consequences of sub-optimal SNV identification
+
+NGS of intrahost populations is commonly used determine the interaction between host or environmental factors and viral diversity. However calculations of viral diversity rely entirely on SNV identified in NGS data, and are very sensitive to the accuracy of these variant calls. To illustrate this problem, we calculated the diversity of our 10^5^ genomes per microliter samples at each step of our benchmarking process using three complementary metrics (`r Table`). Richness is the count of nonconsensus variants present in a population (often referred to as intrahost SNV). Shannon's Entropy is a diversity metric that accounts for  both the number of variants present (richness) and their frequencies (evenness). Because our data are unphased (i.e. no haplotypes), we have reported the average entropy per nucleotide position (cite). The last metric, L1-norm, is a distance measurement that describes how similar two populations are to one another. Identical populations will have an L1-norm of 0. To mimic experimental conditions, we included all variants identified in each analysis regardless of whether or not subsequent benchmarking distinguished them as true or false positives. We found that the accuracy of the SNV calling method has a profound effect on measurements of diversity. It is clear from the richness measurements in `r Table` that the number of false SNV largely determines the accuracy of the other diversity metrics. Thus, our adapted DeepSNV protocol, which was able to distinguish between true and false SNV with the highest accuracy, gave the most accurate measures of diversity, followed by Lofreq and the default version of DeepSNV.
+
+
+
+
+## Methods
+
+### Viruses and cells
+
+We passaged plaque purified WSN33 and PR8 lab strains 3 times in 
+
+### Viral populations
+
+We extracted viral RNA from cleared supernatants using  QIAamp viral RNA minikits (Qiagen 5204) according to the manufactures' instructions, and generated cDNA using Superscript III one-step with HiFi platinum Taq (Invitrogen 12574). For the WSN33, PR8 data set we used a segment specific primers PB2-Forward-JT	(GCAGGTCAATTATATTCAATATGGAAA),PB2-Reverse-JT	(CAAGGTCGTTTTTAAACTATTCGACAC), PB1-Forward-JT (GCAGGCAAACCATTTGAATGG), PB1-Reverse-JT	(CAAGGCATTTTTTCATGAAGGACAAG), PA-Forward-JT	(GCAGGTACTGATTCAAAATGGAAG), PA-Reverse-JT	(CAAGGTACTTTTTTGGACAGTATGG), NA-Forward-JT	(GCAGGAGTTTAAATGAATCCAAACC), NA-Reverse-JT	(CAAGGAGTTTTTTGAACAAACTACTTG), HA-Forward-JT	(GCAGGGGAAAATAAAAACAACCAAAAT), HA-Reverse-JT	(CAAGGGTGTTTTTCCTTATATTTCTGAA), NP-Forward-JT	(GCAGGGTAGATAATCACTCACAG), NP-Reverse-JT	(CAAGGGTATTTTTCTTTAATTGTCGTACT), M-Forward-JT	(GCAGGTAGATATTGAAAGATGAGTC), M-Reverse-JT	(CAAGGTAGTTTTTTACTCCAGCTCT), NS-Forward-JT	(GCAGGGTGACAAAGACATAATG), NS-Reverse-JT	(CAAAGGGTGTTTTTTATTATTAAATAAGCTG), which with the reaction conditions were adapted from [@Anonymous:A25Ka2tY]. Each 25 $\mu$ l reaction included 1 $\mu$ l of each primer (5 $\mu$ M) and 2 $\mu$ l of RNA template. Reaction conditions were 50$^\circ$ C (60 min), 94$^\circ$ C (2 min), and then 30 cycles of 94$^\circ$ C (30 sec), 54$^\circ$ C (30 sec), and 68$^\circ$ C (3 min). 
+
+### Mutagenesis
+
+
+### Viral populations
+
+### Plasmid controls
+
+### Library preperation
+
+### Sequence analysis
+
+
+
+#References
