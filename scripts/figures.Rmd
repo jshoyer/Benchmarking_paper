@@ -512,10 +512,13 @@ dev.off()
 # knitr::kable(subset(h.table.df,gc==4))
 ```
 
+
+### Figure 4 
+
 ```{r, phred_mapq filter}
 sig.df<-subset(sum.df,p.val<0.01)
 
-mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_hue(name="",labels=c("False posivite","True positive"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ")+theme(legend.position="top") 
+mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(size=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_hue(name="",labels=c("False posivite","True positive"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ")+theme(legend.position="top") 
 
 #mapq_phred.normal
 
@@ -553,13 +556,7 @@ cut.df.all$p.val[cut.df.all$MapQ<30 | cut.df.all$Phred<35]<-1
 # knitr::kable(subset(h.cut.table,gc==5))
 ```
 
-This is still for p<0.01 and 10^5 genomes/ul viral transport media.
-
-### Figure 4 
-
-
-
-```{r,read_pos}
+```{r,read_pos,fig.width=7,fig.height=6}
 # ggplot(sig.df,aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 # ggplot(subset(sig.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 # 
