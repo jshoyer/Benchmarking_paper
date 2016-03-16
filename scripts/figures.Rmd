@@ -402,7 +402,7 @@ Figure 2. Initial DeepSNV accuracy. A) RT-PCR amplified WSN33 genomes were dilut
 
 ```{r,Miseq_read.cut,eval=F}
 ### With read position cut off 63 and 188
-read.df<-subset(sum.df,Read_pos>63 & Read_pos<188)
+read.df<-subset(sum.df,Read_pos>62 & Read_pos<188)
 m.roc.df<-miseq.roc(read.df,possible_tp,possible_vars,">")
 
 miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.005)
@@ -430,7 +430,7 @@ ggplot(subset(sum.df,p.val<0.01),aes(x=Phred,y=MapQ,color=category))+geom_point(
 
 
 sum.df<-read.csv("../data/process/2015-6-23/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#") # reading in the variants from the pipeline output
- 
+mfe.df<-read.csv("../data/reference/mfe.csv") 
 # Getting genome lenght and segment information from the wsn33 fasta file
 reference.fasta<-"../data/reference/wsn33_wt_plasmid.fa" 
 segments <- fasta.seqlengths(reference.fasta)
@@ -456,13 +456,16 @@ wt_mut<-intersect(wt1_mut$mutation,wt2_mut$mutation)
 
 #length(wt_mut) How many wt muts do we find.
 sum.df$category[sum.df$mutation %in% wt_mut]<-"wt"
-sum.df<-subset(sum.df,!(grepl("WT",Id))) # remove the WT samples
+sum.df<-subset(sum.df,!(grepl("WT",Id))) # remove the WT sample
+
+sum.df$category[sum.df$mutation %in% mfe.df$mutation]<-"mfe"
 
 possible_tp<-20 # there are 20 possible true positives in the mix
 regions.bed<-mutate(regions.bed,length=stop-start-1) #because the numbers in the csv are the inner most binding sites of the primers and represent the last positiions that cannot be interogated.
 
-possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
+total_possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
 
+possible_vars<-total_possible_vars-length(wt_mut)-dim(mfe.df)[1] # removing the mfe and wt_mut sites
 hiseq_vars<-possible_vars
 hiseq_kb<-sum(regions.bed$length)/1000
 
@@ -663,9 +666,11 @@ Figure 4. Investigating the quality of variants in the the 10 $^5$ genomes/$\mu$
 
 lofreq.df<-read.csv("../data/process/2015-6-23/lofreq/all.removed.mapq_vcf.vcf_csv.csv",stringsAsFactors = F)
 
+lofreq.df$category[lofreq.df$mutation %in% wt_mut]<-"wt"
+lofreq.df$categroy[lofreq.df$mutation %in% mfe.df$mutation]<-"mfe"
+
 lofreq.df$p.val<-lofreq.df$QUAL # to make the roc based on the quality scores given by lofreq
 
-direction<-">"
 lofreq.roc<-hiseq.roc(lofreq.df,possible_tp,possible_vars,"<")
 
 x<-ddply(lofreq.roc,~samp,fill_in_plots)
@@ -718,7 +723,6 @@ ggdraw() +
   draw_plot(lofreq.roc.p, 0, 0.5, 0.9, 0.45) + 
   draw_plot(tbl, 0.025, 0, 0.95, .48) +
   draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
-direction<-"<"
 ```
 
 Figure 5. The accuracy of Lofreq. The variant caller Lofreq was applied to the 10 $^5$ genomes/$\mu$l samples. A) An ROC of the accuracy of Lofreq using standard parameters. The specificity of the caller was scaled to account for the same number of tests as the DeepSNV algorithm. Lofreq provides quality scores instead of p values. These were used to set cutoffs for the ROC. B) A table summarizing the accuracy of the ROC A using the standard cut offs applied by the algorithm.
@@ -1011,15 +1015,15 @@ get_data<-function(x,setting){
   }else{
   exp.freq=unique(x$exp.freq)
   }
-  out<-data.frame(Richness=round(rich(x),digits = 0), Entropy=format(H(x),scientific = T,digits = 3),"1/D"=D(x),Manhattan=round(euc(x,subset(perfect,freq.var==exp.freq)),digits=3))
+  out<-data.frame(Richness=round(rich(x),digits = 0), Entropy=format(H(x),scientific = T,digits = 3),Manhattan=round(euc(x,subset(perfect,freq.var==exp.freq)),digits=3)) #"1/D"=D(x),
   rownames(out)<-setting
   return(t(out))
 }
 tabulate<-function(input,freq){
-get_data(subset(perfect,freq.var==freq),"Perfect")->perf
-get_data(subset(sum.df,gc==input & exp.freq==freq & p.val<0.01),"DeepSNV")->deepSNV
-get_data(subset(lofreq.df,gc==input & exp.freq==freq),"Lofreq")->lo
-get_data(subset(cut.read.df.all,gc==input & exp.freq==freq & p.val<0.01),"DeepSNV Final")->deepSNV.f
+get_data(subset(perfect,freq.var==freq),"Expected")->perf
+get_data(subset(sum.df,gc==input & exp.freq==freq & p.val<0.01 & category %in% c(T,F)),"DeepSNV")->deepSNV
+get_data(subset(lofreq.df,gc==input & exp.freq==freq & category %in% c(T,F)),"Lofreq")->lo
+get_data(subset(cut.read.df.all,gc==input & exp.freq==freq & p.val<0.01 & category %in% c(T,F) ),"DeepSNV Final")->deepSNV.f
 knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f))
 }
 # tabulate.4<-function(input,freq){

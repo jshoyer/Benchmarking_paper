@@ -25,7 +25,12 @@ cut.df<-subset(sum.df, Id %in% tp$Id & p.val<0.01 & MapQ>30 & Phred>35 & Read_po
 cut.df<-mutate(cut.df,category=mutation %in% tp$mutant)
 
 
-subset(cut.df, category==F )
+subset(cut.df, category==F & freq.var>0.01)->carry_over;carry_over
+write.csv(carry_over,file = "../data/reference/mfe.csv")
+
+bench.df<-read.csv("../data/process/2015-6-23/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#") # reading in the variants from the pipeline output
+
+subset(bench.df,mutation %in% carry_over$mutation)
 
 #There are some overlaps so I'll remove those now.
 
