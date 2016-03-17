@@ -149,20 +149,31 @@ NGS of intrahost populations is commonly used determine the interaction between 
 
 We passaged plaque purified WSN33 and PR8 lab strains 3 times in 
 
-### Viral populations
-
-We extracted viral RNA from cleared supernatants using  QIAamp viral RNA minikits (Qiagen 5204) according to the manufactures' instructions, and generated cDNA using Superscript III one-step with HiFi platinum Taq (Invitrogen 12574). For the WSN33, PR8 data set we used a segment specific primers PB2-Forward-JT	(GCAGGTCAATTATATTCAATATGGAAA),PB2-Reverse-JT	(CAAGGTCGTTTTTAAACTATTCGACAC), PB1-Forward-JT (GCAGGCAAACCATTTGAATGG), PB1-Reverse-JT	(CAAGGCATTTTTTCATGAAGGACAAG), PA-Forward-JT	(GCAGGTACTGATTCAAAATGGAAG), PA-Reverse-JT	(CAAGGTACTTTTTTGGACAGTATGG), NA-Forward-JT	(GCAGGAGTTTAAATGAATCCAAACC), NA-Reverse-JT	(CAAGGAGTTTTTTGAACAAACTACTTG), HA-Forward-JT	(GCAGGGGAAAATAAAAACAACCAAAAT), HA-Reverse-JT	(CAAGGGTGTTTTTCCTTATATTTCTGAA), NP-Forward-JT	(GCAGGGTAGATAATCACTCACAG), NP-Reverse-JT	(CAAGGGTATTTTTCTTTAATTGTCGTACT), M-Forward-JT	(GCAGGTAGATATTGAAAGATGAGTC), M-Reverse-JT	(CAAGGTAGTTTTTTACTCCAGCTCT), NS-Forward-JT	(GCAGGGTGACAAAGACATAATG), NS-Reverse-JT	(CAAAGGGTGTTTTTTATTATTAAATAAGCTG), which with the reaction conditions were adapted from [@Anonymous:A25Ka2tY]. Each 25 $\mu$ l reaction included 1 $\mu$ l of each primer (5 $\mu$ M) and 2 $\mu$ l of RNA template. Reaction conditions were 50$^\circ$ C (60 min), 94$^\circ$ C (2 min), and then 30 cycles of 94$^\circ$ C (30 sec), 54$^\circ$ C (30 sec), and 68$^\circ$ C (3 min). 
-
 ### Mutagenesis
 
-
-### Viral populations
-
-### Plasmid controls
+Point mutants were made in the WSN33 background using the pHW2000 reverse genetics system (cite)  as previously described. Briefly, primers .......... were used in overlap PCR to generate mutations at HA\_T1583G,HA\_G1006T,HA\_G542T,M\_T861G,M\_A541C,NA\_G1168T,NA\_C454T,NP\_A454C,NP\_A1160T,NS\_G227T,NS\_A809G,PA\_T964G,PA\_T237A,PA\_A1358T,PB1\_G599A,PB1\_G1764T,PB1\_T1288A,PB2\_A1854G,PB2\_A440T,PB2\_A1167T.
 
 ### Library preperation
 
+Seven hundred and fifty nanograms of purified PCR products were sheared to an average size of 300-400 bp using a Covaris S220 focused ultrasonicator at the following settings : Intensity 4, Duty cycle 10%, Burst/second 200, time 80 seconds. Sequencing libraries were prepared from these fragmented products using the NEBNext Ultra DNA library prep kit (NEB E7370L) and NEBNext multiplex oligonucleotides for Illumina (NEB E7600S). We performed size selection during library preparation using Agencourt AMPure XP beads (Beckman Coulter A63881) with a target insert size of ...... according to the manufactures' instructions. 
+
+### Viral populations
+
+We extracted viral RNA from infected supernatants using  QIAamp viral RNA minikits (Qiagen 5204) according to the manufactures' instructions, and generated cDNA using Superscript III one-step with HiFi platinum Taq (Invitrogen 12574). PCR products were purified using the Thermo Scientific PCR clean-up according to the manufactures' instructions.
+
+For the WSN33, PR8 data set we used segment specific reactions with the following primers : PB2-Forward-JT	(GCAGGTCAATTATATTCAATATGGAAA), PB2-Reverse-JT	(CAAGGTCGTTTTTAAACTATTCGACAC), PB1-Forward-JT (GCAGGCAAACCATTTGAATGG), PB1-Reverse-JT	(CAAGGCATTTTTTCATGAAGGACAAG), PA-Forward-JT	(GCAGGTACTGATTCAAAATGGAAG), PA-Reverse-JT	(CAAGGTACTTTTTTGGACAGTATGG), NA-Forward-JT	(GCAGGAGTTTAAATGAATCCAAACC), NA-Reverse-JT	(CAAGGAGTTTTTTGAACAAACTACTTG), HA-Forward-JT	(GCAGGGGAAAATAAAAACAACCAAAAT), HA-Reverse-JT	(CAAGGGTGTTTTTCCTTATATTTCTGAA), NP-Forward-JT	(GCAGGGTAGATAATCACTCACAG), NP-Reverse-JT	(CAAGGGTATTTTTCTTTAATTGTCGTACT), M-Forward-JT	(GCAGGTAGATATTGAAAGATGAGTC), M-Reverse-JT	(CAAGGTAGTTTTTTACTCCAGCTCT), NS-Forward-JT	(GCAGGGTGACAAAGACATAATG), NS-Reverse-JT	(CAAAGGGTGTTTTTTATTATTAAATAAGCTG), which with the reaction conditions were adapted from [@Anonymous:A25Ka2tY]. Each 25 $\mu$ l reaction included 1 $\mu$ l of each primer (5 $\mu$ M) and 2 $\mu$ l of RNA template. Reaction conditions were 50$^\circ$ C (60 min), 94$^\circ$ C (2 min), followed by 30 cycles of 94$^\circ$ C (30 sec), 54$^\circ$ C (30 sec), and 68$^\circ$ C (3 min). PCR products were pooled to create equimolar mixes of WSN33 and PR8 segments. The WNS33 sample was then diluted into PR8 serially to yield mixtures in which WSN33 made up 5,2.5,1.25,and 0.63% of the population. We processed the samples for sequencing as below, and sequenced pooled libraries on an Illumina Miseq machine using 2X250 paired end reads.
+
+To more closely mimic patient-derived viral populations we quantified the genome copy number of each of the 20 WSN33 point mutants (created above) and WSN33 wt using ... and the primers ... as described in ... . The mutants were mixed at equal concentrations and diluted to generate a mixture with each mutant present at 5% frequency and a total concentration of 10^5^ genomes per microliter. We diluted this population into the wt sample to create populations in which each mutant was present at 2, 1, 0.5,and 0.2% frequency all with a total concentration of 10^5^ genomes per micoliter. These 5 populations were diluted serially into basal media to generate samples with the same mutant frequencies as before but at nucleic acid concentrations of 10^4^ and 10^3^ genomes per microliter. Viral RNA was extracted from these samples as above and cDNA was generated in a multiplex RT-PCR as in [@Anonymous:A25Ka2tY] using the primers primers Uni12/Inf1 (GGGGGGAGCAAAAGCAGG), Uni12/Inf3 (GGGGGAGCGAAAGCAGG), and Uni13/Inf1 (5CGGGTTATTAGTAGAAACAAGG). Two multiplex RT-PCR reactions were run on the 10^5^ genomes per micoliter wt sample. We prepared libraries as before and used picogreen (.......) to quantify the concentration of each indexed library. _____ ng of each library was pooled together, gel isolated using __________, and sequenced using 2X125 paired end reads on an Illumina Hiseq machine.
+
+
+
+### Plasmid controls
+
+
+
 ### Sequence analysis
+
+Reads were aligned to either to PR8 (PR8 WSN33 data set) or WSN33 (pateint derived conditions) using Bowtie2 (cite). Aligments were sorted and processed using Picard (......),variants were called using either DeepSNV or Lofreq and filtered using in house python and R scripts. We connected these steps into an analysis pipeline using bpipe. All commands needed to complete the analysis presented in this work are publically available and free for download at .
 
 
 
