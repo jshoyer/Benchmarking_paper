@@ -67,13 +67,65 @@ read_depth<-"a lot"
 # add mfe raw data to repo. currently pulls data from desktop directory.
 ```
 
+**Benchmarking and quality controls are required in sequence based studies of intrahost diversity.**
 
-##Introduction
+\n
 
-The advent of next generation sequencing (NGS) is revolutionizing the study of viral evolution and molecular epidemiology through high-throughput measures of intrahost diversity. Until recently investigations of viral diversity were limited by labor intensive sequencing approaches; however, it is now feasible to sequence patient-derived samples at sufficient read depth to detect rare single nucleotide variants (SNV) (cite examples?). The high-throughput, cost-effective nature of NGS has lead to an explosion of studies that quantify viral diversity within and between hosts (cite examples?). Given the increasing contribution of NGS to the field of virology it is important to reflect on the accuracy of these methods and the controls that are needed to ensure robust conclusions.
+\n
+
+\n
+
+John T. McCrone^1^ and Adam S. Lauring^1,2^ *
 
 
-Because next generation sequencing of viral populations often produces tens of thousands of reads per genomic position, the sensitivity of these approaches has been assumed to be quite robust (cite). However, patient derived samples often differ in input titer by orders of magnitude, and this variability can have drastic impacts on the sensitivity of detecting rare events. Furthermore, some library preparations result in variable sequencing coverage both within and between samples. These sources of ascertainment bias are often  overlooked in NGS based studies of viral diversity.
+\n
+
+\n
+
+1 Department of Microbiology and Immunology, University of Michigan, Ann Arbor, MI 48109
+
+2 Division of Infectious Diseases, Department of Internal Medicine, University of Michigan, Ann Arbor, MI 48109
+
+
+\n
+
+\n
+
+\n
+
+\n
+
+
+\n
+
+\n
+
+\n
+* Corresponding author
+
+\n
+
+
+
+Adam S. Lauring
+
+1150 W. Medical Center Dr.
+
+MSRB1 Room 5510B
+
+Ann Arbor, MI 48109-5680
+
+alauring@med.umich.edu
+
+
+
+
+#Introduction
+
+The advent of next generation sequencing (NGS) is revolutionizing the study of viral evolution and molecular epidemiology through high-throughput measures of intrahost diversity. Until recently investigations of viral diversity were limited by labor intensive sequencing approaches; however, it is now feasible to sequence patient-derived samples at sufficient read depth to detect rare single nucleotide variants (SNV), and the high-throughput, cost-effective nature of NGS has lead to an explosion of studies that quantify viral diversity within and between hosts (e.g.[@Andersen:2015jj], [@Grubaugh:2015by], [@Rogers:2015ij],[@Poon:2016gf]). Given the increasing contribution of NGS to the field of virology it is important to reflect on the accuracy of these methods and the controls that are needed to ensure robust conclusions.
+
+
+Because next generation sequencing of viral populations often produces tens of thousands of reads per genomic position, the sensitivity of these approaches has been assumed to be quite robust (cite). However, patient derived samples can differ in input titer by orders of magnitude (e.g. [@Lau:2013ima],[@Teunis:2015iw],[@Takeyama:2015jg]), and this variability can have drastic impacts on the sensitivity of detecting rare events. Furthermore, some library preparations result in variable sequencing coverage both within and between samples. These sources of ascertainment bias are often  overlooked in NGS based studies of viral diversity.
 
 The specificity of NGS is another factor to consider when designing an experiment using patient-derived samples. Each sequencing platform has inherent error profiles (cite), and sample collection, target amplification, and library preparation are additional processes whereby errors can be introduced and propagated. The next generation sequencing of viral populations, in particular those of RNA viruses, is error prone, and these errors must be accounted for to ensure accurate secondary analysis.
 
@@ -88,6 +140,36 @@ Given the above limitations, many statistical approaches have been developed to 
 
 Here, we use defined populations of Influenza A and variable input titers to indirectly determine the accuracy of rare variant detection in patient-derived samples. We highlight the challenges that accompany NGS based studies of viral diversity and include a few means for improved the accuracy. This work exemplifies the controls that should be run prior to any NGS based study of viral populations and provides a comprehensive data set for benchmarking other pipelines.
 
+## Methods
+
+### Viruses and cells
+
+Madin-Darby canine kidney cells were provided by Arnold S. Monto (University of Michigan School of Public Health) and were maintained in Dulbecco's Modified Eagle Medium (DMEM, Invitrogen) with 10% fetal bovine serum (Gibco and HyClone), 25mM HEPES (Invitogen), and 0.1875% bovine serum albumin (Life Technologies). Influenza A/WSN/33(H1N1) virus was rescued from transfected cells using the 8 plasmid reverse genetic system containing the genomic segments (pHW181-188), a kind gift from Robert Webster (St. Jude's Children's Research Hospital) [@Hoffmann:2002ih]. A biological clone of influenza A/Puerto Rico/8/1934 was obtained from ATCC (VR-1469) and the genomic segments were cloned into the pHW2000 reverse genetic system [@Pauly:2015eq].
+
+
+### Viral populations
+
+We extracted viral RNA from infected supernaturants using  QIAamp Viral RNA kits (Qiagen 5204) and generated cDNA using Superscript III one-step with HiFi platinum Taq (Invitrogen 12574). PCR products were purified using the GeneJet PCR Purification Kit (ThermoFisher Scientific K0701) according to the manufactures' instructions.
+
+#### PR8 WSN33 population 
+
+For the experiment in `r Miseq`, WSN33 and PR8 viruses were plaque purified and passaged three times in MDCK cells. We then verified the sequences of the these viruses by Sanger sequencing.  Two microliters of RNA template was used  to generate cDNA in 25 $\mu\text{l}$ segment specific one step RT-PCR with $0.2\mu\text{M}$ of the following primers :   PB2-Forward-JT	(5'-GCAGGTCAATTATATTCAATATGGAAA-3'), PB2-Reverse-JT	(5'-CAAGGTCGTTTTTAAACTATTCGACAC-3'), PB1-Forward-JT (5'-GCAGGCAAACCATTTGAATGG-3'), PB1-Reverse-JT	(5'-CAAGGCATTTTTTCATGAAGGACAAG-3'), PA-Forward-JT	(GCAGGTACTGATTCAAAATGGAAG-3'), PA-Reverse-JT	(CAAGGTACTTTTTTGGACAGTATGG-3'), NA-Forward-JT	5'-(GCAGGAGTTTAAATGAATCCAAACC-3'), NA-Reverse-JT	(5'-CAAGGAGTTTTTTGAACAAACTACTTG-3'), HA-Forward-JT	(5'-GCAGGGGAAAATAAAAACAACCAAAAT-3'), HA-Reverse-JT	(5'-CAAGGGTGTTTTTCCTTATATTTCTGAA-3'), NP-Forward-JT	(5'-GCAGGGTAGATAATCACTCACAG-3'), NP-Reverse-JT	(5'-CAAGGGTATTTTTCTTTAATTGTCGTACT-3'), M-Forward-JT	(5'-GCAGGTAGATATTGAAAGATGAGTC-3'), M-Reverse-JT	(5'-CAAGGTAGTTTTTTACTCCAGCTCT-3'), NS-Forward-JT	(5'-GCAGGGTGACAAAGACATAATG-3'), NS-Reverse-JT	(5'-CAAAGGGTGTTTTTTATTATTAAATAAGCTG-3'). Reaction conditions were $50^\circ\text{C}$ (60 min), $94^\circ\text{C}$ (2 min), followed by 30 cycles of $94^\circ\text{C}$ (30 sec), $54^\circ\text{C}$ (30 sec), and $68^{\circ}\text{C}$ (3 min). Molar equivalents of each PCR product were pooled to generate reconstituted cDNA genomes of WSN33 and PR8. The WSN33 cDNA pool was then serially diluted into the PR8 cDNA pool to yield mixtures in which WSN33 made up 5, 2.5, 1.25,and 0.63% of the population. Seven hundred and fifty nanograms of purified PCR products were sheared to an average size of 300-400 bp using a Covaris S220 focused ultrasonicator with the following settings : Intensity: 4, Duty cycle: 10%, Burst/second: 200, Duration: 80 seconds. Sequencing libraries were prepared from these fragmented products using the NEBNext Ultra DNA library prep kit (NEB E7370L), Agencourt AMPure XP beads (Beckman Coulter A63881), and NEBNext multiplex oligonucleotides for Illumina (NEB E7600S). Pooled libraries were sequenced on an Illumina Miseq machine using 2X250 paired end reads. A clonal plasmid control library was prepared from 8 plasmids containing PR8 genomic segments. These plasmids were mixed equimolarly and cDNA was generated using a multiplex one step RT-PCR with the primers Uni12/Inf1 (5'-GGGGGGAGCAAAAGCAGG-3'), Uni12/Inf3 (5'-GGGGGAGCGAAAGCAGG-3'), and Uni13/Inf1 (5'-5CGGGTTATTAGTAGAAACAAGG-3') as in [@Anonymous:A25Ka2tY]. This library was then prepared in identical fashion to the experimental populations and was sequenced in the same Miseq lane.
+
+#### Experimental intrahost population
+
+Twenty point mutants were generated in the WSN33 background using the pHW2000 reverse genetics system [@Hoffmann:2002ih] as previously described (Visher et al., manuscript in preparation). In short, we used  overlap PCR mutagenesis to introduce the following mutations: HA\_T1583G, HA\_G1006T, HA\_G542T, M\_T861G, M\_A541C, NA\_G1168T, NA\_C454T, NP\_A454C, NP\_A1160T, NS\_G227T, NS\_A809G, PA\_T964G, PA\_T237A, PA\_A1358T, PB1\_G599A, PB1\_G1764T, PB1\_T1288A, PB2\_A1854G, PB2\_A440T, PB2\_A1167T. 
+
+We quantified the genome copy number of each of the 20 WSN33 point mutants and the WSN33 WT using a SuperScript III Platinum One-Step qRT-PCR (Invitrogen 11732) and univeral influenza A/B primer and probe sets [@Anonymous:tc]. Infected supernatants were mixed at equal concentrations and diluted to generate a population with each mutant present at 5% frequency and a total concentration of 10^5^ genomes per microliter. We diluted this mixture into WT WSN33 supernatant to create populations in which each mutant was present at 2, 1, 0.5,and 0.2% frequency all with a total concentration of 10^5^ genomes per micoliter. These 5 populations were diluted serially into basal media to generate samples with total nucleic acid concentrations of 10^4^ and 10^3^ genomes per microliter. Viral RNA was extracted from these samples and cDNA was generated in a one step multiplex RT-PCR as above. The WT WSN33 sample (10^5^ genomes per micoliter) was processed and sequenced in duplicate. We prepared libraries as before and used Quanti PicoGreen dsDNA quantification (ThermoFisher Scientific P7589) to quantify the concentration of each indexed library. We pooled equal quantifies (by nanogram) of each indexed library, and removed adaptor dimers using gel isolation with the GeneJET Gel Extraction Kit (ThermoFisher Scientific K0691) prior to sequencing using 2 x 125 paired end reads on an Illumina Hiseq 2500. A clonal control library was processed in an identical fashion starting from an equimolar mix of 8 plasmids containing the WSN33 genomic segments. 
+
+#### Duplicate populations
+
+Fresh RNA was isolated from the 5%, 2%, 1%, and 0.5% 10^4^ genomes per microliter samples and processed in duplicate as above, and these duplicates were sequenced with a plasmid control using 2 x 125 paired end reads on an Illumina Hiseq 2500 machine.
+
+
+### Sequence analysis
+
+ Reads were aligned to either a PR8 or a WSN33 reference sequence using Bowtie2 [@Langmead:2012jh]. Alignments were sorted and PCR duplicateds removed using Picard (http://broadinstitute.github.io/picard/). Variants were called using either DeepSNV [@Gerstung:1js] or Lofreq [@Wilm:2012br] and filtered using the Pysam module in python (https://github.com/pysam-developers/pysam) and custom R scripts. Bases with a Phred<30 were masked in the DeepSNV analysis. We connected all of these steps into an analysis pipeline using bpipe [@em:2012wd] which is available for download at https://github.com/lauringlab/variant\_pipeline.  Additionally, this work is completely reproducible. All raw fastq files were submitted to the Sequence Read Archive (SRA) under accession number ___________, and all commands required generate the figures in the manuscript are available for anonymous download at https://github.com/lauringlab/Benchmarking\_paper . Finally an interactive shiny app of our  benchmarking work can be 
+downloaded at https://github.com/lauringlab/benchmarking\_shiny. 
 
 ##Results
 
@@ -141,38 +223,11 @@ In most cases, RT-PCR errors should be sporadic and randomly distributed across 
 NGS of intrahost populations is commonly used determine the interaction between host or environmental factors and viral diversity. However calculations of viral diversity rely entirely on SNV identified in NGS data, and are very sensitive to the accuracy of these variant calls. To illustrate this problem, we calculated the diversity of our 10^5^ genomes per microliter samples at each step of our benchmarking process using three complementary metrics (`r Table`). Richness is the count of nonconsensus variants present in a population (often referred to as intrahost SNV). Shannon's Entropy is a diversity metric that accounts for  both the number of variants present (richness) and their frequencies (evenness). Because our data are unphased (i.e. no haplotypes), we have reported the average entropy per nucleotide position (cite). The last metric, L1-norm, is a distance measurement that describes how similar two populations are to one another. Identical populations will have an L1-norm of 0. To mimic experimental conditions, we included all variants identified in each analysis regardless of whether or not subsequent benchmarking distinguished them as true or false positives. We found that the accuracy of the SNV calling method has a profound effect on measurements of diversity. It is clear from the richness measurements in `r Table` that the number of false SNV largely determines the accuracy of the other diversity metrics. Thus, our adapted DeepSNV protocol, which was able to distinguish between true and false SNV with the highest accuracy, gave the most accurate measures of diversity, followed by Lofreq and the default version of DeepSNV.
 
 
+**Acknowledgements**
+
+We thank Pat Schloss, Mike Imperiale, and Robert Woods for helpful discussion and a critical reading of the manuscript. This work was supported by a Clinician Scientist Development Award from the Doris Duke Charitable Foundation and R01 AI118886, both to ASL. JTM was supported by the Michigan Predoctoral Training Program in Genetics (T32GM007544).
 
 
-## Methods
 
-### Viruses and cells
-
-Madin-Darby canine kidney cells were provided by Arnold S. Monto (University of Michigan School of Public Health) and were maintained in Dulbecco's Modified Eagle Medium (DMEM, Invitrogen) with 10% fetal bovine serum (Gibco and HyClone), 25mM HEPES (Invitogen), and 0.1875% bovine serum albumin (Life Technologies) as in (MFE submitted). WSN33 was rescued from transfections using the 8 plasmid reverse genetic system containing the genomic segments for influenza A/WSN33 (pHW181-188), a kind gift from Rober Webster (St. Jude's Children's Research Hospital) [@Hoffmann:2002ih]. A biological clone of influenza A/Puerto Rico/8/1934 was obtained from ATCC (VR-1469) and was cloned into the pHW2000 reverse genetic system to be used as a sequencing control as before [@Pauly:2015eq].
-
-### Mutagenesis
-
-Point mutants were made in the WSN33 background using the pHW2000 reverse genetics system [@Hoffmann:2002ih] as previously described (MFE citation) . Briefly, we used  overlap PCR mutagenesis to generate mutations at HA\_T1583G, HA\_G1006T, HA\_G542T, M\_T861G, M\_A541C, NA\_G1168T, NA\_C454T, NP\_A454C, NP\_A1160T, NS\_G227T, NS\_A809G, PA\_T964G, PA\_T237A, PA\_A1358T, PB1\_G599A, PB1\_G1764T, PB1\_T1288A, PB2\_A1854G, PB2\_A440T, PB2\_A1167T. 
-
-### Library preperation
-
-Seven hundred and fifty nanograms of purified PCR products were sheared to an average size of 300-400 bp using a Covaris S220 focused ultrasonicator using the following settings : Intensity:4, Duty cycle:10%, Burst/second: 200, Duration: 80 seconds. Sequencing libraries were prepared from these fragmented products using the NEBNext Ultra DNA library prep kit (NEB E7370L) and NEBNext multiplex oligonucleotides for Illumina (NEB E7600S). We performed size selection during library preparation using Agencourt AMPure XP beads (Beckman Coulter A63881) with a target insert size of 300-400bp or 250 bp for sequencing on Illumina Miseq and Hiseq respectively.
-
-### Viral populations
-
-We extracted viral RNA from infected supernaturants using  QIAamp viral RNA minikits (Qiagen 5204) according to the manufactures' instructions, and generated cDNA using Superscript III one-step with HiFi platinum Taq (Invitrogen 12574). PCR products were purified using the GeneJet PCR Purification Kit (ThermoFisher Scientific K0701) according to the manufactures' instructions.
-
-#### PR8 WSN33 population 
-
-WSN33 and PR8 isolates were plaque purified and passaged three times in MCDK cells. We then varified the sequences of the these viruses using Sanger sequencing.  cDNA was generated in segment specific reactions using : PB2-Forward-JT	(GCAGGTCAATTATATTCAATATGGAAA), PB2-Reverse-JT	(CAAGGTCGTTTTTAAACTATTCGACAC), PB1-Forward-JT (GCAGGCAAACCATTTGAATGG), PB1-Reverse-JT	(CAAGGCATTTTTTCATGAAGGACAAG), PA-Forward-JT	(GCAGGTACTGATTCAAAATGGAAG), PA-Reverse-JT	(CAAGGTACTTTTTTGGACAGTATGG), NA-Forward-JT	(GCAGGAGTTTAAATGAATCCAAACC), NA-Reverse-JT	(CAAGGAGTTTTTTGAACAAACTACTTG), HA-Forward-JT	(GCAGGGGAAAATAAAAACAACCAAAAT), HA-Reverse-JT	(CAAGGGTGTTTTTCCTTATATTTCTGAA), NP-Forward-JT	(GCAGGGTAGATAATCACTCACAG), NP-Reverse-JT	(CAAGGGTATTTTTCTTTAATTGTCGTACT), M-Forward-JT	(GCAGGTAGATATTGAAAGATGAGTC), M-Reverse-JT	(CAAGGTAGTTTTTTACTCCAGCTCT), NS-Forward-JT	(GCAGGGTGACAAAGACATAATG), NS-Reverse-JT	(CAAAGGGTGTTTTTTATTATTAAATAAGCTG), which with the reaction conditions were adapted from [@Anonymous:A25Ka2tY]. Each 25 $\mu$ l reaction included 1 $\mu$ l of each primer (5 $\mu$ M) and 2 $\mu$ l of RNA template. Reaction conditions were 50$^\circ\text{C}$ (60 min), 94$^\circ\text{C}$ (2 min), followed by 30 cycles of 94$^\circ\text{C}$ (30 sec), 54$^\circ\text{C}$ (30 sec), and 68$^\circ\text{C}$ (3 min). PCR products were pooled equimolarly to reconstituded cDNA genomes of WSN33 and PR8. WSN33 was then diluted into PR8 serially to yield mixtures in which WSN33 made up 5,2.5,1.25,and 0.63% of the population. We processed the samples for sequencing as above, pooled equal volumes of the indexed libraries, sequenced the pooled libraries on an Illumina Miseq machine using 2X250 paired end reads. A clonal plasmid control library was prepared from 8 plasmids containing PR8 genomic segments. These plasmids were mixed equimolarly and cDNA was generated using a multiplex RT-PCR with the primers Uni12/Inf1 (GGGGGGAGCAAAAGCAGG), Uni12/Inf3 (GGGGGAGCGAAAGCAGG), and Uni13/Inf1 (5CGGGTTATTAGTAGAAACAAGG) as in [@Anonymous:A25Ka2tY]. This library was then prepared in identical fashion to the experimental populations and was sequenced on the same Miseq lane.
-
-#### Experimental intrahost population
-
-We quantified the genome copy number of each of the 20 WSN33 point mutants (created above) and WSN33 wt using SuperScript III Platinum One-Step qRT-PCR (Invitrogen 11732). Primers and probes were designed by the by the CDC Influenza Branch for the universal detection of influenza A and B. The mutants were mixed at equal concentrations and diluted to generate a mixture with each mutant present at 5% frequency and a total concentration of 10^5^ genomes per microliter. We diluted this mixture into the wt sample to create populations in which each mutant was present at 2, 1, 0.5,and 0.2% frequency all with a total concentration of 10^5^ genomes per micoliter. These 5 populations were diluted serially into basal media to generate samples with the same mutant frequencies as before but at nucleic acid concentrations of 10^4^ and 10^3^ genomes per microliter. Viral RNA was extracted from these samples as above and cDNA was generated in a multiplex RT-PCR as in [@Anonymous:A25Ka2tY] using the primers Uni12/Inf1 (GGGGGGAGCAAAAGCAGG), Uni12/Inf3 (GGGGGAGCGAAAGCAGG), and Uni13/Inf1 (5CGGGTTATTAGTAGAAACAAGG). Two multiplex RT-PCR reactions were run on the 10^5^ genomes per micoliter wt sample. We prepared libraries as before and used  Quanti PicoGreen dsDNA quantification (ThermoFisher Scientific P7589) to quantify the concentration of each indexed library. Forty six ng of each indexed library was pooled together, gel isolated using the GeneJET Gel Extraction Kit (ThermoFisher Scientific K0691), and sequenced using 2X125 paired end reads on an Illumina Hiseq 2000 machine. A clonal control library was processed in an identical fashion starting from an equimolar mix of 8 plasmids containing the WSN33 genomic segments.
-
-
-### Sequence analysis
-
-Reads were aligned to either to PR8 (PR8 WSN33 data set) or WSN33 (patient derived conditions) using Bowtie2 [@Langmead:2012jh]. Alignments were sorted and processed using Picard (http://broadinstitute.github.io/picard/), variants were called using either DeepSNV [@Gerstung:1js] or Lofreq [@Wilm:2012br] and filtered using the Pysam module in python (https://github.com/pysam-developers/pysam) and R scripts. Bases with a Phred<30 were masked in the DeepSNV analysis. We connected these steps into an analysis pipeline using bpipe [@em:2012wd] which is available for download at .https://github.com/lauringlab/variant\_pipeline.  Additionally, all commands needed to complete the analysis presented in this work are publically available and free for download at https://github.com/lauringlab/Benchmarking\_paper . Finaly and interactive shiny app of our  benchmarking work can be 
-downloaded at https://github.com/lauringlab/benchmarking\_shiny. 
 
 #References
