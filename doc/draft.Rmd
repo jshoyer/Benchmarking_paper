@@ -30,7 +30,10 @@ require(plyr)
  
 knitr::knit("../scripts/figures.Rmd",tangle = T)
 source("./figures.R")
-#this is so the cache resets
+
+
+
+#This is to reset the cache
 # 
 # bibliography: bib.bib
 # csl: journal-of-virology.csl
@@ -202,10 +205,10 @@ The specificity was greater than 0.99 in all the samples with $10^5$ genomes per
 
 Many next generation sequencing studies utilize mapping quality (MapQ) and/or base quality (Phred) cut-offs to ensure that only the highest caliber sequencing data is used to call variants. Mapping quality measures the probability that a given read is mapped to the correct position in the genome while base quality estimates the likelihood that the base call by the sequencer is correct. In the above analysis we masked bases that had a Phred  score less than 30 (0.001 probability of being incorrect) and did not apply any MapQ cut-offs. In an initial analysis, we applied frequently employed cut-offs such as a MapQ of 20 and a Phred of 30 to our data. These criteria were unable to distinguish true from false positives in our $10^5$ samples (`r Qual`A) and indicate that many false positives occur on well mapped reads with high quality base calls.
 
-We further parsed our false variant calls by locating them within individual sequencing reads. It is well known that sequence quality drops near the end of a read (cite?), and we found that our false positives clustered at the termini of our paired end reads (`r Qual`B). The average Phred score of these false positives was `r false_p_phred`, further demonstrating that filtering on quality score alone is insufficient. In contrast, true positives were uniformly distributed across the reads resulting in an average read position near the middle of the read. 
+We further parsed our false variant calls by locating them within individual sequencing reads. It is well known that sequence quality drops near the end of a read (cite?), and we found that our false positives clustered at the termini of our paired end reads (`r Qual`B). The average Phred score of these false positives was `r false_p_Phred`, further demonstrating that filtering on quality score alone is insufficient. In contrast, true positives were uniformly distributed across the reads resulting in an average read position near the middle of the read. 
 
 
-Based on these data we applied a number of empirically determined cut-offs and markedly improved our specificity to >0.999 without sacrificing sensitivity (`r Qual` C and D). For a variant to be considered in our analysis we required a mean mapping quality of 30, a mean phred score of 35, and an average read position within the middle 50\% of the read. Under these conditions we found 10 or fewer false positives in 4 of the 5 samples. Given this success we applied a number of strategies to further increase our accuracy, including but not limited to: Benjamin Hochman p-value correction,  more stringent p values (<0.01) or frequency cut-offs (>0.2%), retaining PCR duplicate reads, trimming the ends of the influenza genome, and employing multiple distributions to estimate the error rate in the control sample. The impact of various filtering criteria on our data can be visualized in an interactive shiny application available for download at  \emph{https://github.com/lauringlab/benchmarking_shiny.git}.
+Based on these data we applied a number of empirically determined cut-offs and markedly improved our specificity to >0.999 without sacrificing sensitivity (`r Qual` C and D). For a variant to be considered in our analysis we required a mean mapping quality of 30, a mean Phred score of 35, and an average read position within the middle 50\% of the read. Under these conditions we found 10 or fewer false positives in 4 of the 5 samples. Given this success we applied a number of strategies to further increase our accuracy, including but not limited to: Benjamin Hochman p-value correction,  more stringent p values (<0.01) or frequency cut-offs (>0.2%), retaining PCR duplicate reads, trimming the ends of the influenza genome, and employing multiple distributions to estimate the error rate in the control sample. The impact of various filtering criteria on our data can be visualized in an interactive shiny application available for download at  \emph{https://github.com/lauringlab/benchmarking_shiny.git}.
 
 We also benchmarked the accuracy of our DeepSNV pipeline in estimating the frequency of the true positive variants (`r Freq`). Although the median of the measured frequencies match the expected values, we found substantial spread in each sample and the overall the fit was quite poor ( R^2^=`r corr_coef`). The mean percent difference between the measured frequency and the expected was `r mean_fold`\%. This error is likely due to stochastic PCR biases (cite?) in the initial RT-PCR reaction and should be kept in mind when employing down stream analysis that depend on frequency measurements such as variant fitness and diversity metrics that incorporate species abundance (e.g. Shannon entropy).
 
@@ -232,41 +235,27 @@ We have shown that benchmarking is vital to accurate NGS based studies of viral 
 
  To our knowledge, DeepSNV is the only variant calling method that has been benchmarked on real sequencing reads in which all true positive variants and their frequencies were known *a priori* and independent of NGS. Given this robust benchmarking we thought it ideal for identifying rare variants in populations of influenza virus. However, we found decreased sensitivity and specificity when applied to cell culture derived mixtures of WSN33 and PR8. The most stiking drop in sensitivity came for variants found at 0.16%. Under these conditions we found true variants at a rate of `r miseq.sense.16` compared to the reported sensitivity of  0.860 for variants at 0.1%. This decrease is most likely due to the fact that we are looking for variants across `r miseq_kb`bp of the influenza genome where previous benchmarking focused on just 1,500 bp of the HIV pol gene. Therefore, our sequencing efforts are diluted and we expect fewer reads per variant which limits sensitivity. Additionally, in our analysis we aligned all reads to a PR8 reference genome which biases our detection of WSN33 variants. Any bias against WSN33 would decrease our detection of rare variants, which already have few reads. A relatively modest decrease in specificity accompanied the reduced sensitivity.Dispite the use of bonferronni corrected p values, the drop in specificity is mostlikely due to multiple testing errors caused by applying the algorithm across `r miseq_kb`bp (cite). 
  
- Despite this reduced accuracy we applied DeepSNV to experimental populations that more closely mimic the diversity and nucleaic acid input levels found in patient derived samples. At a modest input level of 10^5^ genomes per microliter we found roughly a four-fold increase in false positives. This decrease is likely dues to how the populations were constructed and stresses the importance of benchmarking SNV identifying pipelines under conditions to which they will be applied.
-III. Experimental populations
-  A. The large increase in false positives compared to PR8-WSN33
-    i) Our WSN3-PR8 populations were constructed from reconstituded cDNA genomes and were devoid of any biases that might accompany PCR amplification. 
-    ii) Not the case with the experimental samples
-    iii) Gerstung *et. al.* have shown that PCR amplification biases lead to increased variability in the subconsensus nucleotide counts used to call SNV. This variability in erreoneous base calls in test samples compared to the control increases the likelihood \ that the frequency of a false positive SNV will exceed the error rate estimated by the plasmid control.
-    iv) DeepSNV can attempt to control for such variablity inpart by estimating the dispersion of a sample. Indeed, our experimental samples were more dispersed than those in cell culture. However, the variability estimates are limitted  and this likely accounts for the decreased specificity.
-  B. Quality cut offs
-    We hypothesis that the RT-PCR biases introduced in our experimental populations reduced the efficacy of teh DeepSNV algorithm. We,therefore, used alternative means of increasing accuracy.
-    i) The average MapQ and Phred scores of putative SNV were bimodal with true SNV lying in the higher of the two distributions. 
-    ii) We plotted the cdf of these distributions and applied cuttoffs at the streepest increase in the true positive distributions.
-    iii) We have sequenced over 300 influenza libraries on over 5 Hiseq lanes and observe the consistant qualty distributions for DeepSNV identified putative SNV.
-    iv) We have also sequenced many polio libraries and see the same bimodal trends; with slightly shift means.
-    v) Mostlikely due to influenza genomic structures.
-    vi) This is different than filtering reads and masking phred, as we are filtering SNV call after they have been identified. Treats False positives and True negatives differently, and perhaps inflates coverage estimates.
-    vi) MapQ, Phred, and Read position were not correlated with eachother and so remove different false positive variants
-    vii) We found many false SNV were identified only at the termi of paired end reads. We removed these by filtering putatuive SNV calls based on their position on a paired end read; however, there are many ways to account for these errors. 
-    viii) Strand bias, trimming
-    ix) In particular these were found almost exclusively in regions of the genome that were enriched for read start sites. This enrichment is mostlikely a consequence  of sequence context, the fragmentation process, and our size selection protocol; however, it is unclear why our plasmid control would not contain similar biases. The cause may have a biological foundation in DI particals which have been identified to conatian truncated genomic segements and would only be present in infected supernantants and not a plasmid control.
-    x) These ammendments were able to greatly increase the accuracy of our DeepSNV based SNV pipeline.
-    
-  C. Discussion of frequency of variants
-    i) due to variability in frequency measurments cut offs limited sensitivity we did not apply frequency cut offs as is commonly done
-    ii) Before our cut off no variants were found below XXX%. after our cut offs non were found below X% showing we indirectly applied a frequency threshold.
-    iii) discussion of coverage
-    iv) Lofreq and frequency cut offs.
-    v) reiterate importance of decreases sensitivity when comparing rare SNV between samples.
+ Despite this reduced accuracy we applied DeepSNV to experimental populations that more closely mimic the diversity and nucleaic acid input levels found in patient derived samples. At a modest input level of 10^5^ genomes per microliter we found roughly a four-fold increase in false positives. This decrease is likely dues to how the populations were constructed and stresses the importance of benchmarking SNV identifying pipelines under conditions to which they will be applied. Our WSN3-PR8 populations were constructed from reconstituded cDNA genomes and were devoid of any biases that might accompany PCR amplification. However, this was not the case in our 20 mutant populations. To more accurately mimic the method we use to process patient samples we mixed all 20 point mutants and WSN33 WT supernants and amplified influenza genomes from isolate RNA using a multiplex RT-PCR reaction. This method undoubitbly introduced unavaidable PCR biases into our populations. Gerstung *et. al.* have shown that PCR amplification biases lead to increased variability in the subconsensus nucleotide counts used to call SNV (cite DeepSNV documentation). Variability in the test samples compared to the control increases the likelihood that an erroneous SNV will exceed the error rate estimated in the plasmid control and thus the false positive rate. DeepSNV attempts to control for such variablity inpart by estimating the dispersion of a sample, which incorporates greater variance into the null model. In fact, our 20 mutant libraries were more dispersed than those in cell culture, indicating a need for greater variance. However, the variability estimates are limitted and this likely accounts for the decreased specificity.
+
+
+Because RT-PCR biases reduced the efficacy of the DeepSNV algorithm, we search for alternative means of increasing accuracy. Out-of-the box DeepSNV is rather agnostic towards the mapping quality and base quality of a given variant, and only masks bases calls with Phred scores below a user designated threshold. We were able to use the qualtiy metrics to filter putative variants and greatly increase the accuracy of SNV identifivation. However, commonly used thresholds (MapQ>20, Phred>30) did little to increase the accuracy of our method. Instead,we realied on our own empirically determined thresholds. We found the average MapQ and Phred scores of putative SNV were bimodal with true SNV gound in the higher of the two distributions. In both the MapQ and Phred distributions there was a clear distinction between the two populations, and we applied qualtiy thresholds to elimnate any putative SNV found in the lower of the two distributions. We found no correlation betwee MapQ and Phred (p>x), suggesting these metrics are independent and thus both thresholds eliminate distinct false positives. We have sequenced over 300 influenza libraries on over 5 Hiseq lanes and observe the consistant qualty distributions for DeepSNV identified putative SNV. We have sequenced many polio virus libraries and see the same bimodal trends. We do see shifts in the means of our MapQ distibutions when comparing polio and influenza libraries. This is most likely due to differences in the genomic structures of the viruses. The tremial regions of all 8 influenza genomic segments are conserved and this conservation decreases the MapQ of reads that map to these areas. Therefore, while our MapQ and Phred thresholds are robust in our system, they may need to be adjusted for use in other systems. Even in the face of stringent MapQ and Phred cut-offs, we found many high qualtiy false SNV were identified only at the termi of paired end reads. We removed these by filtering putatuive SNV calls based on their position on a paired end read. In particular these were found almost exclusively in regions of the genome that were enriched for read start sites. This enrichment is mostlikely a consequence  of sequence context, the fragmentation process, and our size selection protocol; however, it is unclear why our plasmid control would not contain similar biases. The cause may have a biological foundation in DI particals which have been identified to conatian truncated genomic segements and would only be present in infected supernantants and not a plasmid control. Despite finding these false positives in across a number of libraries, because our variants were made by overlap PCR mutatgenesis we can be confident they are an artifact of the experimental design and/or sample preparation, and have robustly controlled for such errors.
+
+It is common to filter and trim sequencing reads prior to SNV identification. However, we have taken a slightly different approach in our anlaysis. In the initial SNV identification step we have masked bases with Phred<30 but made no additional restrinctions on the raw data. Only after putative SNV (that exceed the frequency expected given a plasmid control) have been identified do we inpose quality restrictions. Our approach treats variant nucleotides more stringently than consensus base calls, but this is of little concern for two reasons. Firstly, we have identified specificity as the problem in accrate SNV identification, and so stringenlty filtering potential false positives seems appropriate. Additional, since there are orders of magnitude more sequenced reads for a concensus base than there are for variant bases, and our thresholds are based on mean quality scores it is unlikely this affects the accruacy of our method.    
+
+Frequency thresholds are one quality filter that is often applied to SNV after identification. Common thresholds range from 0.1% to 1%; however, there appears to a consensus that SNV identification is unreliable below 0.1%. We did not apply direct frequency thresholds. Due to variability in the frequency measurments of our DeepSNV identified true positives we found that frequency cut offs limited sensitivity and did not improve specificity. However, our quality thresholds acted as an indirect frequency control. Before applying MapQ, Phred and read positional thresholds, no variants were found below XXX% frequency; whereas, after our thresholds the rarest false positive was found at X% frequency. Read depth, or coverage, is another metric that is often used in conjunciton with frequency to insure accurate SNV identification. Although we did not apply a direct coverage cut off, DeepSNV has been reported to require a coverage of ten times the reprical of frequency for sufficient power to call SNV. This means that a coverage of 1,000 is needed to detect a variant at 1% frequency. In our anlaysis the lowest coverage for a true positive was x (x% frequency) while the lowest coverage for a false positive variant was x (x% frequency). Read depth is an important variable in NGS based studies of viral diversity and it, with input concentrations determine the power to detect rare variants. If there are large biases in read depth or input levels, two similar popualtions may appear distinct based solely on difference in sensitivity to detect rare SNV.
+
   
-  
-  D. Lower inputs
-  i) RT-PCR errors resulted in decreased specificity at lower levels of nucleic acid concentration input. 
-  ii) As these errors result from base changes, they appear as TP to algorithms and have high quality scores.
-  iii) Where contorled for by processing samples in duplicate.
+We observed a drastic decrease in sensitivity in our 10^3^ genomes per microliter samples mostlikely due to the lack of power discussed above. However, this drop in sensitivity was accompanied by reduced specificity as well. At lower nucleic acid concentrations, our SNV pipeline relied more heavily on RT-PCR amplification, which is an error prone process. RT-PCR errors were indistiguishable from true positive variants, as they do not arise from a sequencing error or a bioinformatic aritifact. We were able to limit these errors which are sporatic and random (cite) by processing low input samples in duplicate, and achieved comparable accuracy to what was seen at 10^5^ genomes per microliter. Quantifying and controling for RT-PCR errors in this way will allow us to accurately compare patient-samples that fall in this input range.
   iv) could duplicates have been pooled and sequenced as one sample?
   
+  
+As we have shown, experimental design impacts the accuracy of SNV identifying pipelines and must be considered in NGS based studies of viral diversity. Target amplification, genome structure and nucleic acid concentration are unavoidable sources of error that can vary depending on the virus and sample collection method. The reported accuracy of SNV indentifying algorithms is not directly applicable to every experimental design, and as we have shown these diviations can have profound effects on down stream analysis. In studying influenza, we have benefitied from an easily accessible reverse genetics system that made for a straight forward mutagensis based approach to benchmarking. Under our experimental conditions we have been able to greatly improve the accuracy of DeepSNV. Even thouhg the accuracy remains is imperfect, we are now equiped with an understanding of the limitations of our method. There may be more accurate variant callers than DeepSNV, or algorithms better suited for other systems; however, what we hope to stress is the fact that all methods have their limitations and understanding these limitations is vital for accurate science. Next generation sequencing is powerful tool that is just begining to unlock the complex dynamics of intrahost viral populations. As this tool becomes more and more popular, we urge our fellow virologist to remember in NGS as in all science, controls are needed to ensure accuracy, and we would do well to use them.   
+
+**Acknowledgements**
+
+We thank Pat Schloss, Mike Imperiale, and Robert Woods for helpful discussion and a critical reading of the manuscript. This work was supported by a Clinician Scientist Development Award from the Doris Duke Charitable Foundation and R01 AI118886, both to ASL. JTM was supported by the Michigan Predoctoral Training Program in Genetics (T32GM007544).
+
+
 IV. Comparision to Lofreq  and Consequences of errors
   i) our benchmarking shows that DeepSNVs means of distinguishing true from false variants is partitially breaks down under conditions that mimic patient derived samples.
   ii) This can be overcome with the addition of specific quality filters.
@@ -278,31 +267,6 @@ IV. Comparision to Lofreq  and Consequences of errors
   viii) While we did not robustly attempt to improve the Lofreq accuracy we did find that frequency threshold could improve its specificity.
   ix) Experimental conditions matter, regardless of variant calling method and so accurate study requires controls to be run.
   
-V. Consequences of errors
-  A. 
-  i) Accuracy in SNV indetification has consequences on down stream analysis.
-  ii) Diversity measurements and populations comparisions are affected.
-  iii) Differences in titer must be accounted for in population comparisions.
-    
-VI. Take home message
-i) Benchmarking controls are needed to ensure accurate NGS based studies of viral populations.
-i) As influenza virologist we benefit from an easily accessible reverse genetics system that made for a straight forward way to benchmark our variant calling.
-ii) Hopefully we have convince the reader that such controls are necessisary.
-iii) While we do not recomemd a varaints calling pipeline we have provided our raw data and computational approach.
-iv) It is provides the most robust data set to data and avaialable for anyone to test their methods against. 
- 
-
-
-
-
-
-
-
-**Acknowledgements**
-
-We thank Pat Schloss, Mike Imperiale, and Robert Woods for helpful discussion and a critical reading of the manuscript. This work was supported by a Clinician Scientist Development Award from the Doris Duke Charitable Foundation and R01 AI118886, both to ASL. JTM was supported by the Michigan Predoctoral Training Program in Genetics (T32GM007544).
-
-
 
 
 #References
