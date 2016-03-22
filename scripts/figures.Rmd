@@ -1,7 +1,7 @@
 ---
 title: "Figures"
 author: "JT McCrone"
-date: "February 11, 2015"
+date: "March 21, 2016"
 output: pdf_document
 ---
 
@@ -17,7 +17,7 @@ require(gtable)
 require(png)
 theme_set(new = theme_classic())
 require(knitr)
-opts_chunk$set(fig.align = "center", warning = FALSE, echo = FALSE,message=F,cache=F)
+opts_chunk$set(fig.align = "center", warning = FALSE, echo = FALSE,message=F,cache=T)
 
 rhg_cols<-c("#08519cff","#3182b4ff","#6baed6ff","#b1bdc5ff","#787878ff")
 
@@ -63,7 +63,7 @@ plot.ex<-function(spec1,spec2,roc.df,distribution){
   
  
  #plot the points and cut offs
- points.p<-ggplot(distribution,aes(x=1,y=test,fill=Condition))+geom_dotplot(binaxis = "y", stackdir = "center",dotsize = 1.5)+scale_fill_manual(values=c("white","black"),name="",breaks=c(T,F),labels=c("True Positive","False Positive"))+xlab("")+ylab("Log(p value)")+theme(axis.ticks = element_blank(), axis.text.x = element_blank(),axis.title.y = element_text(vjust=1.2),legend.position=c(0.9,0.65),legend.background = element_rect(fill = alpha("white",0)))+xlab("")
+ points.p<-ggplot(distribution,aes(x=1,y=test,fill=Condition))+geom_dotplot(binaxis = "y", stackdir = "center",dotsize = 1.5)+scale_fill_manual(values=c("white","black"),name="",breaks=c(T,F),labels=c("True Positive","False Positive"))+xlab("")+ylab("Log(p value)")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank(),axis.title.y = element_text(vjust=1.2),legend.position=c(0.9,0.65),legend.background = element_rect(fill = alpha("white",0)))+xlab("")
  
  points.p<-points.p+geom_hline(yintercept=output$threshold,
                           size=1,lty=2,color=c("#08519cff","#787878ff")) # these are the first 2 colors in set 1
@@ -78,17 +78,17 @@ ggdraw() +
 }
 plot.ex(0.35,0.95,roc.df,example)
 
-# pdf("../results/figures/roc.example.pdf",width=3.4,height=4)
-# plot.ex(0.35,0.95,roc.df,example)
-# dev.off()
-# pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.ex.pdf",width = 12,height = 8)
-# plot.ex(0.35,0.95,roc.df,example)
-# dev.off()
+pdf("../results/figures/roc.example.pdf",width=3.4,height=4)
+plot.ex(0.35,0.95,roc.df,example)
+dev.off()
+pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.ex.pdf",width = 12,height = 8)
+plot.ex(0.35,0.95,roc.df,example)
+dev.off()
 
 ```
 
 
-Figure 1. An example ROC. A) Hypothetical variants are stratified by p value. True variants are shown as filled circles, while those corresponding to RT, PCR, or sequencing errors are shown as open circles. Potential thresholds are indicated as colored lines. B) An ROC made from the data shown in A. The colored lines indicate the points made by the thresholds in A. 
+Figure 1. An example ROC curve. A) Hypothetical variants are stratified by log of the p value. True positives variants are shown as closed circles, while false positive variants are represented as open circles. Potential thresholds are indicated as colored lines. B) An ROC curve made from the hypothetical data shown in A. The colored lines indicate the points on the curve made by the thresholds in A. 
 \pagebreak
 ```{r,roc_helper_runctions}
 find_freq<-function(Id){ # helper function to get the expected frequency from the sample name
@@ -347,12 +347,12 @@ m.roc.table<-miseq.roc.table(sum.df,0.01,possible_tp,possible_vars,">")
 #knitr::kable(m.roc.table)
 m.roc.table<-rename(m.roc.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True\nPositives","adj.specificity"="Specificity","FP"="False\nPositives"))
 
-m.roc.table$Frequency<-c("5.0%","2.5%","1.25%","0.63%","0.016%")
+m.roc.table$Frequency<-c("5.0%","2.5%","1.25%","0.63%","0.16%")
 m.roc.table$Sensitivity<-round(m.roc.table$Sensitivity,digits=dd)
 m.roc.table$Specificity<-round(m.roc.table$Specificity,digits=dd)
 
-miseq.sense.63<-m.roc.table$Sensitiviy[m.roc.table$Frequency=="0.63%"]
-miseq.sense.16<-m.roc.table$Sensitiviy[m.roc.table$Frequency=="0.016%"]
+miseq.sense.63<-m.roc.table$Sensitivity[m.roc.table$Frequency=="0.63%"]
+miseq.sense.16<-m.roc.table$Sensitivity[m.roc.table$Frequency=="0.16%"]
 
 tbl<-make.table(m.roc.table,tt1)
 
@@ -372,13 +372,13 @@ title = element_blank())->miseq.setup # empty plot with setup png a background
 #plot_grid(miseq.setup,miseq.roc.p, tbl, labels=c("A", "B","C"), ncol = 3, nrow = 1)
 # Figure 2
 
-# pdf("../results/figures/miseq1.pdf",width=3.4,height=7)
-# ggdraw() +
-#   draw_plot(miseq.setup, 0.2, .66, .6, 0.33) + #x y width height
-#   draw_plot(miseq.roc.p, 0.05, 0.33, .9, 0.33) +
-#   draw_plot(tbl, 0.05, 0, .9, 0.33) +
-#   draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(0.95, 0.7, 0.35), size = 15)
-# dev.off()
+pdf("../results/figures/miseq1.pdf",width=3.4,height=7)
+ggdraw() +
+  draw_plot(miseq.setup, 0.2, .66, .6, 0.33) + #x y width height
+  draw_plot(miseq.roc.p, 0.05, 0.33, .9, 0.33) +
+  draw_plot(tbl, 0.05, 0, .9, 0.33) +
+  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(0.95, 0.7, 0.35), size = 15)
+dev.off()
 
 ggdraw() +
   draw_plot(miseq.setup, 0.2, .66, .6, 0.33) + #x y width height
@@ -399,7 +399,7 @@ ggdraw() +
 ```
 
 
-Figure 2. Initial DeepSNV accuracy. A) RT-PCR amplified WSN33 genomes were diluted into PR8 at decreasing frequencies and sequenced on an Illumina Miseq. B) An ROC measuring the pipeline's ability to identify WSN33 SNVs relative to PR8 at the indicated frequencies. C) A summary of the DeepSNV accuracy at a p value threshold of 0.01.
+Figure 2. Initial DeepSNV accuracy. A) Reconstitued cDNA genomes of influenza strain WSN33 were diluted serially into PR8 prior to sequencing on an Illumina Miseq machine. B) An ROC curve measuring the accuracy of DeepSNV in identifying WSN33 variants mixed with PR8 at the indicated frequencies. C) A summary the data in B at a p value threshold of 0.01.
 \pagebreak
 
 ```{r,Miseq_read.cut,eval=F}
@@ -516,13 +516,13 @@ text = element_blank(),
 line = element_blank(),
 title = element_blank())->hiseq.setup 
 
-# pdf("../results/figures/hiseq1.pdf",width=3.4,height=7)
-# ggdraw() +
-#   draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
-#   draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
-#   draw_plot(tbl, 0.05, 0, .9, 0.33) +
-#   draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
-# dev.off()
+pdf("../results/figures/hiseq1.pdf",width=3.4,height=7)
+ggdraw() +
+  draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
+  draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
+  draw_plot(tbl, 0.05, 0, .9, 0.33) +
+  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
+dev.off()
 
 ggdraw() +
   draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
@@ -534,7 +534,7 @@ ggdraw() +
 ```
 
 
-Figure 3. DeepSNV accuracy patient sample conditions A) 20 known single point mutants were diluted into wild type at decreasing frequencies. These were diluted further into viral media to match the genomes concentration found in patent samples (10$^5$-10$^3$ genomes/$\mu$l) and sequenced on an Illumina Hiseq (2 x 152bp reads. B) An ROC indicating the ability to accurately identify the 20 known variants in the 10 $^5$ genomes/$\mu$l samples. C) A table of the accuracy of our variant calling for the 10 $^5$ genomes/$\mu$l samples at a p value threshold of 0.01.
+Figure 3. Decreased accuracy under patient-derived sample conditions A) 20 known single point mutants were diluted into WT WSN33 at decreasing frequencies. These populations were diluted further in basal media to match the genome concentrations found in patint-dervied samples (10$^5$-10$^3$ genomes/$\mu$l). B) The accuracy of DeepSNV in idenfying the 20 known true positive variants in the 10 $^5$ genomes/$\mu$l samples. C) A summary table of the accuracy of our method for the 10 $^5$ genomes/$\mu$l samples at a p value threshold of 0.01.
 
 \pagebreak
 
@@ -542,7 +542,9 @@ Figure 3. DeepSNV accuracy patient sample conditions A) 20 known single point mu
 ```{r, phred_mapq filter}
 sig.df<-subset(sum.df,p.val<0.01)
 
-mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(size=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_manual(name="",labels=c("False posivite","True positive"),values=c("#787878ff","#08519cff"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ")+theme(legend.position="top") 
+sig.df<-sig.df[order(sig.df$category,decreasing = F),]
+
+mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(size=0.8)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_manual(name="",labels=c("False positives","True positives"),values=c("#b1bdc5ff","#08519cff"))+ylab("Mean MapQ")+xlab("Mean Phred ")+theme(legend.position="top") 
 
 
 #mapq_phred.normal
@@ -595,7 +597,7 @@ sig.cut.df<-subset(cut.df.all,p.val<0.01)
 # ggplot(subset(sig.cut.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 
 
-read.pos<-ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,fill=category))+geom_histogram(position='dodge')+scale_fill_manual(name="",labels=c("False positive","True positive"),values=c("#787878ff","#08519cff"))+xlab("Average position on read")+ylab("Number of variants")+theme(legend.position="top")
+read.pos<-ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,fill=category))+geom_histogram(position='dodge')+scale_fill_manual(name="",labels=c("False positive","True positive"),values=c("#b1bdc5ff","#08519cff"))+xlab("Average position on read")+ylab("Number of variants")+theme(legend.position="top")
 # read.pos
 # pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/read.pos.pdf")
 # read.pos
@@ -644,14 +646,14 @@ h.cut.read.table.5$Specificity[h.cut.read.table.5$Specificity>0.9999]<-">0.9999"
 
 tbl<-make.table(h.cut.read.table.5,tt1) # Make table
 
-# pdf("../results/figures/figure4.pdf",width=3.4,height=9)
-# ggdraw() +
-#   draw_plot(mapq_phred.normal,0.03, 0.77, .85, 0.23) + 
-#   draw_plot(read.pos, 0.03, .53, .85, .25) +
-#   draw_plot(read.roc, 0.03, 0.23, 0.85, .3) +
-#   draw_plot(tbl,   0.025, 0, 0.95, .25) +
-#   draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(1, 0.78, 0.55,0.25), size = 15)
-# dev.off()
+pdf("../results/figures/figure4.pdf",width=3.4,height=9)
+ggdraw() +
+  draw_plot(mapq_phred.normal,0.03, 0.77, .85, 0.23) +
+  draw_plot(read.pos, 0.03, .53, .85, .25) +
+  draw_plot(read.roc, 0.03, 0.23, 0.85, .3) +
+  draw_plot(tbl,   0.025, 0, 0.95, .25) +
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(1, 0.78, 0.55,0.25), size = 15)
+dev.off()
 
 ggdraw() +
   draw_plot(mapq_phred.normal,0.03, 0.77, .85, 0.23) + 
@@ -661,7 +663,7 @@ ggdraw() +
   draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(1, 0.78, 0.55,0.25), size = 15)
 ```
 
-Figure 4. Investigating the quality of variants in the the 10 $^5$ genomes/$\mu$l samples. A) All called variants from the 10 $^5$ genomes/$\mu$l samples with p<0.01 stratified by the mean mapping quality of the reads containing the variant and the mean Phred scores of the variant bases. Dashed lines indicate  common cutoffs of 20 and 30 for mapping quality and Phred respectively. B) A histogram of all called variants from the 10 $^5$ genomes/$\mu$l samples with p<0.01 binned by the average position of the variant relative to the Hiseq reads on which it is found. C) An ROC of the accuracy of the variant caller when the following quality cut offs are applied : mean mapping quality of 30, mean Phred of 35, and an average read position between 32 and 94 (the middle 50% of the read). D) A table summarizing the ROC in C at a p value threshold of 0.01.
+Figure 4. Accuracy can be improved through quality thresholds. A) We stratified all called variants from the 10 $^5$ genomes/$\mu$l samples with p<0.01 stratified by the mean mapping quality of the reads containing the variant and the mean Phred scores of the variant bases. Dashed lines indicate  common cutoffs of 20 and 30 for mapping quality and Phred respectively. B) A histogram of average position on a pair end read the variants that passed our mean MapQ threshold of 30 and mean Phred threshold of 35. C) The accuracy of our analyis after applying the following quality cut offs : mean MapQ> 30, mean Phred> 35, and an average read position between 32 and 94 (the middle 50% of the read). D) A table summarizing accuracy in C at a p value threshold of 0.01.
 
 \pagebreak
 
@@ -690,7 +692,7 @@ x$adj.sensitivity[x$frequency=="2.0%"]<-x$adj.sensitivity[x$frequency=="2.0%"]-0
 
 
 
-ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab("1-Specificity (adjusted)")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position='none')+geom_text(data=x,aes(x=1-adj.specificity,y=adj.sensitivity,label=frequency),hjust=-0.2)->lofreq.roc.p
+ggplot(subset(lofreq.roc,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position='none')+geom_text(data=x,aes(x=1-adj.specificity,y=adj.sensitivity,label=frequency),hjust=-0.2)->lofreq.roc.p
 # This is so that the text is not cut off
 lofreq.roc.p <- ggplot_gtable(ggplot_build(lofreq.roc.p))
 lofreq.roc.p$layout$clip[lofreq.roc.p$layout$name == "panel"] <- "off"
@@ -717,12 +719,12 @@ tbl<-make.table(lofreq.table,tt1) # Make table
 #   draw_plot_label(c("A", "B"), c(0, 0.5), c(1, 1), size = 15)
 
 
-# pdf("../results/figures/lofreq1.pdf",width=3.4,height=5)
-# ggdraw() +
-#   draw_plot(lofreq.roc.p, 0, 0.5, 0.9, 0.45) + 
-#   draw_plot(tbl, 0.025, 0, 0.95, .48) +
-#   draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
-# dev.off()
+pdf("../results/figures/lofreq1.pdf",width=3.4,height=5)
+ggdraw() +
+  draw_plot(lofreq.roc.p, 0, 0.5, 0.9, 0.45) +
+  draw_plot(tbl, 0.025, 0, 0.95, .48) +
+  draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
+dev.off()
 
 ggdraw() +
   draw_plot(lofreq.roc.p, 0, 0.5, 0.9, 0.45) + 
@@ -730,7 +732,7 @@ ggdraw() +
   draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
 ```
 
-Figure 5. The accuracy of Lofreq. The variant caller Lofreq was applied to the 10 $^5$ genomes/$\mu$l samples. A) An ROC of the accuracy of Lofreq using standard parameters. The specificity of the caller was scaled to account for the same number of tests as the DeepSNV algorithm. Lofreq provides quality scores instead of p values. These were used to set cutoffs for the ROC. B) A table summarizing the accuracy of the ROC A using the standard cut offs applied by the algorithm.
+Figure 5. The accuracy of the Lofreq algorithm on our 10^5% genomes/$\mu$l populations. A)  The accuracy of Lofreq using standard parameters. The specificity of the caller was scaled to account for the same number of tests as the DeepSNV algorithm. B) A table summarizing the accuracy of the ROC A using the standard cut offs applied by the algorithm.
 
 \pagebreak
 
@@ -773,9 +775,9 @@ ac_freq<-ac_freq+xlab("Expected Frequency")+ylab("Measured Frequency")+theme(leg
 ac_freq<-ac_freq+geom_point(data=subset(medians,gc=="5"),mapping=aes(x=exp.freq,y=median),shape=95,size=20)
 ac_freq
 
-# pdf("../results/figures/freq.pdf",width=3.4,height=3.4)
-# ac_freq
-# dev.off()
+pdf("../results/figures/freq.pdf",width=3.4,height=3.4)
+ac_freq
+dev.off()
 
 ```
 
@@ -851,14 +853,14 @@ h.cut.read.table.3$Specificity<-round(h.cut.read.table.3$Specificity,digits=dd)
 
 tbl.3<-make.table(h.cut.read.table.3,tt1) # Make table
 
-# pdf("../results/figures/lower.pdf",width=3.4,height=9)
-# ggdraw() +
-#   draw_plot(roc.4,0.03, 0.69, .85, 0.25) + 
-#   draw_plot(tbl.4, 0.025, .47,  0.95, .25) +
-#   draw_plot(roc.3, 0.03, 0.22, 0.85, .25) +
-#   draw_plot(tbl.3,   0.025, 0, 0.95, .25) +
-#   draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(0.97, 0.73, 0.5,0.23), size = 15)
-# dev.off()
+pdf("../results/figures/lower.pdf",width=3.4,height=9)
+ggdraw() +
+  draw_plot(roc.4,0.03, 0.69, .85, 0.25) +
+  draw_plot(tbl.4, 0.025, .47,  0.95, .25) +
+  draw_plot(roc.3, 0.03, 0.22, 0.85, .25) +
+  draw_plot(tbl.3,   0.025, 0, 0.95, .25) +
+  draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(0.97, 0.73, 0.5,0.23), size = 15)
+dev.off()
 
 ggdraw() +
   draw_plot(roc.4,0.03, 0.69, .85, 0.25) + 
@@ -868,7 +870,7 @@ ggdraw() +
   draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(0.97, 0.73, 0.5,0.23), size = 15)
 ```
 
-Figure 7. The accuracy of DeepSNV at lower input levels. A) An ROC depicting the accuracy of our method when applied to the 10 $^4$ genomes/$\mu$l samples. B) A table summarizing the accuracy at 10 $^4$ genomes/$\mu$l with a  p value threshold of 0.01. C) An ROC depicting the accuracy of our method when applied to the 10 $^3$ genomes/$\mu$l samples. B) A table summarizing the accuracy at 10 $^3$ genomes/$\mu$l with a  p value threshold of 0.01
+Figure 7. The accuracy of DeepSNV decreased when applied to samples with less input nucleic acid. A) An ROC curve for the 10 $^4$ genomes/$\mu$l samples. B) A table summarizing the accuracy at 10 $^4$ genomes/$\mu$l with a  p value threshold of 0.01. C) An ROC curve depicting the accuracy of our method when applied to the 10 $^3$ genomes/$\mu$l samples. B) A table summarizing the accuracy at 10 $^3$ genomes/$\mu$l with a  p value threshold of 0.01
 
 \pagebreak
 
@@ -932,7 +934,7 @@ dups.table$Frequency<-c("5.0%","2.0%","1.0%","0.5%")
 dups.table$Sensitivity<-round(dups.table$Sensitivity,digits=dd)
 dups.table$Specificity<-round(dups.table$Specificity,digits=dd)
 
-tbl<-make.table(dups.table,tt2) # Make table
+tbl<-make.table(dups.table,tt1) # Make table
 
 exp.meas.freq<-ddply(cut.df,~exp.freq+mutation+category, function(x){
                                                                                       freq1=x$freq.var[x$dup=="1"]
@@ -943,12 +945,12 @@ exp.meas.freq<-ddply(cut.df,~exp.freq+mutation+category, function(x){
 
 
 
-# pdf("../results/figures/dups.roc.pdf",width=3.4,height=5)
-# ggdraw() +
-#   draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) + 
-#   draw_plot(tbl, 0.025, 0, 0.95, .48) +
-#   draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
-# dev.off()
+pdf("../results/figures/dups.roc.pdf",width=3.4,height=5)
+ggdraw() +
+  draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) +
+  draw_plot(tbl, 0.025, 0, 0.95, .48) +
+  draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
+dev.off()
 
 ggdraw() +
   draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) + 
@@ -972,19 +974,15 @@ ggdraw() +
 
 ```
 
-Figure 8. The accuracy of DeepSNV at lower input levels when run in duplicate. A subset of the 10 $^4$ genomes/$\mu$l samples were processed in duplicate to control for RT-PCR errors. A) An ROC of  10 $^4$ genomes/$\mu$l samples processed in duplicate. A variant was required to be found in both duplicates to be considered. B) A table summarizing the accuracy when applied to duplicate samples with 10 $^4$ genomes/$\mu$l input, p<0.01. 
+Figure 8. The accuracy of DeepSNV at lower input levels is improved by processing samples in duplicate. A) An ROC curve of  the 10 $^4$ genomes/$\mu$l samples processed in duplicate. A variant was required to be found in both duplicates to be considered. B) A table summarizing the accuracy when applied to duplicate samples with 10 $^4$ genomes/$\mu$l input, p<0.01. 
 
 \pagebreak
 
-### Table 1
+### Table 1.
 
+Table 1. Accurate SNV indentification is vital for accurate measure of intrahost diversity. We measured the richness and Shannon's Entropy of the designated 10^5^ genomes$\mu$l populations at each stage of our benchmarking procedure and compared the results with what is expected. Additionaly we calculated the L1-norm of the populations relative to the expected population. 
 
-Richness
-Inverse Simpsons D ( without replacement)
-Shannon Entropy
-For these I'm assuming all varaints are independent
-
-```{r}
+```{r,results="asis",cache=FALSE}
 mut_pat="(.*)_[A,T,C,G](\\d+)[A,T,C,G]"
 perfect<-data.frame(mutation=rep(true_snv$mutant,times=4),freq.var=rep(c(0.05,0.02,0.01,0.005),each=20))
 perfect=mutate(perfect,chr=gsub(pattern = mut_pat,replacement = "\\1",x=mutation),pos=gsub(pattern = mut_pat,replacement = "\\2",x=mutation))
@@ -1020,44 +1018,49 @@ get_data<-function(x,setting){
   }else{
   exp.freq=unique(x$exp.freq)
   }
-  out<-data.frame(Richness=round(rich(x),digits = 0), Entropy=format(H(x),scientific = T,digits = 3),Manhattan=round(euc(x,subset(perfect,freq.var==exp.freq)),digits=3)) #"1/D"=D(x),
+  out<-data.frame(Richness=round(rich(x),digits = 0), Entropy=format(H(x),scientific = T,digits = 3),'L1-norm'=round(euc(x,subset(perfect,freq.var==exp.freq)),digits=3)) #"1/D"=D(x),
   rownames(out)<-setting
   return(t(out))
 }
+require(xtable)
 tabulate<-function(input,freq){
-get_data(subset(perfect,freq.var==freq),"Expected")->perf
-get_data(subset(sum.df,gc==input & exp.freq==freq & p.val<0.01 & category %in% c(T,F)),"DeepSNV")->deepSNV
-get_data(subset(lofreq.df,gc==input & exp.freq==freq & category %in% c(T,F)),"Lofreq")->lo
-get_data(subset(cut.read.df.all,gc==input & exp.freq==freq & p.val<0.01 & category %in% c(T,F) ),"DeepSNV Final")->deepSNV.f
-knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f))
+x<-data.frame()
+for(i in 1:length(freq)){  
+get_data(subset(perfect,freq.var==freq[i]),"Expected")->perf
+get_data(subset(sum.df,gc==input & exp.freq==freq[i] & p.val<0.01 & category %in% c(T,F)),"DeepSNV")->deepSNV
+get_data(subset(lofreq.df,gc==input & exp.freq==freq[i] & category %in% c(T,F)),"Lofreq")->lo
+get_data(subset(cut.read.df.all,gc==input & exp.freq==freq[i] & p.val<0.01 & category %in% c(T,F) ),"DeepSNV modified")->deepSNV.f
+y<-cbind(perf,deepSNV.f,lo,deepSNV)
+x<-rbind(x,y)
 }
-# tabulate.4<-function(input,freq){
-# get_data(subset(perfect,freq.var==freq),"Perfect")->perf
-# get_data(subset(sum.df,gc==input & exp.freq==freq),"DeepSNV")->deepSNV
-# get_data(subset(lofreq.df,gc==input & exp.freq==freq),"Lofreq")->lo
-# get_data(subset(cut.read.sig.df,gc==input & exp.freq==freq),"DeepSNV Final")->deepSNV.f
-# get_data(subset(dups,exp.freq==freq),"DeepSNV duplicates")->deepSNV.d
-# 
-# knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f,deepSNV.d),digits = 2)
-# }
+names<-data.frame(Frequency=c("","5.0%","","","1.0%","","","0.5%",""),names=rep(c("Richness","Entropy","L1-norm"),times=3))
+x<-cbind(names,x)
+#x<-subset(x,select=c(names,Expected,DeepSNV,Lofreq,DeepSNV Final))
+x<-rename(x,c("names"=""))
+xtab<-xtable(x)
+align(xtab) <- rep("c", 7)
+print(xtab,include.rownames = FALSE,hline.after=c(-1,0,3,6))
+}
+
+
+
 
 ```
 
-$10^5$ 5%
 
-```{r}
-tabulate(5,0.05)
+```{r,results="asis",cache=F}
+tabulate(5,c(0.05,0.01,0.005))
+
+#
+
 ```
 
-$10^5$ 1%
 
-```{r}
-tabulate(5,0.01)
+```{r,coverage}
+cov<-mutate(subset(cut.read.df.all,p.val<0.01 & gc>2 & exp.freq>0.001),coverage=cov.tst.fw+cov.tst.bw)
+
+tp<-subset(cov,category==T)
+fp<-subset(cov,category==F)
+tp_cov<-data.frame(coverage=min(tp$coverage),freq.var=tp$freq.var[tp$coverage==min(tp$coverage)])
+fp_cov<-data.frame(coverage=min(fp$coverage),freq.var=fp$freq.var[fp$coverage==min(fp$coverage)])
 ```
-
-$10^5$ 0.5%
-
-```{r}
-tabulate(5,0.005)
-```
-
