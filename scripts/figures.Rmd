@@ -531,6 +531,8 @@ ggdraw() +
   draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
 # 
 # knitr::kable(subset(h.table.df,gc==4))
+
+twosided.hiseq<-mean(h.table.df$Specificity)
 ```
 
 
@@ -1063,4 +1065,104 @@ tp<-subset(cov,category==T)
 fp<-subset(cov,category==F)
 tp_cov<-data.frame(coverage=min(tp$coverage),freq.var=tp$freq.var[tp$coverage==min(tp$coverage)])
 fp_cov<-data.frame(coverage=min(fp$coverage),freq.var=fp$freq.var[fp$coverage==min(fp$coverage)])
+```
+
+
+
+```{r,oneside.Hiseq}
+sum.df<-read.csv("../data/process/2015-6-23.one.sided/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#") # reading in the variants from the pipeline output
+mfe.df<-read.csv("../data/reference/mfe.csv")
+# Getting genome lenght and segment information from the wsn33 fasta file
+reference.fasta<-"../data/reference/wsn33_wt_plasmid.fa"
+segments <- fasta.seqlengths(reference.fasta)
+regions.bed <- data.frame(chr = gsub("[ ].*","", names(segments)), start=12, stop=segments-13, row.names=NULL) # the univeral primers are 12 and 13 bp long
+regions.bed<-mutate(regions.bed,chr=as.character(chr))
+
+# The samples are named in the following format log(genome copy/ul)_expected frequency of variants We'll use that information here to get the gc# and exp.freq for each variant called
+
+pat<-"([0-9]+)_([0-9]+)" 
+mutate(sum.df, gc = sub(pat,"\\1",Id),
+       exp.freq = sub(pat,"\\2",Id)
+)-> sum.df
+mutate(sum.df,exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq)/1000,no = as.numeric(exp.freq)/100))->sum.df
+
+sum.df<-subset(sum.df,exp.freq>0.001) # remove this to include exp.freq 0.01%
+# Id the variants as T or F 
+true_snv<-read.csv("../data/reference/mutant_id.csv",stringsAsFactor=F) # get the T variants
+sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
+wt1_mut<-subset(sum.df,Id=="WT1",select=mutation)
+wt2_mut<-subset(sum.df,Id=="WT2",select=mutation)
+
+wt_mut<-intersect(wt1_mut$mutation,wt2_mut$mutation)
+
+#length(wt_mut) How many wt muts do we find.
+sum.df$category[sum.df$mutation %in% wt_mut]<-"wt"
+sum.df<-subset(sum.df,!(grepl("WT",Id))) # remove the WT sample
+
+sum.df$category[sum.df$mutation %in% mfe.df$mutation]<-"mfe"
+
+possible_tp<-20 # there are 20 possible true positives in the mix
+regions.bed<-mutate(regions.bed,length=stop-start-1) #because the numbers in the csv are the inner most binding sites of the primers and represent the last positiions that cannot be interogated.
+
+total_possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
+
+possible_vars<-total_possible_vars-length(wt_mut)-dim(mfe.df)[1] # removing the mfe and wt_mut sites
+hiseq_vars<-possible_vars
+hiseq_kb<-sum(regions.bed$length)/1000
+
+h.roc.df<-hiseq.roc(sum.df,possible_tp,possible_vars,">")
+
+
+x<-ddply(h.roc.df,~samp,fill_in_plots)
+
+x<-mutate(x,frequency=find_freq.v.h(exp.freq))
+
+x<-subset(x,gc==5)
+
+x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.03
+#x$adj.sensitivity[x$frequency=="5.0%"]<-x$adj.sensitivity[x$frequency=="5.0%"]+0.0
+
+Hiseq.roc<-ggplot(subset(h.roc.df,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.0%","1.0%","0.5%","0.2%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")+geom_text(data=subset(x,gc==5),aes(x=1-adj.specificity,y=adj.sensitivity,label=frequency),hjust=-0.2)
+
+# This is so that the text is not cut off
+Hiseq.roc <- ggplot_gtable(ggplot_build(Hiseq.roc))
+Hiseq.roc$layout$clip[Hiseq.roc$layout$name == "panel"] <- "off"
+
+
+
+h.table.df<-hiseq.roc.table(sum.df,0.01,possible_tp,possible_vars,">") 
+
+#knitr::kable(subset(h.table.df,gc==5))
+
+h.table.df<-rename(h.table.df,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True\nPositives","adj.specificity"="Specificity","FP"="False\nPositives"))
+
+h.table.df<-subset(h.table.df,gc==5,select=-c(gc))
+h.table.df$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
+h.table.df$Sensitivity<-round(h.table.df$Sensitivity,digits=dd)
+h.table.df$Specificity<-round(h.table.df$Specificity,digits=dd)
+
+
+
+tbl<-make.table(h.table.df,tt1)    # Make table
+
+readPNG("../results/pictures/hiseq_setup.png")->img # read in set up png
+g <- rasterGrob(img, interpolate=TRUE)
+qplot(1:1, 1:1, geom="blank") +
+annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+geom_blank()+xlab("")+ylab("")+
+theme(line = element_blank(),
+text = element_blank(),
+line = element_blank(),
+title = element_blank())->hiseq.setup 
+
+ggdraw() +
+  draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
+  draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
+  draw_plot(tbl, 0.05, 0, .9, 0.33) +
+  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
+# 
+# knitr::kable(subset(h.table.df,gc==4))
+
+onesided.hiseq<-mean(h.table.df$Specificity)
+
 ```
