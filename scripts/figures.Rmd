@@ -78,9 +78,9 @@ ggdraw() +
 }
 plot.ex(0.35,0.95,roc.df,example)
 
-pdf("../results/figures/roc.example.pdf",width=3.4,height=4)
-plot.ex(0.35,0.95,roc.df,example)
-dev.off()
+# pdf("../results/figures/roc.example.pdf",width=3.4,height=4)
+# plot.ex(0.35,0.95,roc.df,example)
+# dev.off()
 # pdf("~/Box Sync/Lab_work/Talks/2016_812/figures/roc.ex.pdf",width = 12,height = 8)
 # plot.ex(0.35,0.95,roc.df,example)
 # dev.off()
@@ -137,14 +137,13 @@ fill_in_plots<-function(x){
   }
   return(y)
 }
-
-sum_roc<-function(x){
+sum_roc<-function(x,direction){
   sum.df<-subset(x,category %in% c(TRUE,FALSE),select=c(category,p.val))# get the TRUE and false variant calls and p.vals
   if(length(which(sum.df$category==T))>0){ # filter out cases where there aren't any TP found
     if(length(which(sum.df$category==F))==0){
       sum.df<-rbind(sum.df,data.frame(category=F,p.val=1))
     }  
-    roc(sum.df$category~sum.df$p.val,plot=F,CI=T,direction=">")
+    roc(sum.df$category~sum.df$p.val,plot=F,CI=T,direction=direction)
   }
 }
 
@@ -183,8 +182,8 @@ roc_df.one<-function(roc_anal,thr){ # get the coordinates and cut offs for all t
   mutate(roc.df, exp.freq=find_freq.v(samp))-> roc.df
 } 
 ######### Miseq roc functions ##########
-miseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the roc calculations and adjustments
-  roc.ls<-dlply(sum.df,~Id,sum_roc)
+miseq.roc<-function(sum.df,possible_tp,possible_vars,direction){ # A function to run the roc calculations and adjustments
+  roc.ls<-dlply(sum.df,~Id,sum_roc,direction)
 
   roc.df<-roc_df(roc.ls)
   
@@ -198,8 +197,8 @@ miseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the r
   roc.df.adj$exp.freq <- factor(roc.df.adj$exp.freq, levels = rev(levels(roc.df.adj$exp.freq)))
   return(roc.df.adj)
 }
-miseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars){
-  roc.ls<-dlply(sum.df,~Id,sum_roc)
+miseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars,direction){
+  roc.ls<-dlply(sum.df,~Id,sum_roc,direction)
   roc.df<-roc_df.one(roc.ls,cut.off)
   roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df,possible_tp,possible_vars)
   roc.df.adj<-roc.df.adj[order(roc.df.adj$exp.freq,decreasing = T),]
@@ -210,8 +209,8 @@ miseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars){
 # The ROC data only includes points there the sensitivity changes.  At this point I have limitted our analysis to variants with p<0.05. So the lines in some plots stop short. For the final draft I will not apply this cut off. Even in that future case this step may be need as the ROC data only includes points where the sensitivity changes.  For now   This function extents the lines by adding a data point at the specificity of 0.002 and appropriate sensitivity. At the most it hurts us as we do not increase sensitivity and it might , but I doubt it. Anyway it is of no concern as we only care about the p=0.01 case which is well contained before this extension is needed
 
 ######### Hiseq roc functions ##########
-hiseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the roc calculations and adjustments
-  roc.ls<-dlply(sum.df,~Id,sum_roc)
+hiseq.roc<-function(sum.df,possible_tp,possible_vars,direction){ # A function to run the roc calculations and adjustments
+  roc.ls<-dlply(sum.df,~Id,sum_roc,direction)
 
   roc.df<-roc_df(roc.ls)
 
@@ -230,8 +229,8 @@ hiseq.roc<-function(sum.df,possible_tp,possible_vars){ # A function to run the r
   return(roc.df.adj)
 }
 
-hiseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars){
-  roc.ls<-dlply(sum.df,~Id,sum_roc)
+hiseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars,direction){
+  roc.ls<-dlply(sum.df,~Id,sum_roc,direction)
   roc.df<-roc_df.one(roc.ls,cut.off)
   roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df,possible_tp,possible_vars)
 mutate(roc.df.adj, gc = as.numeric(sub(pat,"\\1",samp)),
@@ -305,6 +304,8 @@ regions.bed <-read.csv("../data/reference/pr8_noprimingsites.bed.csv",stringsAsF
 regions.bed<-mutate(regions.bed,length=stop-start-1) #because the numbers in the csv are the inner most binding sites of the primers and represent the last positiions that cannot be interogated.
 
 possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
+miseq_vars<-sum(regions.bed$length)*3
+miseq_kb<-sum(regions.bed$length)/1000
 
 # limit the PR8 and the true positive data.frames to those not excluded by the priming sites
 
@@ -327,7 +328,7 @@ tp<-unique(true_snv$mutant)
 possible_tp<-length(tp)
 
 
-m.roc.df<-miseq.roc(sum.df,possible_tp,possible_vars)
+m.roc.df<-miseq.roc(sum.df,possible_tp,possible_vars,">")
 
 miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols,name="Frequency",labels=c("5.0%","2.5%","1.25%","0.63%","0.016%"))+xlab(bquote("1-Specificity (x"~10^-3~")"))+ylab("Sensitivity")+scale_y_continuous(limits=c(0,1))+scale_x_continuous(limits=c(0,0.005),breaks=c(0,0.001,0.002,0.003,0.004,0.005),labels=c(0:5))+theme(legend.position="none")
 
@@ -340,7 +341,7 @@ miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_st
 #  miseq.roc.p
 # dev.off()
 
-m.roc.table<-miseq.roc.table(sum.df,0.01,possible_tp,possible_vars)
+m.roc.table<-miseq.roc.table(sum.df,0.01,possible_tp,possible_vars,">")
 
 
 #knitr::kable(m.roc.table)
@@ -350,6 +351,8 @@ m.roc.table$Frequency<-c("5.0%","2.5%","1.25%","0.63%","0.016%")
 m.roc.table$Sensitivity<-round(m.roc.table$Sensitivity,digits=dd)
 m.roc.table$Specificity<-round(m.roc.table$Specificity,digits=dd)
 
+miseq.sense.63<-m.roc.table$Sensitiviy[m.roc.table$Frequency=="0.63%"]
+miseq.sense.16<-m.roc.table$Sensitiviy[m.roc.table$Frequency=="0.016%"]
 
 tbl<-make.table(m.roc.table,tt1)
 
@@ -369,13 +372,13 @@ title = element_blank())->miseq.setup # empty plot with setup png a background
 #plot_grid(miseq.setup,miseq.roc.p, tbl, labels=c("A", "B","C"), ncol = 3, nrow = 1)
 # Figure 2
 
-pdf("../results/figures/miseq1.pdf",width=3.4,height=7)
-ggdraw() +
-  draw_plot(miseq.setup, 0.2, .66, .6, 0.33) + #x y width height
-  draw_plot(miseq.roc.p, 0.05, 0.33, .9, 0.33) +
-  draw_plot(tbl, 0.05, 0, .9, 0.33) +
-  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(0.95, 0.7, 0.35), size = 15)
-dev.off()
+# pdf("../results/figures/miseq1.pdf",width=3.4,height=7)
+# ggdraw() +
+#   draw_plot(miseq.setup, 0.2, .66, .6, 0.33) + #x y width height
+#   draw_plot(miseq.roc.p, 0.05, 0.33, .9, 0.33) +
+#   draw_plot(tbl, 0.05, 0, .9, 0.33) +
+#   draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(0.95, 0.7, 0.35), size = 15)
+# dev.off()
 
 ggdraw() +
   draw_plot(miseq.setup, 0.2, .66, .6, 0.33) + #x y width height
@@ -401,8 +404,8 @@ Figure 2. Initial DeepSNV accuracy. A) RT-PCR amplified WSN33 genomes were dilut
 
 ```{r,Miseq_read.cut,eval=F}
 ### With read position cut off 63 and 188
-read.df<-subset(sum.df,Read_pos>63 & Read_pos<188)
-m.roc.df<-miseq.roc(read.df,possible_tp,possible_vars)
+read.df<-subset(sum.df,Read_pos>62 & Read_pos<188)
+m.roc.df<-miseq.roc(read.df,possible_tp,possible_vars,">")
 
 miseq.roc.p<-ggplot(m.roc.df,aes(x=1-adj.specificity,y=adj.sensitivity))+geom_step(aes(color=exp.freq),size=2)+scale_color_manual(values=rhg_cols)+xlab("1-Specificity")+ylab("Sensitivity")+guides(color=guide_legend(title="Frequency"))+scale_y_continuous(limits=c(0,1))#+scale_x_continuous(limits=c(0,0.005)
 
@@ -412,7 +415,7 @@ miseq.roc.p
 # miseq.roc
 # dev.off()
 
-m.roc.table<-miseq.roc.table(read.df,0.01,possible_tp,possible_vars)
+m.roc.table<-miseq.roc.table(read.df,0.01,possible_tp,possible_vars,">")
 knitr::kable(m.roc.table)
 
 ggplot(subset(sum.df,p.val<0.01),aes(x=Phred,y=MapQ,color=category))+geom_point(alpha=1)
@@ -429,7 +432,7 @@ ggplot(subset(sum.df,p.val<0.01),aes(x=Phred,y=MapQ,color=category))+geom_point(
 
 
 sum.df<-read.csv("../data/process/2015-6-23/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#") # reading in the variants from the pipeline output
- 
+mfe.df<-read.csv("../data/reference/mfe.csv") 
 # Getting genome lenght and segment information from the wsn33 fasta file
 reference.fasta<-"../data/reference/wsn33_wt_plasmid.fa" 
 segments <- fasta.seqlengths(reference.fasta)
@@ -455,15 +458,20 @@ wt_mut<-intersect(wt1_mut$mutation,wt2_mut$mutation)
 
 #length(wt_mut) How many wt muts do we find.
 sum.df$category[sum.df$mutation %in% wt_mut]<-"wt"
-sum.df<-subset(sum.df,!(grepl("WT",Id))) # remove the WT samples
+sum.df<-subset(sum.df,!(grepl("WT",Id))) # remove the WT sample
+
+sum.df$category[sum.df$mutation %in% mfe.df$mutation]<-"mfe"
 
 possible_tp<-20 # there are 20 possible true positives in the mix
 regions.bed<-mutate(regions.bed,length=stop-start-1) #because the numbers in the csv are the inner most binding sites of the primers and represent the last positiions that cannot be interogated.
 
-possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
+total_possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
 
+possible_vars<-total_possible_vars-length(wt_mut)-dim(mfe.df)[1] # removing the mfe and wt_mut sites
+hiseq_vars<-possible_vars
+hiseq_kb<-sum(regions.bed$length)/1000
 
-h.roc.df<-hiseq.roc(sum.df,possible_tp,possible_vars)
+h.roc.df<-hiseq.roc(sum.df,possible_tp,possible_vars,">")
 
 
 x<-ddply(h.roc.df,~samp,fill_in_plots)
@@ -483,7 +491,7 @@ Hiseq.roc$layout$clip[Hiseq.roc$layout$name == "panel"] <- "off"
 
 
 
-h.table.df<-hiseq.roc.table(sum.df,0.01,possible_tp,possible_vars) 
+h.table.df<-hiseq.roc.table(sum.df,0.01,possible_tp,possible_vars,">") 
 
 #knitr::kable(subset(h.table.df,gc==5))
 
@@ -508,13 +516,13 @@ text = element_blank(),
 line = element_blank(),
 title = element_blank())->hiseq.setup 
 
-pdf("../results/figures/hiseq1.pdf",width=3.4,height=7)
-ggdraw() +
-  draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
-  draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
-  draw_plot(tbl, 0.05, 0, .9, 0.33) +
-  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
-dev.off()
+# pdf("../results/figures/hiseq1.pdf",width=3.4,height=7)
+# ggdraw() +
+#   draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
+#   draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
+#   draw_plot(tbl, 0.05, 0, .9, 0.33) +
+#   draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
+# dev.off()
 
 ggdraw() +
   draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
@@ -525,6 +533,7 @@ ggdraw() +
 # knitr::kable(subset(h.table.df,gc==4))
 ```
 
+
 Figure 3. DeepSNV accuracy patient sample conditions A) 20 known single point mutants were diluted into wild type at decreasing frequencies. These were diluted further into viral media to match the genomes concentration found in patent samples (10$^5$-10$^3$ genomes/$\mu$l) and sequenced on an Illumina Hiseq (2 x 152bp reads. B) An ROC indicating the ability to accurately identify the 20 known variants in the 10 $^5$ genomes/$\mu$l samples. C) A table of the accuracy of our variant calling for the 10 $^5$ genomes/$\mu$l samples at a p value threshold of 0.01.
 
 \pagebreak
@@ -534,6 +543,7 @@ Figure 3. DeepSNV accuracy patient sample conditions A) 20 known single point mu
 sig.df<-subset(sum.df,p.val<0.01)
 
 mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(size=1)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_manual(name="",labels=c("False posivite","True positive"),values=c("#787878ff","#08519cff"))+ylab("Mean mapping quality")+xlab("Mean base qualtiy (Phred) ")+theme(legend.position="top") 
+
 
 #mapq_phred.normal
 
@@ -551,7 +561,7 @@ mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phre
 
 #ggplot(subset(sig.df,gc==5 & category %in% c(T,F)),aes(x=Phred,y=MapQ,color=category))+geom_point()
 
-cut.df<-subset(sum.df,MapQ>30 & Phred>35) # This removes the variants that don't pass
+#cut.df<-subset(sum.df,MapQ>30 & Phred>35) # This removes the variants that don't pass
 
 cut.df.all<-sum.df
 cut.df.all$p.val[cut.df.all$MapQ<30 | cut.df.all$Phred<35]<-1
@@ -571,6 +581,7 @@ cut.df.all$p.val[cut.df.all$MapQ<30 | cut.df.all$Phred<35]<-1
 # knitr::kable(subset(h.cut.table,gc==5))
 ```
 
+
 ```{r,read_pos,fig.width=3.4,fig.height=9}
 # ggplot(sig.df,aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 # ggplot(subset(sig.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
@@ -578,7 +589,7 @@ cut.df.all$p.val[cut.df.all$MapQ<30 | cut.df.all$Phred<35]<-1
 # ggplot(cut.df,aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 # ggplot(subset(cut.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 
-sig.cut.df<-subset(cut.df,p.val<0.01) 
+sig.cut.df<-subset(cut.df.all,p.val<0.01) 
 
 #ggplot(sig.cut.df,aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
 # ggplot(subset(sig.cut.df,gc==5),aes(x=pos,y=Read_pos,color=category))+geom_point()+facet_wrap(~chr)
@@ -590,13 +601,15 @@ read.pos<-ggplot(subset(sig.cut.df,category %in% c(T,F) & gc==5),aes(x=Read_pos,
 # read.pos
 # dev.off()
 
+fp_ends<-subset(sig.cut.df, category==F & Read_pos<32 | Read_pos>94)
+false_p_phred<-mean(fp_ends$Phred)
 
 #cut.read.df<-subset(cut.df,Read_pos>32 & Read_pos<94) # This removes the variants that don't pass
 
 cut.read.df.all<-cut.df.all # this set's the p.val of variants that don't pass the cut to 1
 cut.read.df.all$p.val[cut.read.df.all$Read_pos<32 | cut.read.df.all$Read_pos>94]<-1
 
-h.cut.read.df<-hiseq.roc(cut.read.df.all,possible_tp,possible_vars)
+h.cut.read.df<-hiseq.roc(cut.read.df.all,possible_tp,possible_vars,">")
 
 
 x<-ddply(h.cut.read.df,~samp,fill_in_plots)
@@ -618,7 +631,7 @@ read.roc <- ggplot_gtable(ggplot_build(read.roc))
 read.roc$layout$clip[read.roc$layout$name == "panel"] <- "off"
 
 
-h.cut.read.table<-hiseq.roc.table(cut.read.df.all,0.01,possible_tp,possible_vars)
+h.cut.read.table<-hiseq.roc.table(cut.read.df.all,0.01,possible_tp,possible_vars,">")
 #knitr::kable(subset(h.cut.read.table,gc==5))
 
 h.cut.read.table.5<-subset(h.cut.read.table,gc==5,select=-c(gc))
@@ -631,14 +644,14 @@ h.cut.read.table.5$Specificity[h.cut.read.table.5$Specificity>0.9999]<-">0.9999"
 
 tbl<-make.table(h.cut.read.table.5,tt1) # Make table
 
-pdf("../results/figures/figure4.pdf",width=3.4,height=9)
-ggdraw() +
-  draw_plot(mapq_phred.normal,0.03, 0.77, .85, 0.23) + 
-  draw_plot(read.pos, 0.03, .53, .85, .25) +
-  draw_plot(read.roc, 0.03, 0.23, 0.85, .3) +
-  draw_plot(tbl,   0.025, 0, 0.95, .25) +
-  draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(1, 0.78, 0.55,0.25), size = 15)
-dev.off()
+# pdf("../results/figures/figure4.pdf",width=3.4,height=9)
+# ggdraw() +
+#   draw_plot(mapq_phred.normal,0.03, 0.77, .85, 0.23) + 
+#   draw_plot(read.pos, 0.03, .53, .85, .25) +
+#   draw_plot(read.roc, 0.03, 0.23, 0.85, .3) +
+#   draw_plot(tbl,   0.025, 0, 0.95, .25) +
+#   draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(1, 0.78, 0.55,0.25), size = 15)
+# dev.off()
 
 ggdraw() +
   draw_plot(mapq_phred.normal,0.03, 0.77, .85, 0.23) + 
@@ -656,22 +669,24 @@ Figure 4. Investigating the quality of variants in the the 10 $^5$ genomes/$\mu$
 
 ```{r,lofreq,fig.height=5,fig.width=3.4}
 
-lofreq.df<-read.csv("../data/process/2015-6-23/lofreq/all.removed.mapq_vcf.vcf_csv.csv")
+lofreq.df<-read.csv("../data/process/2015-6-23/lofreq/all.removed.mapq_vcf.vcf_csv.csv",stringsAsFactors = F)
+
+lofreq.df$category[lofreq.df$mutation %in% wt_mut]<-"wt"
+lofreq.df$categroy[lofreq.df$mutation %in% mfe.df$mutation]<-"mfe"
 
 lofreq.df$p.val<-lofreq.df$QUAL # to make the roc based on the quality scores given by lofreq
 
-
-lofreq.roc<-hiseq.roc(cut.df,possible_tp,possible_vars)
+lofreq.roc<-hiseq.roc(lofreq.df,possible_tp,possible_vars,"<")
 
 x<-ddply(lofreq.roc,~samp,fill_in_plots)
 
 
-x<-mutate(x,frequency=find_freq.v.h(exp.freq))
+x<-mutate(x,frequency=as.character(find_freq.v.h(exp.freq)))
 
 x<-subset(x,gc==5)
 
-x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]-0.04
-x$adj.sensitivity[x$frequency=="2.0%"]<-x$adj.sensitivity[x$frequency=="2.0%"]-0.12
+x$adj.sensitivity[x$frequency=="1.0%"]<-x$adj.sensitivity[x$frequency=="1.0%"]+0.02
+x$adj.sensitivity[x$frequency=="2.0%"]<-x$adj.sensitivity[x$frequency=="2.0%"]-0.02
 
 
 
@@ -702,18 +717,17 @@ tbl<-make.table(lofreq.table,tt1) # Make table
 #   draw_plot_label(c("A", "B"), c(0, 0.5), c(1, 1), size = 15)
 
 
-pdf("../results/figures/lofreq1.pdf",width=3.4,height=5)
-ggdraw() +
-  draw_plot(lofreq.roc.p, 0, 0.5, 0.9, 0.45) + 
-  draw_plot(tbl, 0.025, 0, 0.95, .48) +
-  draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
-dev.off()
+# pdf("../results/figures/lofreq1.pdf",width=3.4,height=5)
+# ggdraw() +
+#   draw_plot(lofreq.roc.p, 0, 0.5, 0.9, 0.45) + 
+#   draw_plot(tbl, 0.025, 0, 0.95, .48) +
+#   draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
+# dev.off()
 
 ggdraw() +
   draw_plot(lofreq.roc.p, 0, 0.5, 0.9, 0.45) + 
   draw_plot(tbl, 0.025, 0, 0.95, .48) +
   draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
-
 ```
 
 Figure 5. The accuracy of Lofreq. The variant caller Lofreq was applied to the 10 $^5$ genomes/$\mu$l samples. A) An ROC of the accuracy of Lofreq using standard parameters. The specificity of the caller was scaled to account for the same number of tests as the DeepSNV algorithm. Lofreq provides quality scores instead of p values. These were used to set cutoffs for the ROC. B) A table summarizing the accuracy of the ROC A using the standard cut offs applied by the algorithm.
@@ -734,6 +748,19 @@ medians<-ddply(subset(cut.read.sig.df,category==T ),~exp.freq+gc, summarize, med
 #cut.read.sig.df$exp.freq<-as.factor(cut.read.sig.df$exp.freq)
 #cut.read.sig.df$exp.freq <- factor(cut.read.sig.df$exp.freq, levels = rev(levels(cut.read.sig.df$exp.freq)))
 
+### here weget the R2 of the sample
+
+model<-lm(formula = freq.var~exp.freq,data = subset(cut.read.sig.df,category==T & gc=="5"))
+
+corr_coef<-summary(model)$adj.r.squared
+
+
+interest<-subset(cut.read.sig.df,category==T & gc=="5")
+
+mean_fold<-mean(abs(interest$freq.var-interest$exp.freq)/interest$exp.freq)
+
+print(mean_fold)
+
 ac_freq<-ggplot(subset(cut.read.sig.df,category==T & gc=="5"),aes(x=exp.freq,y=freq.var,fill=factor(exp.freq,levels=rev(levels(as.factor(exp.freq))))))
 
 ac_freq<-ac_freq+geom_dotplot(binaxis = "y", stackdir = "center",dotsize=1)+scale_fill_manual(values=rhg_cols)
@@ -746,9 +773,9 @@ ac_freq<-ac_freq+xlab("Expected Frequency")+ylab("Measured Frequency")+theme(leg
 ac_freq<-ac_freq+geom_point(data=subset(medians,gc=="5"),mapping=aes(x=exp.freq,y=median),shape=95,size=20)
 ac_freq
 
-pdf("../results/figures/freq.pdf",width=3.4,height=3.4)
-ac_freq
-dev.off()
+# pdf("../results/figures/freq.pdf",width=3.4,height=3.4)
+# ac_freq
+# dev.off()
 
 ```
 
@@ -824,14 +851,14 @@ h.cut.read.table.3$Specificity<-round(h.cut.read.table.3$Specificity,digits=dd)
 
 tbl.3<-make.table(h.cut.read.table.3,tt1) # Make table
 
-pdf("../results/figures/lower.pdf",width=3.4,height=9)
-ggdraw() +
-  draw_plot(roc.4,0.03, 0.69, .85, 0.25) + 
-  draw_plot(tbl.4, 0.025, .47,  0.95, .25) +
-  draw_plot(roc.3, 0.03, 0.22, 0.85, .25) +
-  draw_plot(tbl.3,   0.025, 0, 0.95, .25) +
-  draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(0.97, 0.73, 0.5,0.23), size = 15)
-dev.off()
+# pdf("../results/figures/lower.pdf",width=3.4,height=9)
+# ggdraw() +
+#   draw_plot(roc.4,0.03, 0.69, .85, 0.25) + 
+#   draw_plot(tbl.4, 0.025, .47,  0.95, .25) +
+#   draw_plot(roc.3, 0.03, 0.22, 0.85, .25) +
+#   draw_plot(tbl.3,   0.025, 0, 0.95, .25) +
+#   draw_plot_label(c("A", "B", "C","D"), c(0, 0, 0,0), c(0.97, 0.73, 0.5,0.23), size = 15)
+# dev.off()
 
 ggdraw() +
   draw_plot(roc.4,0.03, 0.69, .85, 0.25) + 
@@ -872,7 +899,7 @@ dups<-mutate(dups,p.val=pmax(p.val1,p.val2))
 
 #dups<-subset(dups,p.val!=1)
 
-dups.roc<-hiseq.roc(dups,possible_tp,possible_vars)
+dups.roc<-hiseq.roc(dups,possible_tp,possible_vars,">")
 
 
 x<-ddply(dups.roc,~samp,fill_in_plots)
@@ -896,7 +923,7 @@ dups.roc.p$layout$clip[dups.roc.p$layout$name == "panel"] <- "off"
 # dups.roc.p
 # dev.off()
 
-dups.table<-hiseq.roc.table(dups,0.01,possible_tp,possible_vars)
+dups.table<-hiseq.roc.table(dups,0.01,possible_tp,possible_vars,">")
 #knitr::kable(subset(dups.table))
 
 rename(dups.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->dups.table
@@ -916,12 +943,12 @@ exp.meas.freq<-ddply(cut.df,~exp.freq+mutation+category, function(x){
 
 
 
-pdf("../results/figures/dups.roc.pdf",width=3.4,height=5)
-ggdraw() +
-  draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) + 
-  draw_plot(tbl, 0.025, 0, 0.95, .48) +
-  draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
-dev.off()
+# pdf("../results/figures/dups.roc.pdf",width=3.4,height=5)
+# ggdraw() +
+#   draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) + 
+#   draw_plot(tbl, 0.025, 0, 0.95, .48) +
+#   draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
+# dev.off()
 
 ggdraw() +
   draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) + 
@@ -958,7 +985,9 @@ Shannon Entropy
 For these I'm assuming all varaints are independent
 
 ```{r}
+mut_pat="(.*)_[A,T,C,G](\\d+)[A,T,C,G]"
 perfect<-data.frame(mutation=rep(true_snv$mutant,times=4),freq.var=rep(c(0.05,0.02,0.01,0.005),each=20))
+perfect=mutate(perfect,chr=gsub(pattern = mut_pat,replacement = "\\1",x=mutation),pos=gsub(pattern = mut_pat,replacement = "\\2",x=mutation))
 dups<-subset(dups,p.val<0.01)
 dups<-mutate(dups,freq.var=pmax(freq1,freq2))
 
@@ -967,49 +996,50 @@ rich<-function(x){
 }
 
 H<-function(x){
-  p=x$freq.var*log(x$freq.var)
-  -sum(p)
+  H_pos<-ddply(x,~chr+pos,summarize,wt=1-sum(freq.var),H=-sum(c(freq.var*log(freq.var),wt*log(wt))))
+sum(H_pos$H)/(possible_vars/3)
 }
 
 D<-function(x){
-  p=(x$freq.var)^2
-  1/sum(p)
+  D_pos<-ddply(x,~chr+pos,summarize,wt=1-sum(freq.var),D=1/sum(c(freq.var^2,wt^2)))
+  others=(possible_vars/3)-dim(D_pos)[1]
+  sum(D_pos$D,others)/(possible_vars/3)
 }
 
 euc<-function(x,ref){
   x$Id="test"
   ref$Id="ref"
-  all<-rbind(subset(x,select=c(mutation,freq.var,Id)),ref)
+  all<-rbind(subset(x,select=c(mutation,freq.var,Id)),subset(ref,select=c(mutation,freq.var,Id)))
   tab<-as.matrix(subset(dcast(all,mutation ~ Id, value.var = "freq.var"),select=-c(mutation)))
   tab[is.na(tab)]<-0
-  as.dist(dist(tab))
+  dist(t(tab),"manhattan")[1]
 }
 get_data<-function(x,setting){
   if(length(unique(x$freq.var))==1){
-    exp.freq=unique(x$freq.var)
+    exp.freq=unique(x$freq.var) # this is the perfect condition where there is only 1 frequency and it is all the same
   }else{
   exp.freq=unique(x$exp.freq)
   }
-  out<-data.frame(Richness=rich(x), Entropy=H(x),Simpson=D(x))#,dist=euc(x,subset(perfect,freq.var==exp.freq))[1])
+  out<-data.frame(Richness=round(rich(x),digits = 0), Entropy=format(H(x),scientific = T,digits = 3),Manhattan=round(euc(x,subset(perfect,freq.var==exp.freq)),digits=3)) #"1/D"=D(x),
   rownames(out)<-setting
   return(t(out))
 }
 tabulate<-function(input,freq){
-get_data(subset(perfect,freq.var==freq),"Perfect")->perf
-get_data(subset(sum.df,gc==input & exp.freq==freq),"DeepSNV")->deepSNV
-get_data(subset(lofreq.df,gc==input & exp.freq==freq),"Lofreq")->lo
-get_data(subset(cut.read.sig.df,gc==input & exp.freq==freq),"DeepSNV Final")->deepSNV.f
-knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f),digits = 2)
+get_data(subset(perfect,freq.var==freq),"Expected")->perf
+get_data(subset(sum.df,gc==input & exp.freq==freq & p.val<0.01 & category %in% c(T,F)),"DeepSNV")->deepSNV
+get_data(subset(lofreq.df,gc==input & exp.freq==freq & category %in% c(T,F)),"Lofreq")->lo
+get_data(subset(cut.read.df.all,gc==input & exp.freq==freq & p.val<0.01 & category %in% c(T,F) ),"DeepSNV Final")->deepSNV.f
+knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f))
 }
-tabulate.4<-function(input,freq){
-get_data(subset(perfect,freq.var==freq),"Perfect")->perf
-get_data(subset(sum.df,gc==input & exp.freq==freq),"DeepSNV")->deepSNV
-get_data(subset(lofreq.df,gc==input & exp.freq==freq),"Lofreq")->lo
-get_data(subset(cut.read.sig.df,gc==input & exp.freq==freq),"DeepSNV Final")->deepSNV.f
-get_data(subset(dups,exp.freq==freq),"DeepSNV duplicates")->deepSNV.d
-
-knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f,deepSNV.d),digits = 2)
-}
+# tabulate.4<-function(input,freq){
+# get_data(subset(perfect,freq.var==freq),"Perfect")->perf
+# get_data(subset(sum.df,gc==input & exp.freq==freq),"DeepSNV")->deepSNV
+# get_data(subset(lofreq.df,gc==input & exp.freq==freq),"Lofreq")->lo
+# get_data(subset(cut.read.sig.df,gc==input & exp.freq==freq),"DeepSNV Final")->deepSNV.f
+# get_data(subset(dups,exp.freq==freq),"DeepSNV duplicates")->deepSNV.d
+# 
+# knitr::kable(cbind(perf,deepSNV,lo,deepSNV.f,deepSNV.d),digits = 2)
+# }
 
 ```
 
@@ -1031,20 +1061,3 @@ $10^5$ 0.5%
 tabulate(5,0.005)
 ```
 
-$10^4$ 5%
-
-```{r}
-tabulate.4(4,0.05)
-```
-
-$10^4$ 1%
-
-```{r}
-tabulate.4(4,0.01)
-```
-
-$10^4$ 0.5%
-
-```{r}
-tabulate.4(4,0.005)
-```
