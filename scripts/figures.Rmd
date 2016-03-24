@@ -1,7 +1,5 @@
 ---
-title: "Figures"
-author: "JT McCrone"
-date: "March 21, 2016"
+title: "Benchmarking figures"
 output: pdf_document
 ---
 
@@ -351,7 +349,7 @@ m.roc.table$Frequency<-c("5.0%","2.5%","1.25%","0.63%","0.16%")
 m.roc.table$Sensitivity<-round(m.roc.table$Sensitivity,digits=dd)
 m.roc.table$Specificity<-round(m.roc.table$Specificity,digits=dd)
 
-miseq.sense.63<-m.roc.table$Sensitivity[m.roc.table$Frequency=="0.63%"]
+miseq.sense.63<-format(m.roc.table$Sensitivity[m.roc.table$Frequency=="0.63%"],digits = dd)
 miseq.sense.16<-m.roc.table$Sensitivity[m.roc.table$Frequency=="0.16%"]
 
 tbl<-make.table(m.roc.table,tt1)
@@ -451,8 +449,8 @@ sum.df<-subset(sum.df,exp.freq>0.001) # remove this to include exp.freq 0.01%
 # Id the variants as T or F 
 true_snv<-read.csv("../data/reference/mutant_id.csv",stringsAsFactor=F) # get the T variants
 sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
-wt1_mut<-subset(sum.df,Id=="WT1",select=mutation)
-wt2_mut<-subset(sum.df,Id=="WT2",select=mutation)
+wt1_mut<-subset(sum.df,Id=="WT1" & freq.var>0.01,select=mutation)
+wt2_mut<-subset(sum.df,Id=="WT2"& freq.var>0.01 ,select=mutation)
 
 wt_mut<-intersect(wt1_mut$mutation,wt2_mut$mutation)
 
@@ -1090,8 +1088,8 @@ sum.df<-subset(sum.df,exp.freq>0.001) # remove this to include exp.freq 0.01%
 # Id the variants as T or F 
 true_snv<-read.csv("../data/reference/mutant_id.csv",stringsAsFactor=F) # get the T variants
 sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
-wt1_mut<-subset(sum.df,Id=="WT1",select=mutation)
-wt2_mut<-subset(sum.df,Id=="WT2",select=mutation)
+wt1_mut<-subset(sum.df,Id=="WT1" & freq.var>0.01,select=mutation)
+wt2_mut<-subset(sum.df,Id=="WT2"& freq.var>0.01 ,select=mutation)
 
 wt_mut<-intersect(wt1_mut$mutation,wt2_mut$mutation)
 
@@ -1164,5 +1162,6 @@ ggdraw() +
 # knitr::kable(subset(h.table.df,gc==4))
 
 onesided.hiseq<-mean(h.table.df$Specificity)
+onesided.min<-min(h.table.df$Specificity)
 
 ```
