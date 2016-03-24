@@ -928,7 +928,7 @@ dups.roc.p$layout$clip[dups.roc.p$layout$name == "panel"] <- "off"
 dups.table<-hiseq.roc.table(dups,0.01,possible_tp,possible_vars,">")
 #knitr::kable(subset(dups.table))
 
-rename(dups.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True Positives","adj.specificity"="Specificity","FP"="False Positives"))->dups.table
+rename(dups.table,c("exp.freq"="Frequency","adj.sensitivity"="Sensitivity","TP"="True\nPositives","adj.specificity"="Specificity","FP"="False\nPositives"))->dups.table
 subset(dups.table,select=-c(gc))->dups.table
 dups.table$Frequency<-c("5.0%","2.0%","1.0%","0.5%")
 dups.table$Sensitivity<-round(dups.table$Sensitivity,digits=dd)
@@ -1153,12 +1153,12 @@ text = element_blank(),
 line = element_blank(),
 title = element_blank())->hiseq.setup 
 
-ggdraw() +
-  draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
-  draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
-  draw_plot(tbl, 0.05, 0, .9, 0.33) +
-  draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
-# 
+# ggdraw() +
+#   draw_plot(hiseq.setup, 0.1, .57, 0.8, 0.43) + #x y width height
+#   draw_plot(Hiseq.roc, 0.05, 0.33, .8, 0.33) +
+#   draw_plot(tbl, 0.05, 0, .9, 0.33) +
+#   draw_plot_label(c("A", "B", "C"), c(0.01, 0.01, 0.01), c(1, 0.7, 0.35), size = 15)
+# # 
 # knitr::kable(subset(h.table.df,gc==4))
 
 onesided.hiseq<-mean(h.table.df$Specificity)
