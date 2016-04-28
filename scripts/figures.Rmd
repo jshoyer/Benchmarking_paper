@@ -158,7 +158,7 @@ roc_df<-function(roc_analysis){ # get the coordinates and cut offs for all the p
   roc.df<-do.call(rbind,roc.ls) # combine into data frame
   roc.df$samp<-unlist(lapply(rownames(roc.df),id)) # add sample id column
   
-  mutate(roc.df, exp.freq=find_freq.v(samp))-> roc.df
+  mutate(roc.df, exp.freq=find_freq.v(samp))-> roc.df # this yeilds null in the hiseq.roc function below
 }  
 
 adjust.coords<-function(roc.df,sum.df,possible_tp,possible_vars){ # adjust the sensitivity and specificity called by pROC  
@@ -215,7 +215,7 @@ hiseq.roc<-function(sum.df,possible_tp,possible_vars,direction){ # A function to
 
   roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df,possible_tp,possible_vars)
   roc.df.adj<-roc.df.adj[order(roc.df.adj$adj.sensitivity),]
-  mutate(roc.df.adj, gc = as.numeric(sub(pat,"\\1",samp)),
+  mutate(roc.df.adj, gc = as.numeric(sub(pat,"\\1",samp)), # This fills in the null column given in the roc_df function above. line 161
        exp.freq = sub(pat,"\\2",samp)
   )-> roc.df.adj
   fills<-ddply(roc.df.adj,~samp,fill_in_plots) # take out these lines to not fill in the plots
@@ -436,7 +436,6 @@ reference.fasta<-"../data/reference/wsn33_wt_plasmid.fa"
 segments <- fasta.seqlengths(reference.fasta)
 regions.bed <- data.frame(chr = gsub("[ ].*","", names(segments)), start=12, stop=segments-13, row.names=NULL) # the univeral primers are 12 and 13 bp long
 regions.bed<-mutate(regions.bed,chr=as.character(chr))
-
 # The samples are named in the following format log(genome copy/ul)_expected frequency of variants We'll use that information here to get the gc# and exp.freq for each variant called
 
 pat<-"([0-9]+)_([0-9]+)" 
@@ -447,12 +446,14 @@ mutate(sum.df,exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq
 
 sum.df<-subset(sum.df,exp.freq>0.001) # remove this to include exp.freq 0.01%
 # Id the variants as T or F 
+sum.df<-ddply(sum.df,~chr,primer.cut) # removes any variants outside of priming sites (in this case it removes 0)
+
 true_snv<-read.csv("../data/reference/mutant_id.csv",stringsAsFactor=F) # get the T variants
 sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
 wt1_mut<-subset(sum.df,Id=="WT1" & freq.var>0.01,select=mutation)
-wt2_mut<-subset(sum.df,Id=="WT2"& freq.var>0.01 ,select=mutation)
+wt2_mut<-subset(sum.df,Id=="WT2" &freq.var>0.01 ,select=mutation)
 
-wt_mut<-intersect(wt1_mut$mutation,wt2_mut$mutation)
+wt_mut<-intersect(wt1_mut$mutation,wt2_mut$mutation) # there aren't any of these
 
 #length(wt_mut) How many wt muts do we find.
 sum.df$category[sum.df$mutation %in% wt_mut]<-"wt"
@@ -465,8 +466,9 @@ regions.bed<-mutate(regions.bed,length=stop-start-1) #because the numbers in the
 
 total_possible_vars<-sum(regions.bed$length)*3 # three possible variants/ position
 
-possible_vars<-total_possible_vars-length(wt_mut)-dim(mfe.df)[1] # removing the mfe and wt_mut sites
+possible_vars<-total_possible_vars-length(wt_mut)-dim(mfe.df)[1]-20 # removing the mfe and wt_mut sites
 hiseq_vars<-possible_vars
+print(hiseq_vars)
 hiseq_kb<-sum(regions.bed$length)/1000
 
 h.roc.df<-hiseq.roc(sum.df,possible_tp,possible_vars,">")
@@ -546,6 +548,18 @@ sig.df<-sig.df[order(sig.df$category,decreasing = F),]
 
 mapq_phred.normal<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,y=MapQ,color=category))+geom_point(size=0.8)+geom_hline(yintercept=20,linetype=2)+geom_vline(xintercept=30,linetype=2)+scale_x_continuous(limits=c(30,40))+scale_color_manual(name="",labels=c("False positives","True positives"),values=c("#b1bdc5ff","#08519cff"))+ylab("Mean MapQ")+xlab("Mean Phred ")+theme(legend.position="top") 
 
+mapq<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=MapQ,fill=category))+geom_histogram(position="dodge")+theme(legend.position="none")+scale_fill_manual(name="",labels=c("False positives","True positives"),values=c("#b1bdc5ff","#08519cff"))+ylab("SNV count")
+
+phred<-ggplot(subset(sig.df,category %in% c(T,F) & gc==5),aes(x=Phred,fill=category))+geom_histogram(position="dodge")+theme(legend.position="none")+scale_fill_manual(name="",labels=c("False positives","True positives"),values=c("#b1bdc5ff","#08519cff"))+scale_x_continuous(limits = c(30,40),breaks = c(30,32.5,35,37.5,40))+ylab("SNV count")
+
+
+pdf("../results/figures/mapq.pdf")
+mapq
+dev.off()
+
+pdf("../results/figures/phred.pdf")
+phred
+dev.off()
 
 #mapq_phred.normal
 
@@ -1039,20 +1053,21 @@ names<-data.frame(Frequency=c("","5.0%","","","1.0%","","","0.5%",""),names=rep(
 x<-cbind(names,x)
 #x<-subset(x,select=c(names,Expected,DeepSNV,Lofreq,DeepSNV Final))
 x<-rename(x,c("names"=""))
+write.csv(x,file="../results/tables/table_1.csv")
 xtab<-xtable(x)
 align(xtab) <- rep("c", 7)
 print(xtab,include.rownames = FALSE,hline.after=c(-1,0,3,6))
+
 }
 
 
-
+#
 
 ```
 
 
 ```{r,results="asis",cache=F}
 tabulate(5,c(0.05,0.01,0.005))
-
 #
 
 ```
@@ -1090,6 +1105,8 @@ sum.df<-subset(sum.df,exp.freq>0.001) # remove this to include exp.freq 0.01%
 # Id the variants as T or F 
 true_snv<-read.csv("../data/reference/mutant_id.csv",stringsAsFactor=F) # get the T variants
 sum.df<-mutate(sum.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
+sum.df<-ddply(sum.df,~chr,primer.cut)
+
 wt1_mut<-subset(sum.df,Id=="WT1" & freq.var>0.01,select=mutation)
 wt2_mut<-subset(sum.df,Id=="WT2"& freq.var>0.01 ,select=mutation)
 
@@ -1166,4 +1183,43 @@ title = element_blank())->hiseq.setup
 onesided.hiseq<-mean(h.table.df$Specificity)
 onesided.min<-min(h.table.df$Specificity)
 
+```
+
+
+```{r,table2}
+data<-read.csv("../data/reference/patient.csv")
+data<-subset(data,p.val<0.01 & freq.var<0.9)
+data<-ddply(data,~chr,primer.cut) # removes sites out side of primers
+
+data.cut<-subset(data,Phred>35 & MapQ>30 & Read_pos<94 & Read_pos>32)
+
+possible_vars<-total_possible_vars
+get_data<-function(x){
+  out<-data.frame(Richness=round(rich(x),digits = 0), Entropy=format(H(x),scientific = T,digits = 3)) #"1/D"=D(x),
+  #rownames(out)<-setting
+  return(out)
+}
+get_data.cut<-function(x){
+  out<-data.frame(Richness.mod=round(rich(x),digits = 0), Entropy.mod=format(H(x),scientific = T,digits = 3)) #"1/D"=D(x),
+  #rownames(out)<-setting
+  return(out)
+}
+
+x<-ddply(data,~Id+DPI+FINAL_RESULT+season+log10(gc_ul),get_data)
+
+y<-ddply(data.cut,~Id+DPI+log10(gc_ul),get_data.cut)
+
+x<-join(x,y)
+x<-subset(x,!(Id%in% c(1240,1241)))
+x<-x[order(x$`log10(gc_ul)`,decreasing = T),]
+write.csv(x,"../results/tables/table_2.cali_vic.csv")
+ggplot(data,aes(pos,freq.var))+geom_point()+facet_wrap(~chr)
+
+ggplot(data.cut,aes(pos,freq.var))+geom_point()+facet_wrap(~chr)
+
+ggplot(data,aes(freq.var))+geom_histogram()+scale_x_log10()
+
+ggplot(data.cut,aes(freq.var))+geom_histogram()+scale_x_log10()+scale_y_log10()
+
+x<-subset(data.cut,Id %in% c(1376,1401,1405,1374,1227,1321,1229,1245))
 ```
