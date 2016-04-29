@@ -30,18 +30,18 @@ header='CHROM,POS,ID,REF,ALT,QUAL,FILTER,'
 
 first=vcf.Reader(open(sys.argv[1], 'r'))
 first=first.next() # first varaint to get the infos that are present
-print first
+#print first
 for x in first.INFO:
     header=header+x+","
 
 out_csv.write(header+'\n')
 
 for record in in_var:
-    print record
+    #print record
     line=str(record.CHROM)+','+str(record.POS)+','+ str(record.ID)+','+str(record.REF)+','+str(record.ALT[0])+','+str(record.QUAL)+','+str(record.FILTER)+','
     for y in record.INFO:
         line=line+str(record.INFO[y]).replace(",",":")+","
-    print line
+   # print line
     out_csv.write(line+'\n')
 
 out_csv.close()

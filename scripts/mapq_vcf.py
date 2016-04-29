@@ -8,17 +8,19 @@ import vcf
 from vcf.parser import _Info as VcfInfo
 
 
-input=sys.argv[1].split(".")[0]
-input=input.split("/")[-1]
+input=sys.argv[1].split("/")[-1]
+
+input=input.split(".")[0]
 bam=sys.argv[2].split(".")[0]
 bam=bam.split("/")[-1]
 
+#print(input)
 #Ensure the bam and csv file match
-if input==bam:
-        print("working with vcf: "+input + " and bam: " +bam)
-else:
-   print( "bam:"+bam +" does not match vcf: " +input)
-   sys.exit(1)
+#if input==bam:
+#        print("working with vcf: "+input + " and bam: " +bam)
+#else:
+#   print( "bam:"+bam +" does not match vcf: " +input)
+#   sys.exit(1)
 
 
 

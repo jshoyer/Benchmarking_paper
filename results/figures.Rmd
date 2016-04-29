@@ -735,7 +735,7 @@ Figure 5. The accuracy of the frequency measurements for the known variants in t
 
 ```{r,lofreq,fig.height=5,fig.width=3.4}
 
-lofreq.df<-read.csv("../data/process/2015-6-23/lofreq/all.removed.mapq_vcf.vcf_csv.csv",stringsAsFactors = F)
+lofreq.df<-read.csv("../data/process/2015-6-23/Lofreq/lofreq_vcf/all.lofreq.csv",stringsAsFactors = F,comment.char="#")
 
 lofreq.df$category[lofreq.df$mutation %in% wt_mut]<-"wt"
 lofreq.df$categroy[lofreq.df$mutation %in% mfe.df$mutation]<-"mfe"
