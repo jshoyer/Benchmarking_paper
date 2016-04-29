@@ -2292,3 +2292,10 @@ date
 echo variantPipeline SUCCESS
 # ########## Finished at Mon Jan 18 11:43:41 EST 2016 Duration = 33 minutes, 34.396 seconds ##########
 
+
+####################################################################################################
+# Starting pipeline at Fri Feb 12 09:37:58 EST 2016
+# Input files:  /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/processed/2015-6-23/04_removed_dups/*.bam
+# Output Log:  .bpipe/logs/8756.log
+# ################ Finished at Fri Feb 12 09:38:06 EST 2016 Duration = 8.436 seconds #################
+

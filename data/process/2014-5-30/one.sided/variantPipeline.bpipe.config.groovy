@@ -1,8 +1,0 @@
-REFERENCE="/scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/pHW2000_PR8-N_A"
-REFERENCE_FA="/scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/pHW2000_PR8-N_A.fa"
-SCRIPTS="/home/mccrone/variant_pipeline/scripts"
-LIBRARY_LOCATION="/home/mccrone/variant_pipeline/lib"
-CONTROL="PR8_control"
-DISP="one.sided"
-P_CUT="0.9"
-P_COM_METH="fisher"
