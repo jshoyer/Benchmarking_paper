@@ -4,9 +4,7 @@ import gzip
 import argparse
 import shutil
 import glob
-parser = argparse.ArgumentParser(description='This program takes hiseq fastq files and renames them as sample.read_direction.#.fastq and keeps a log of the change. It renames the files according the Library name in the runifo csv. This relies heavily on the change_name scripts in Variant_pipeline.
-
--JT McCrone 2016')
+parser = argparse.ArgumentParser(description='This program takes hiseq fastq files and renames them as sample.read_direction.#.fastq and keeps a log of the change. It renames the files according the Library name in the runifo csv. This relies heavily on the change_name scripts in Variant_pipeline. -JT McCrone 2016')
 parser.add_argument('-s',action='store',dest='s',help='The sorce directory containing the original fastq files')
 parser.add_argument('-f',action='store',dest='f',help='The final directory that will hold the renamed fastq files')
 parser.add_argument('-k',action='store',dest='key',help='The sra runinfo csv that serves as the key for renaming')
@@ -50,8 +48,6 @@ for line in names:
    # print(line)
 names.close()
 
-#print(new_names)
-#print(junk_names)
 
 if test==False:
     print "running in test mode add option -run to run"
@@ -63,11 +59,12 @@ outfile = open(f+'renaming_log.txt','w')
 for filename in glob.glob(s + "*.fastq"):
     path=os.path.abspath(filename) # getteh full name and path
     name=filename.split("_")
-    bad_name = name[0] # the bad name is the first bit
+    just_file=name[0].split("/")
+    bad_name = just_file[-1] # the bad name is the first bit
     lane_junk = name[1]
     read_number=lane_junk.split(".fastq") # info about the read 
-    fastq_number=1 #always 1 from the sra
-    read_number=read_number[0] # read direction
+    fastq_number=str(1) #always 1 from the sra
+    read_number=str(read_number[0]) # read direction
     if bad_name in junk_names: # the new name and the bad name have the same index in their respective lists
         name_index = junk_names.index(bad_name)
         better_name= new_names[name_index]
