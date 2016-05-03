@@ -1,4 +1,4 @@
-all : ./results.pdf
+#all : ./results.pdf
 
 ####################################################################################
 #
@@ -18,13 +18,13 @@ all : ./results.pdf
 
 
 data/raw/2014-5-30/%.fastq: data/raw/2014-5-30/SraRunInfo.csv
-	cut -f1 -d ',' data/raw/2014-5-30/SraRunInfo.csv |grep -v "Run"|xargs fastq-dump --split-files -O data/raw/2014-5-30/
+	./scripts/get_fastq.sh data/raw/2014-5-30/SraRunInfo.csv data/raw/2014-5-30/
 	python scripts/change_names_sra.py -s data/raw/2014-5-30/ -f data/raw/2014-5-30/ -k data/raw/2014-5-30/SraRunInfo.csv -run
 data/raw/2015-6-23/%.fastq: data/raw/2015-6-23/SraRunInfo.csv
-	cut -f1 -d ',' data/raw/2015-6-23/SraRunInfo.csv |grep -v "Run"|xargs fastq-dump --split-files -O data/raw/2015-6-23/
+	./scripts/get_fastq.sh data/raw/2015-6-23/SraRunInfo.csv data/raw/2015-6-23/
 	python scripts/change_names_sra.py -s data/raw/2015-6-23/ -f data/raw/2015-6-23/ -k data/raw/2015-6-23/SraRunInfo.csv -run
 data/raw/2015-11-14/%.fastq: data/raw/2015-11-14/SraRunInfo.csv
-	cut -f1 -d ',' data/raw/2015-11-14/SraRunInfo.csv |grep -v "Run"|xargs fastq-dump --split-files -O data/raw/2015-11-14/
+	./scripts/get_fastq.sh data/raw/2015-11-14/SraRunInfo.csv data/raw/2015-11-14/
 	python scripts/change_names_sra.py -s data/raw/2015-11-14/ -f data/raw/2015-11-14/ -k data/raw/2015-11-14/SraRunInfo.csv -run
 
 
