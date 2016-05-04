@@ -1,3 +1,4 @@
+#fileformat:VCFv4.0
 #fileDate:20160503
 #source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/5_1.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/5_1.removed.bam']
 #reference:./data/reference/wsn33_wt_plasmid.fa
@@ -142,24 +143,6 @@ M,861,5_1,T,G,369,[],35.71875,[1529: 11146: 6: 74],0.006266,40.3958333333,5,1276
 NS,227,5_1,G,T,139,[],34.4864864865,[4881: 1264: 30: 5],0.005662,39.9189189189,2,6182,44.4054054054,
 NS,281,5_1,T,C,84,[],36.8620689655,[6519: 2487: 18: 9],0.002986,41.9310344828,2,9041,48.4827586207,
 NS,451,5_1,A,G,89,[],33.5833333333,[5820: 6194: 31: 17],0.003977,42.0,15,12070,66.25,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/5_02.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/5_02.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_66:Filter(id='min_snvqual_66', desc='Minimum SNV Quality (Phred) 66')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,593,5_02,A,G,76,[],33.4634146341,[7904: 6423: 18: 22],0.002782,41.9024390244,6,14377,58.1463414634,
 PB2,1134,5_02,A,G,75,[],31.6153846154,[9995: 8995: 26: 25],0.002677,41.9615384615,0,19050,47.9807692308,
 PB2,1487,5_02,A,G,230,[],34.5466666667,[9902: 8859: 45: 26],0.003768,40.1866666667,10,18841,51.88,
@@ -268,24 +251,6 @@ NS,405,5_02,A,G,79,[],32.8181818182,[16823: 14508: 39: 15],0.00172,38.7727272727
 NS,474,5_02,T,C,130,[],34.1515151515,[14832: 16702: 34: 54],0.002781,40.6363636364,8,31646,69.9292929293,
 NS,509,5_02,A,G,66,[],31.1369863014,[13514: 17594: 31: 34],0.002083,40.9452054795,2,31208,60.4246575342,
 NS,523,5_02,T,C,70,[],32.8194444444,[12745: 17732: 25: 40],0.002127,40.0972222222,2,30561,68.375,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/4_02.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/4_02.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,418,4_02,G,A,83,[],35.5769230769,[2599: 1812: 10: 14],0.005405,40.0769230769,10,4440,48.7307692308,
 PB2,446,4_02,A,C,74,[],35.3,[2926: 1925: 12: 8],0.004103,41.8,0,4875,61.55,
 PB2,800,4_02,G,A,194,[],36.488372093,[3629: 3565: 24: 18],0.005796,42.0,3,7246,56.6976744186,
@@ -416,24 +381,6 @@ NS,474,4_02,T,C,439,[],35.0792079208,[6812: 8187: 40: 59],0.006552,41.603960396,
 NS,523,4_02,T,C,320,[],35.4831460674,[5645: 8619: 38: 49],0.006058,41.797752809,3,14362,71.0786516854,
 NS,566,4_02,C,T,314,[],34.402173913,[4247: 8557: 30: 58],0.006819,40.3260869565,0,12906,69.1630434783,
 NS,624,4_02,A,G,307,[],33.6,[2231: 7183: 15: 58],0.007687,41.4933333333,2,9497,75.2133333333,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/3_1.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/3_1.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,183,3_1,A,G,555,[],36.0540540541,[3836: 690: 61: 7],0.014799,40.2297297297,5,4595,42.4054054054,
 PB2,281,3_1,G,A,88,[],36.1836734694,[7720: 3042: 30: 17],0.004344,41.2040816327,5,10820,60.9591836735,
 PB2,312,3_1,T,C,78,[],34.4912280702,[7797: 4011: 35: 18],0.004463,41.1578947368,0,11875,63.3684210526,
@@ -653,24 +600,6 @@ NS,385,3_1,A,G,137,[],35.9032258065,[10311: 7854: 33: 28],0.003344,41.7096774194
 NS,453,3_1,A,G,88,[],34.0689655172,[9361: 9600: 29: 26],0.00289,39.1896551724,1,19028,52.3965517241,
 NS,484,3_1,A,G,75,[],32.9,[8988: 10230: 31: 29],0.003111,41.3666666667,2,19285,57.1833333333,
 NS,617,3_1,T,C,73,[],33.7254901961,[3830: 10079: 11: 38],0.003507,40.137254902,2,13974,68.6470588235,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/3_5.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/3_5.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,501,3_5,G,A,668,[],36.8387096774,[4366: 2925: 63: 28],0.012317,41.6559139785,10,7388,55.1935483871,
 PB2,652,3_5,A,G,581,[],36.085106383,[4932: 3996: 53: 38],0.010083,41.6170212766,2,9025,61.5,
 PB2,939,3_5,A,G,453,[],37.0266666667,[5054: 4905: 40: 35],0.007473,42.0,1,10036,66.5333333333,
@@ -810,24 +739,6 @@ NS,378,3_5,A,G,77,[],29.4545454545,[4899: 3838: 33: 22],0.005642,41.4909090909,2
 NS,584,3_5,A,G,131,[],35.2162162162,[2406: 5348: 9: 27],0.004621,40.5405405405,3,7790,62.5675675676,
 NS,610,3_5,C,T,2389,[],36.3090128755,[1720: 4890: 63: 165],0.033314,41.3175965665,2,6844,69.4034334764,
 NS,851,3_5,T,C,109,[],37.1842105263,[46: 547: 1: 29],0.048154,24.8684210526,1,623,79.7894736842,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/4_1.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/4_1.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,440,4_1,A,T,107,[],35.7647058824,[3077: 2221: 12: 21],0.006187,40.7058823529,18,5334,59.2352941176,
 PB2,486,4_1,T,C,81,[],33.0344827586,[3678: 2499: 15: 13],0.004511,41.275862069,2,6207,65.9655172414,
 PB2,488,4_1,T,G,112,[],34.3636363636,[3674: 2520: 19: 14],0.005294,41.8787878788,0,6234,59.4545454545,
@@ -1004,24 +915,6 @@ NS,457,4_1,T,C,160,[],35.7833333333,[9224: 10445: 31: 28],0.00299,41.4,3,19735,6
 NS,541,4_1,A,G,88,[],33.8823529412,[6930: 11105: 17: 33],0.002763,40.9411764706,2,18094,59.3137254902,
 NS,580,4_1,T,C,107,[],32.5833333333,[5276: 10910: 21: 32],0.003263,39.5833333333,5,16241,66.4666666667,
 NS,598,4_1,C,A,147,[],33.8571428571,[4431: 10619: 16: 42],0.003838,40.2380952381,0,15114,72.9365079365,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/4_05.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/4_05.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,624,4_05,T,C,68,[],33.7692307692,[3744: 3003: 14: 11],0.003688,41.2307692308,0,6779,50.1538461538,
 PB2,669,4_05,A,C,120,[],34.7142857143,[3823: 3315: 22: 19],0.005709,41.5,0,7182,56.8333333333,
 PB2,765,4_05,A,G,219,[],36.4130434783,[3741: 3692: 26: 19],0.006012,40.652173913,4,7485,70.7608695652,
@@ -1169,46 +1062,10 @@ NS,245,4_05,T,C,159,[],36.0816326531,[8303: 2428: 36: 11],0.004358,41.5306122449
 NS,344,4_05,G,A,352,[],36.3058823529,[9863: 6402: 52: 30],0.005011,41.4352941176,1,16365,53.8235294118,
 NS,405,4_05,A,G,87,[],35.4,[9009: 8074: 23: 21],0.002568,41.5333333333,0,17135,50.3111111111,
 NS,595,4_05,A,G,82,[],36.8936170213,[3977: 8846: 15: 23],0.002952,38.2127659574,5,12871,64.8085106383,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/WSN33_Plasmid_control.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/WSN33_Plasmid_control.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_66:Filter(id='min_snvqual_66', desc='Minimum SNV Quality (Phred) 66')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,30,WSN33_Plasmid_control,G,T,123,[],34.7142857143,[824: 41: 18: 0],0.020316,23.9523809524,0,886,23.5238095238,
 HA,4,WSN33_Plasmid_control,A,G,2710,[],32.0282112845,[178: 6: 844: 5],0.798683,35.9915966387,22,1063,2.40696278511,
 NP,4,WSN33_Plasmid_control,A,G,115,[],32.3634953464,[171: 2: 693: 8],0.777162,33.7668045502,0,902,2.64529472596,
 M,4,WSN33_Plasmid_control,A,G,3869,[],32.4955014995,[301: 3: 911: 9],0.73132,33.5194935022,0,1258,2.58513828724,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/WT1.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/WT1.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_66:Filter(id='min_snvqual_66', desc='Minimum SNV Quality (Phred) 66')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,546,WT1,A,G,77,[],30.5666666667,[10759: 9069: 37: 20],0.002864,40.4666666667,9,19905,48.7333333333,
 PB2,768,WT1,A,G,69,[],29.8651685393,[11042: 11823: 58: 28],0.003743,40.6853932584,33,22979,33.595505618,
 PB2,1134,WT1,A,G,66,[],33.7884615385,[12878: 12375: 29: 22],0.002014,41.5961538462,3,25321,55.2884615385,
@@ -1311,24 +1168,6 @@ NS,442,WT1,A,G,68,[],33.6029411765,[16547: 17147: 21: 40],0.001806,41.0882352941
 NS,453,WT1,A,G,78,[],33.75,[16216: 17595: 33: 39],0.002123,40.7625,1,33910,54.875,
 NS,474,WT1,T,C,68,[],34.5405405405,[15721: 18254: 27: 39],0.001938,39.5,4,34061,60.3783783784,
 NS,657,WT1,A,G,74,[],34.606557377,[4535: 15744: 9: 41],0.002457,40.0327868852,2,20349,70.0983606557,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/WT2.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/WT2.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,1055,WT2,A,G,66,[],26.6727272727,[9065: 8705: 22: 32],0.003027,41.6,8,17839,57.0181818182,
 PB2,1829,WT2,A,G,116,[],36.3333333333,[7458: 9491: 15: 35],0.00294,39.5185185185,13,17009,61.9444444444,
 PB1,548,WT2,A,G,105,[],32.9655172414,[4193: 3835: 15: 14],0.003596,40.1379310345,0,8065,46.275862069,
@@ -1425,24 +1264,6 @@ M,819,WT2,T,C,75,[],34.7246376812,[4921: 22098: 7: 42],0.00181,38.1594202899,2,2
 NS,281,WT2,T,C,218,[],36.2923076923,[15692: 5537: 47: 16],0.002958,41.4,0,21298,64.8307692308,
 NS,474,WT2,T,C,73,[],34.40625,[13033: 15048: 22: 37],0.002095,40.25,7,28156,58.703125,
 NS,537,WT2,G,A,296,[],35.1067961165,[10546: 15850: 40: 55],0.003583,40.8737864078,1,26513,63.1844660194,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/3_02.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/3_02.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,130,3_02,A,G,203,[],35.2105263158,[3816: 408: 29: 4],0.00775,39.3421052632,2,4258,35.6052631579,
 PB2,143,3_02,A,G,103,[],36.8666666667,[4728: 561: 24: 0],0.004516,38.8333333333,7,5315,31.3333333333,
 PB2,206,3_02,A,G,91,[],34.6470588235,[9068: 1990: 27: 6],0.002973,41.4705882353,0,11099,53.5294117647,
@@ -1774,24 +1595,6 @@ NS,521,3_02,T,C,823,[],36.0052910053,[11984: 15597: 61: 123],0.006623,41.1322751
 NS,603,3_02,C,T,24670,[],37.1121673004,[6801: 14650: 466: 1052],0.066029,41.5221799747,3,22990,65.9702154626,
 NS,607,3_02,T,C,9015,[],36.5121654501,[6733: 14987: 227: 564],0.035084,41.602189781,7,22546,65.0,
 NS,669,3_02,A,G,295,[],35.5760869565,[3251: 13280: 18: 68],0.005173,41.9782608696,1,16626,71.9130434783,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/4_2.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/4_2.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,489,4_2,C,T,279,[],35.6477272727,[7347: 4775: 40: 39],0.006465,37.9659090909,10,12219,69.9431818182,
 PB2,656,4_2,A,G,79,[],34.04,[8497: 6716: 31: 18],0.003209,40.4,4,15268,55.64,
 PB2,704,4_2,G,A,146,[],36.3076923077,[8622: 7671: 36: 29],0.00397,40.8153846154,1,16371,59.2,
@@ -2040,24 +1843,6 @@ NS,588,4_2,A,G,128,[],34.4583333333,[8640: 16045: 25: 39],0.002584,39.8472222222
 NS,606,4_2,G,A,454,[],36.16,[7317: 15641: 36: 78],0.004937,40.008,0,23091,65.808,
 NS,621,4_2,C,T,95,[],35.328358209,[6228: 15061: 20: 41],0.002853,40.3134328358,2,21381,65.8358208955,
 NS,640,4_2,G,T,715,[],34.404109589,[5031: 14200: 35: 104],0.007167,40.102739726,0,19394,72.0547945205,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/4_5.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/4_5.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,390,4_5,A,G,177,[],37.4909090909,[3064: 3167: 29: 25],0.008586,41.8545454545,2,6289,54.2909090909,
 PB2,440,4_5,A,T,693,[],36.4680851064,[3490: 2960: 77: 63],0.021206,41.4326241135,0,6602,56.2269503546,
 PB2,488,4_5,T,C,75,[],33.75,[4013: 3045: 17: 14],0.004369,41.875,0,7095,56.875,
@@ -2246,24 +2031,6 @@ NS,545,4_5,T,C,89,[],35.4444444444,[8051: 12778: 24: 33],0.002727,38.8095238095,
 NS,712,4_5,A,G,237,[],36.231884058,[1029: 6366: 11: 41],0.006978,35.2463768116,8,7452,66.0289855072,
 NS,749,4_5,G,A,228,[],35.4509803922,[467: 3721: 5: 41],0.010852,39.1568627451,0,4239,92.9215686275,
 NS,809,4_5,A,G,565,[],37.0,[155: 1223: 12: 76],0.059986,29.2822580645,3,1467,71.0,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/5_5.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/5_5.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_66:Filter(id='min_snvqual_66', desc='Minimum SNV Quality (Phred) 66')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,440,5_5,A,T,234,[],36.8130081301,[4449: 3096: 69: 51],0.015629,40.6422764228,1,7678,58.7642276423,
 PB2,1167,5_5,A,T,8549,[],36.2760252366,[6872: 6069: 336: 291],0.04614,41.8454258675,0,13589,63.1514195584,
 PB2,1356,5_5,G,A,191,[],34.9107142857,[7335: 6666: 26: 30],0.00398,41.0714285714,3,14069,63.8928571429,
@@ -2346,24 +2113,6 @@ NS,301,5_5,A,G,97,[],31.5344827586,[16707: 7783: 40: 15],0.002239,40.3793103448,
 NS,385,5_5,A,G,149,[],34.421686747,[15655: 12852: 42: 34],0.002658,40.686746988,0,28598,62.3975903614,
 NS,519,5_5,T,C,73,[],31.25,[11865: 16496: 26: 52],0.00274,41.25,8,28467,62.1875,
 NS,809,5_5,A,G,575,[],36.4526315789,[139: 1374: 8: 75],0.052005,34.1684210526,0,1596,79.5894736842,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/3_05.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/3_05.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,200,3_05,C,A,214,[],34.4,[3761: 837: 48: 2],0.010748,26.26,22,4652,11.34,
 PB2,206,3_05,A,G,154,[],33.4838709677,[3953: 898: 27: 4],0.006347,32.0,1,4884,26.9032258065,
 PB2,318,3_05,A,G,348,[],36.2112676056,[6206: 3360: 51: 20],0.007361,41.7183098592,5,9645,64.6338028169,
@@ -2551,24 +2300,6 @@ NS,628,3_05,T,C,490,[],35.1949152542,[3300: 9833: 25: 91],0.008749,41.3644067797
 NS,639,3_05,A,G,542,[],35.3723404255,[2870: 9477: 19: 74],0.007473,41.2021276596,2,12444,75.1063829787,
 NS,642,3_05,A,G,1493,[],36.6571428571,[2749: 9361: 38: 133],0.013916,42.0,0,12288,68.0228571429,
 NS,690,3_05,A,G,102,[],34.075,[1400: 6961: 7: 31],0.004522,40.625,0,8403,64.5,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/5_2.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/5_2.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,616,5_2,A,C,120,[],35.7222222222,[5397: 4220: 25: 11],0.003727,42.0,8,9660,49.7777777778,
 PB2,975,5_2,A,G,69,[],33.6756756757,[5674: 6080: 22: 14],0.003051,41.4054054054,8,11801,55.2702702703,
 PB2,1167,5_2,A,T,873,[],35.9136690647,[6419: 5809: 63: 71],0.01083,41.8633093525,6,12373,65.0,
@@ -2639,24 +2370,6 @@ NS,374,5_2,T,C,80,[],33.8518518519,[15292: 12223: 24: 29],0.001922,40.962962963,
 NS,451,5_2,A,G,96,[],33.2823529412,[13551: 14651: 35: 42],0.002721,40.1529411765,1,28299,55.8352941176,
 NS,457,5_2,T,C,77,[],33.0,[13343: 14962: 19: 35],0.001904,40.90625,9,28368,67.46875,
 NS,474,5_2,T,C,163,[],33.9368421053,[12966: 15227: 39: 51],0.00318,41.6315789474,1,28303,58.4105263158,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/3_2.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/3_2.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,292,3_2,G,A,630,[],37.4197530864,[3557: 1662: 42: 37],0.014903,41.0,21,5301,48.4691358025,
 PB2,500,3_2,A,G,112,[],34.5813953488,[6524: 4300: 27: 16],0.003955,40.976744186,0,10873,51.8372093023,
 PB2,591,3_2,G,A,1237,[],36.2025316456,[6340: 5444: 80: 77],0.013133,41.6708860759,2,11955,60.1455696203,
@@ -2820,24 +2533,6 @@ NS,443,3_2,C,T,1652,[],36.4285714286,[6438: 6899: 104: 102],0.015195,40.91705069
 NS,523,3_2,T,C,222,[],35.5606060606,[5307: 7789: 22: 43],0.004935,40.2727272727,5,13172,65.4242424242,
 NS,632,3_2,T,C,963,[],35.6506849315,[2043: 5978: 39: 99],0.016903,40.4863013699,3,8164,72.0821917808,
 NS,809,3_2,A,G,416,[],36.5505617978,[122: 805: 11: 52],0.063572,26.9887640449,4,991,59.6404494382,
-#fileDate:20160503
-#source:['./lib/lofreq_star-2.1.2/bin/lofreq call -f ./data/reference/wsn33_wt_plasmid.fa -o ./data/process/2015-6-23/Lofreq/variants/5_05.removed.vcf ./data/process/2015-6-23/04_removed_duplicates/5_05.removed.bam']
-#reference:./data/reference/wsn33_wt_plasmid.fa
-#DP:Info(id='DP', num=1, type='Integer', desc='Raw Depth')
-#AF:Info(id='AF', num=1, type='Float', desc='Allele Frequency')
-#SB:Info(id='SB', num=1, type='Integer', desc='Phred-scaled strand bias at this position')
-#DP4:Info(id='DP4', num=4, type='Integer', desc='Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases')
-#INDEL:Info(id='INDEL', num=0, type='Flag', desc='Indicates that the variant is an INDEL.')
-#CONSVAR:Info(id='CONSVAR', num=0, type='Flag', desc='Indicates that the variant is a consensus variant (as opposed to a low frequency variant).')
-#HRUN:Info(id='HRUN', num=1, type='Integer', desc='Homopolymer length to the right of report indel position')
-#MapQ:Info(id='MapQ', num=1, type='Float', desc='The average MapQ of the reads containing the called variant')
-#Read_pos:Info(id='Read_pos', num=1, type='Float', desc='The average read cycle that called the given variant')
-#Phred:Info(id='Phred', num=1, type='Float', desc='The average Phred score of the called variant')
-#min_dp_10:Filter(id='min_dp_10', desc='Minimum Coverage 10')
-#sb_fdr:Filter(id='sb_fdr', desc='Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000')
-#min_snvqual_65:Filter(id='min_snvqual_65', desc='Minimum SNV Quality (Phred) 65')
-#min_indelqual_20:Filter(id='min_indelqual_20', desc='Minimum Indel Quality (Phred) 20')
-CHROM,POS,ID,REF,ALT,QUAL,FILTER,Phred,DP4,AF,MapQ,SB,DP,Read_pos,
 PB2,1167,5_05,A,T,112,[],34.8448275862,[8919: 8012: 25: 29],0.003176,40.9655172414,3,17002,69.0689655172,
 PB2,1277,5_05,A,G,74,[],31.5813953488,[8300: 8597: 17: 24],0.002419,41.9534883721,4,16946,51.3720930233,
 PB2,1731,5_05,T,C,95,[],34.6989247312,[7489: 8792: 44: 25],0.004218,32.2043010753,24,16360,40.688172043,
