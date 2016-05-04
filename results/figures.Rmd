@@ -209,6 +209,7 @@ miseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars,direction){
 
 ######### Hiseq roc functions ##########
 hiseq.roc<-function(sum.df,possible_tp,possible_vars,direction){ # A function to run the roc calculations and adjustments
+  pat<-"([0-9]+)_([0-9]+)"
   roc.ls<-dlply(sum.df,~Id,sum_roc,direction)
 
   roc.df<-roc_df(roc.ls)
@@ -229,6 +230,7 @@ hiseq.roc<-function(sum.df,possible_tp,possible_vars,direction){ # A function to
 }
 
 hiseq.roc.table<-function(sum.df,cut.off,possible_tp,possible_vars,direction){
+  pat<-"([0-9]+)_([0-9]+)"
   roc.ls<-dlply(sum.df,~Id,sum_roc,direction)
   roc.df<-roc_df.one(roc.ls,cut.off)
   roc.df.adj<-ddply(roc.df,~samp,adjust.coords,sum.df,possible_tp,possible_vars)
@@ -739,12 +741,19 @@ Figure 5. The accuracy of the frequency measurements for the known variants in t
 lofreq.df<-read.csv("../data/process/2015-6-23/Lofreq/lofreq_csv/all.lofreq.csv",stringsAsFactors = F,comment.char="#")
 
 lofreq.df<-mutate(lofreq.df,mutation=paste0(CHROM,"_",REF,POS,ALT))
-lofreq.df<-mutate(lofreq.df,category=mutation %in% true_snv$mutant,Id=ID)
+lofreq.df<-mutate(lofreq.df,category=mutation %in% true_snv$mutant,Id=ID,chr=CHROM,pos=POS,freq.var=AF)
 lofreq.df$category[lofreq.df$mutation %in% wt_mut]<-"wt"
 lofreq.df$category[lofreq.df$mutation %in% mfe.df$mutation]<-"mfe"
+lofreq.df<-ddply(lofreq.df,~chr,primer.cut)
 
 lofreq.df$p.val<-as.numeric(lofreq.df$QUAL) # to make the roc based on the quality scores given by lofreq
+lofreq.df<-mutate(lofreq.df, gc = sub(pat,"\\1",Id),
+       exp.freq = sub(pat,"\\2",Id)
+)
+mutate(lofreq.df,exp.freq=ifelse(test = grepl("0",exp.freq),yes=as.numeric(exp.freq)/1000,no = as.numeric(exp.freq)/100))->lofreq.df
 lofreq.roc<-hiseq.roc(lofreq.df,possible_tp,possible_vars,"<")
+
+
 
 x<-ddply(lofreq.roc,~samp,fill_in_plots)
 
@@ -769,7 +778,7 @@ ddply(lofreq.df,~Id,summarize,gc=gc[1],exp.freq=exp.freq[1],TP=length(which(cate
 lofreq.table<-lofreq.table[order(lofreq.table$exp.freq,decreasing = T),]
 
 #knitr::kable(subset(lofreq.table,gc==5,select=c(exp.freq,TP,FP)))
-lofreq.table<-head(subset(lofreq.table,gc==5,select=-c(gc,Id)),n=-1) # don't need the 0.1% sample
+lofreq.table<-subset(lofreq.table,gc==5,select=-c(gc,Id)) # don't need the 0.1% sample
 rename(lofreq.table,c("exp.freq"="Frequency","TP"="True\nPositives","FP"="False\nPositives"))->lofreq.table
 lofreq.table$Frequency<-c("5.0%","2.0%","1.0%","0.5%","0.2%")
 lofreq.table$Sensitivity<-round(lofreq.table$Sensitivity,digits=dd)
@@ -908,6 +917,7 @@ mutate(dup.df,Id=paste(4,exp.freq,sep="_"),exp.freq=ifelse(test = grepl("0",exp.
 
 dup.df<-mutate(dup.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
 dup.df$category[dup.df$mutation %in% wt_mut]<-"wt"
+dup.df$category[dup.df$mutation %in% mfe.df$mutation]<-"mfe"
 
 cut.df<-subset(dup.df,Phred>35 & MapQ>30 & Read_pos<94 & Read_pos>32)
 
@@ -963,12 +973,12 @@ exp.meas.freq<-ddply(cut.df,~exp.freq+mutation+category, function(x){
 
 
 
-pdf("../results/figures/dups.roc.pdf",width=3.4,height=5)
-ggdraw() +
-  draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) +
-  draw_plot(tbl, 0.025, 0, 0.95, .48) +
-  draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
-dev.off()
+# pdf("../results/figures/dups.roc.pdf",width=3.4,height=5)
+# ggdraw() +
+#   draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) +
+#   draw_plot(tbl, 0.025, 0, 0.95, .48) +
+#   draw_plot_label(c("A", "B"), c(0, 0), c(1, 0.5), size = 15)
+# dev.off()
 
 ggdraw() +
   draw_plot(dups.roc.p, 0, 0.5, 0.9, 0.45) + 
@@ -1068,7 +1078,7 @@ print(xtab,include.rownames = FALSE,hline.after=c(-1,0,3,6))
 ```
 
 
-```{r,results="asis",cache=F}
+```{r,cache=F}
 tabulate(5,c(0.05,0.01,0.005))
 #
 
@@ -1215,13 +1225,17 @@ x<-join(x,y)
 x<-subset(x,!(Id%in% c(1240,1241)))
 x<-x[order(x$`log10(gc_ul)`,decreasing = T),]
 write.csv(x,"../results/tables/table_2.cali_vic.csv")
-ggplot(data,aes(pos,freq.var))+geom_point()+facet_wrap(~chr)
-
-ggplot(data.cut,aes(pos,freq.var))+geom_point()+facet_wrap(~chr)
-
-ggplot(data,aes(freq.var))+geom_histogram()+scale_x_log10()
-
-ggplot(data.cut,aes(freq.var))+geom_histogram()+scale_x_log10()+scale_y_log10()
+# ggplot(data,aes(pos,freq.var))+geom_point()+facet_wrap(~chr)
+# 
+# ggplot(data.cut,aes(pos,freq.var))+geom_point()+facet_wrap(~chr)
+# 
+# ggplot(data,aes(freq.var))+geom_histogram()+scale_x_log10()
+# 
+# ggplot(data.cut,aes(freq.var))+geom_histogram()+scale_x_log10()+scale_y_log10()
 
 x<-subset(data.cut,Id %in% c(1376,1401,1405,1374,1227,1321,1229,1245))
+```
+
+```{r}
+sessionInfo()
 ```
