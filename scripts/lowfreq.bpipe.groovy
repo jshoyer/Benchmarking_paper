@@ -39,7 +39,7 @@ vcf_csv = {
 }
 
 combine_all = { doc "concatenates all the lofreq csv files into one"
-	exec "python ./scripts/combine.py ./data/process/2015-6-23/Lofreq/lofreq_csv/  mapq_vcf.csv  all.lofreq.csv"
+	exec "python ./scripts/combine_vcf.csv.py ./data/process/2015-6-23/Lofreq/lofreq_csv/  mapq_vcf.csv  all.lofreq.csv"
 
 }
 
