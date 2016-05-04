@@ -45,15 +45,17 @@ data/raw/2015-11-14/%.fastq: data/raw/2015-11-14/SraRunInfo.csv
 
 
 ./data/process/2014-5-30/Variants/all.sum.csv: data/raw/2014-5-30/*.fastq
-	python ~/variant_pipeline/bin/variantPipeline.py -i ./data/raw/2014-5-30/ -o ./data/process/2014-5-30/ -r ./data/reference/pHW2000_PR8-N_A -p PR8_control -d one.sided -m fisher -a 0.9	
+	python ~/variant_pipeline/bin/variantPipeline.py -i ./data/raw/2014-5-30/ -o ./data/process/2014-5-30/ -r ./data/reference/pHW2000_PR8-N_A -p Pr8_control -d one.sided -m fisher -a 0.9	
 
 ./data/process/2015-6-23/Variants/all.sum.csv: data/raw/2015-6-23/*.fastq
 	python ~/variant_pipeline/bin/variantPipeline.py -i ./data/raw/2015-6-23/ -o ./data/process/2015-6-23/ -r ./data/reference/wsn33_wt_plasmid -p Plasmid_control -d two.sided -m fisher -a 0.9	
 ./data/process/2015-11-14/Variants/all.sum.csv: data/raw/2015-11-14/*.fastq
 	python ~/variant_pipeline/bin/variantPipeline.py -i ./data/raw/2015-11-14/ -o ./data/process/2015-11-14/ -r ./data/reference/wsn33_wt_plasmid -p WSN33_Plasmid_control.dups -d two.sided -m fisher -a 0.9
 
+./data/process/2015-6-23.one.sided/Variants/all.sum.csv:./data/process/2015-6-23/Variants/all.sum.csv
+	python ~/variant_pipeline/bin/variantPipeline.py -i ./data/process/2015-6-23/04_removed_duplicates/ -o ./data/process/2015-6-23.one.sided/ -r ./data/reference/wsn33_wt_plasmid -p Plasmid_control -d one.sided -m fisher -a 0.9 -bam
 
-./data/process/2015-6-23/Lofreq/lofreq_vcf/all.lofreq.csv: ./data/process/2015-11-14/Variants/all.sum.csv
+./data/process/2015-6-23/Lofreq/lofreq_vcf/all.lofreq.csv: ./data/process/2015-6-23/Variants/all.sum.csv
 	~/variant_pipeline/lib/bpipe-0.9.8.7/bin/bpipe run -n 3 ./scripts/lowfreq.bpipe.groovy ./data/process/2015-6-23/04_removed_duplicates/*.bam 
 
 
@@ -71,5 +73,5 @@ data/raw/2015-11-14/%.fastq: data/raw/2015-11-14/SraRunInfo.csv
 
 
 
-./results.pdf: ./data/process/2014-5-30/Variants/all.sum.csv ./data/process/2015-6-23/Variants/all.sum.csv ./data/process/2015-11-14/Variants/all.sum.csv ./data/process/2015-6-23/Lofreq/lofreq_vcf/all.lofreq.csv
+./results/figures.pdf: ./data/process/2014-5-30/Variants/all.sum.csv ./data/process/2015-6-23/Variants/all.sum.csv ./data/process/2015-11-14/Variants/all.sum.csv ./data/process/2015-6-23/Lofreq/lofreq_vcf/all.lofreq.csv
 	Rscript -e "knitr::knit('./results/figures.Rmd')"	

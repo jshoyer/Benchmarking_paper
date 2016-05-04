@@ -1,237 +1,210 @@
 
 ####################################################################################################
-# Starting pipeline at Wed Dec 30 15:25:53 EST 2015
-# Input files:  [/scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.2.1.fastq]
-# Output Log:  .bpipe/logs/22013.log
-# Stage bowtie2 [05_2]
-# Stage bowtie2 [05_1]
-# Stage bowtie2 [1_1]
-# Stage bowtie2 [PC]
-# Stage bowtie2 [2_2]
-# Stage bowtie2 [5_2]
-# Stage bowtie2 [2_1]
-# Stage bowtie2 [1_2]
-# Stage bowtie2 [5_1]
-# Stage bowtie2 [PC_4]
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.2.1.fastq -S ./03_align/05_1.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.2.1.fastq -S ./03_align/1_2.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.2.1.fastq -S ./03_align/2_1.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.2.1.fastq -S ./03_align/05_2.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.2.1.fastq -S ./03_align/PC.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.2.1.fastq -S ./03_align/5_1.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.2.1.fastq -S ./03_align/5_2.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.2.1.fastq -S ./03_align/2_2.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.2.1.fastq -S ./03_align/PC_4.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.2.1.fastq -S ./03_align/1_1.sam
-# ################ Finished at Wed Dec 30 15:25:54 EST 2015 Duration = 1.080 seconds #################
-
-
-####################################################################################################
-# Starting pipeline at Wed Dec 30 20:35:16 EST 2015
-# Input files:  [/scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.2.1.fastq]
-# Output Log:  .bpipe/logs/18700.log
-# Stage bowtie2 [1_1]
-# Stage bowtie2 [5_1]
-# Stage bowtie2 [1_2]
-# Stage bowtie2 [05_1]
-# Stage bowtie2 [PC_4]
-# Stage bowtie2 [5_2]
-# Stage bowtie2 [PC]
-# Stage bowtie2 [2_2]
-# Stage bowtie2 [05_2]
-# Stage bowtie2 [2_1]
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.2.1.fastq -S ./03_align/5_1.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.2.1.fastq -S ./03_align/2_1.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.2.1.fastq -S ./03_align/2_2.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.2.1.fastq -S ./03_align/PC.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.2.1.fastq -S ./03_align/1_1.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.2.1.fastq -S ./03_align/05_2.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.2.1.fastq -S ./03_align/05_1.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.2.1.fastq -S ./03_align/5_2.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.2.1.fastq -S ./03_align/1_2.sam
-bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.2.1.fastq -S ./03_align/PC_4.sam
-# Stage picard_sortsam [1_2]
-# Stage picard_sortsam [05_2]
-# Stage picard_sortsam [2_1]
-# Stage picard_sortsam [05_1]
-# Stage picard_sortsam [5_2]
-# Stage picard_sortsam [5_1]
-# Stage picard_sortsam [2_2]
-# Stage picard_sortsam [1_1]
-# Stage picard_sortsam [PC]
-# Stage picard_sortsam [PC_4]
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/05_1.sam OUTPUT=03_align/05_1.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/2_2.sam OUTPUT=03_align/2_2.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/05_2.sam OUTPUT=03_align/05_2.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/1_1.sam OUTPUT=03_align/1_1.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/5_2.sam OUTPUT=03_align/5_2.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/2_1.sam OUTPUT=03_align/2_1.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/1_2.sam OUTPUT=03_align/1_2.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/5_1.sam OUTPUT=03_align/5_1.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/PC.sam OUTPUT=03_align/PC.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/PC_4.sam OUTPUT=03_align/PC_4.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-# Stage picard_removedups [05_2]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/05_2.bam OUTPUT=04_removed_duplicates/05_2.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/05_2.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [1_1]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/1_1.bam OUTPUT=04_removed_duplicates/1_1.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/1_1.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [2_2]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/2_2.bam OUTPUT=04_removed_duplicates/2_2.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/2_2.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [05_1]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/05_1.bam OUTPUT=04_removed_duplicates/05_1.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/05_1.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [2_1]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/2_1.bam OUTPUT=04_removed_duplicates/2_1.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/2_1.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [5_1]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/5_1.bam OUTPUT=04_removed_duplicates/5_1.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/5_1.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [5_2]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/5_2.bam OUTPUT=04_removed_duplicates/5_2.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/5_2.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [1_2]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/1_2.bam OUTPUT=04_removed_duplicates/1_2.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/1_2.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [PC_4]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/PC_4.bam OUTPUT=04_removed_duplicates/PC_4.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/PC_4.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
-# Stage picard_removedups [PC]
-java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/PC.bam OUTPUT=04_removed_duplicates/PC.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/PC.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Starting pipeline at Tue May 03 18:20:25 EDT 2016
+# Input files:  [/scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/WSN33_Plasmid_control.dups.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/WSN33_Plasmid_control.dups.2.1.fastq]
+# Output Log:  .bpipe/logs/4046.log
+# Stage fastqc [4_2_2]
+# Stage fastqc [4_1_2]
+# Stage fastqc [4_5_2]
+# Stage fastqc [4_5_1]
+# Stage fastqc [4_05_1]
+# Stage fastqc [4_1_1]
+# Stage fastqc [4_05_2]
+# Stage fastqc [4_2_1]
+# Stage fastqc [WSN33_Plasmid_control]
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_1.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_2.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_2.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/WSN33_Plasmid_control.dups.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_1.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_2.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_1.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_2.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_1.1.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_1.2.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_1.2.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_2.2.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/WSN33_Plasmid_control.dups.2.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_2.2.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_1.2.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_1.2.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_2.2.1.fastq
+fastqc -o 01_fastqc --noextract -f fastq /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_2.2.1.fastq
+# Stage bowtie2 [4_2_1]
+# Stage bowtie2 [4_1_2]
+# Stage bowtie2 [4_05_1]
+# Stage bowtie2 [4_2_2]
+# Stage bowtie2 [4_1_1]
+# Stage bowtie2 [WSN33_Plasmid_control]
+# Stage bowtie2 [4_5_1]
+# Stage bowtie2 [4_05_2]
+# Stage bowtie2 [4_5_2]
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_2.2.1.fastq -S ./03_align/4_1_2.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_1_1.2.1.fastq -S ./03_align/4_1_1.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/WSN33_Plasmid_control.dups.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/WSN33_Plasmid_control.dups.2.1.fastq -S ./03_align/WSN33_Plasmid_control.dups.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_1.2.1.fastq -S ./03_align/4_05_1.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_05_2.2.1.fastq -S ./03_align/4_05_2.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_1.2.1.fastq -S ./03_align/4_2_1.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_1.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_1.2.1.fastq -S ./03_align/4_5_1.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_2_2.2.1.fastq -S ./03_align/4_2_2.sam
+bowtie2 --sensitive -x /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid -1 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_2.1.1.fastq -2 /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/4_5_2.2.1.fastq -S ./03_align/4_5_2.sam
+# Stage picard_sortsam [4_05_2]
+# Stage picard_sortsam [4_05_1]
+# Stage picard_sortsam [4_5_1]
+# Stage picard_sortsam [4_1_2]
+# Stage picard_sortsam [4_1_1]
+# Stage picard_sortsam [4_2_2]
+# Stage picard_sortsam [WSN33_Plasmid_control]
+# Stage picard_sortsam [4_2_1]
+# Stage picard_sortsam [4_5_2]
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/4_1_2.sam OUTPUT=03_align/4_1_2.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/4_5_1.sam OUTPUT=03_align/4_5_1.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/4_05_2.sam OUTPUT=03_align/4_05_2.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/4_2_2.sam OUTPUT=03_align/4_2_2.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/4_1_1.sam OUTPUT=03_align/4_1_1.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/4_05_1.sam OUTPUT=03_align/4_05_1.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/WSN33_Plasmid_control.dups.sam OUTPUT=03_align/WSN33_Plasmid_control.dups.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/4_5_2.sam OUTPUT=03_align/4_5_2.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+java -Xmx4g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar SortSam SO=coordinate INPUT=03_align/4_2_1.sam OUTPUT=03_align/4_2_1.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+# Stage picard_removedups [4_05_2]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/4_05_2.bam OUTPUT=04_removed_duplicates/4_05_2.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/4_05_2.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Stage picard_removedups [4_2_2]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/4_2_2.bam OUTPUT=04_removed_duplicates/4_2_2.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/4_2_2.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Stage picard_removedups [4_1_1]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/4_1_1.bam OUTPUT=04_removed_duplicates/4_1_1.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/4_1_1.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Stage picard_removedups [4_1_2]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/4_1_2.bam OUTPUT=04_removed_duplicates/4_1_2.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/4_1_2.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Stage picard_removedups [4_05_1]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/4_05_1.bam OUTPUT=04_removed_duplicates/4_05_1.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/4_05_1.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Stage picard_removedups [4_5_1]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/4_5_1.bam OUTPUT=04_removed_duplicates/4_5_1.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/4_5_1.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Stage picard_removedups [4_2_1]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/4_2_1.bam OUTPUT=04_removed_duplicates/4_2_1.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/4_2_1.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Stage picard_removedups [4_5_2]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/4_5_2.bam OUTPUT=04_removed_duplicates/4_5_2.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/4_5_2.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
+# Stage picard_removedups [WSN33_Plasmid_control]
+java -Xmx2g -Djava.io.tmpdir=./tmp -jar /home/mccrone/variant_pipeline/lib/picard-tools-1.133/picard.jar MarkDuplicates INPUT=03_align/WSN33_Plasmid_control.dups.bam OUTPUT=04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam REMOVE_DUPLICATES=true CREATE_INDEX=true METRICS_FILE=04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam-picard.out.metrics VALIDATION_STRINGENCY=LENIENT
 # Stage get_control
-# Stage deepsnv [1_2]
-# Stage deepsnv [2_1]
-# Stage deepsnv [05_2]
-# Stage deepsnv [2_2]
-# Stage deepsnv [05_1]
-# Stage deepsnv [5_2]
-# Stage deepsnv [5_1]
-# Stage deepsnv [1_1]
-# Stage deepsnv [PC_4]
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/2_1.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/2_2.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-# Stage deepsnv [PC]
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/1_2.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/5_1.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/05_2.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/05_1.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/1_1.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/5_2.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/PC.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni two.sided
-touch deepSNV/PC_4.removed.bam.deepsnv.csv
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [1_1]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/1_1.removed.csv 04_removed_duplicates/1_1.removed.bam Variants/1_1.removed.mapq.sum.csv Variants/1_1.removed.mapq.reads.csv
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/5_1.removed.csv 04_removed_duplicates/5_1.removed.bam Variants/5_1.removed.mapq.sum.csv Variants/5_1.removed.mapq.reads.csv
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [PC_4.removed.bam]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/05_2.removed.csv 04_removed_duplicates/05_2.removed.bam Variants/05_2.removed.mapq.sum.csv Variants/05_2.removed.mapq.reads.csv
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/2_2.removed.csv 04_removed_duplicates/2_2.removed.bam Variants/2_2.removed.mapq.sum.csv Variants/2_2.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [5_1]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/05_1.removed.csv 04_removed_duplicates/05_1.removed.bam Variants/05_1.removed.mapq.sum.csv Variants/05_1.removed.mapq.reads.csv
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [2_1.removed]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [2_1]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [2_2.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/2_1.removed.csv 04_removed_duplicates/2_1.removed.bam Variants/2_1.removed.mapq.sum.csv Variants/2_1.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [2_1]
-# Stage mapq_conditional [2_2.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/1_2.removed.csv 04_removed_duplicates/1_2.removed.bam Variants/1_2.removed.mapq.sum.csv Variants/1_2.removed.mapq.reads.csv
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [2_1.removed]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [2_1.removed]
-# Stage mapq_conditional [2_1]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [5_2.removed]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [5_2]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/5_2.removed.csv 04_removed_duplicates/5_2.removed.bam Variants/5_2.removed.mapq.sum.csv Variants/5_2.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [2_1.removed]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [2_1]
-# Stage mapq_conditional [5_2.removed]
-# Stage mapq_conditional [5_2]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [PC]
-# Stage mapq_conditional [PC.removed]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [5_1.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/PC.removed.csv 04_removed_duplicates/PC.removed.bam Variants/PC.removed.mapq.sum.csv Variants/PC.removed.mapq.reads.csv
+# Stage deepsnv [4_05_2]
+# Stage deepsnv [4_5_1]
+# Stage deepsnv [4_1_2]
+Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/4_05_2.removed.bam 04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam bonferroni 0.9 fisher two.sided
+# Stage deepsnv [WSN33_Plasmid_control.dups]
+# Stage deepsnv [4_05_1]
+# Stage deepsnv [4_1_1]
+# Stage deepsnv [4_2_2]
+# Stage deepsnv [4_5_2]
+# Stage deepsnv [4_2_1]
+Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/4_1_2.removed.bam 04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam bonferroni 0.9 fisher two.sided
+touch deepSNV/WSN33_Plasmid_control.dups.removed.bam.deepsnv.csv
+Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/4_5_1.removed.bam 04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam bonferroni 0.9 fisher two.sided
+Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/4_1_1.removed.bam 04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam bonferroni 0.9 fisher two.sided
+Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/4_05_1.removed.bam 04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam bonferroni 0.9 fisher two.sided
+Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/4_5_2.removed.bam 04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam bonferroni 0.9 fisher two.sided
+Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/4_2_2.removed.bam 04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam bonferroni 0.9 fisher two.sided
+Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/4_2_1.removed.bam 04_removed_duplicates/WSN33_Plasmid_control.dups.removed.bam bonferroni 0.9 fisher two.sided
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/4_05_2.removed.csv 04_removed_duplicates/4_05_2.removed.bam Variants/4_05_2.removed.mapq.sum.csv Variants/4_05_2.removed.mapq.reads.csv
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [4_5_1]
+# Stage mapq_conditional [4_5_1.removed]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/4_5_1.removed.csv 04_removed_duplicates/4_5_1.removed.bam Variants/4_5_1.removed.mapq.sum.csv Variants/4_5_1.removed.mapq.reads.csv
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [4_1_2.removed]
+# Stage mapq_conditional [4_5_1.removed]
+# Stage mapq_conditional [4_5_1]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+# Stage mapq_conditional [4_1_2]
+python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/4_1_2.removed.csv 04_removed_duplicates/4_1_2.removed.bam Variants/4_1_2.removed.mapq.sum.csv Variants/4_1_2.removed.mapq.reads.csv
+# Stage mapq_conditional [4_05_1.removed]
+# Stage mapq_conditional [4_1_2.removed]
+# Stage mapq_conditional [4_05_1]
+# Stage mapq_conditional [4_1_2]
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_5_1.removed]
+# Stage mapq_conditional [4_5_1]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [4_05_1]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [4_1_2.removed]
+# Stage mapq_conditional [4_5_1.removed]
+# Stage mapq_conditional [4_05_1.removed]
+# Stage mapq_conditional [4_5_1]
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_1_2]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed.bam]
+python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/4_05_1.removed.csv 04_removed_duplicates/4_05_1.removed.bam Variants/4_05_1.removed.mapq.sum.csv Variants/4_05_1.removed.mapq.reads.csv
+# Stage mapq_conditional [4_05_1.removed]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [4_05_1]
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_1_1]
+# Stage mapq_conditional [4_1_1.removed]
+# Stage mapq_conditional [4_1_2.removed]
+# Stage mapq_conditional [4_5_1]
+# Stage mapq_conditional [4_5_1.removed]
+# Stage mapq_conditional [4_1_2]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed.bam]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/4_1_1.removed.csv 04_removed_duplicates/4_1_1.removed.bam Variants/4_1_1.removed.mapq.sum.csv Variants/4_1_1.removed.mapq.reads.csv
+# Stage mapq_conditional [4_05_1.removed]
+# Stage mapq_conditional [4_05_1]
+# Stage mapq_conditional [4_1_1.removed]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_1_1]
+# Stage mapq_conditional [4_1_2.removed]
+# Stage mapq_conditional [4_1_2]
+# Stage mapq_conditional [4_5_1.removed]
+# Stage mapq_conditional [4_5_1]
+# Stage mapq_conditional [4_5_2.removed]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed.bam]
+# Stage mapq_conditional [4_5_2]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/4_5_2.removed.csv 04_removed_duplicates/4_5_2.removed.bam Variants/4_5_2.removed.mapq.sum.csv Variants/4_5_2.removed.mapq.reads.csv
+# Stage mapq_conditional [4_05_1.removed]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [4_05_1]
+# Stage mapq_conditional [4_1_1.removed]
+# Stage mapq_conditional [4_1_1]
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_1_2]
+# Stage mapq_conditional [4_5_1]
+# Stage mapq_conditional [4_1_2.removed]
+# Stage mapq_conditional [4_5_2.removed]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed.bam]
+# Stage mapq_conditional [4_2_2]
+# Stage mapq_conditional [4_2_2.removed]
+# Stage mapq_conditional [4_5_1.removed]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+# Stage mapq_conditional [4_5_2]
+python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/4_2_2.removed.csv 04_removed_duplicates/4_2_2.removed.bam Variants/4_2_2.removed.mapq.sum.csv Variants/4_2_2.removed.mapq.reads.csv
+# Stage mapq_conditional [4_05_1.removed]
+# Stage mapq_conditional [4_05_1]
+# Stage mapq_conditional [4_05_2]
+# Stage mapq_conditional [4_1_1.removed]
+# Stage mapq_conditional [4_1_1]
+# Stage mapq_conditional [4_1_2]
+# Stage mapq_conditional [4_2_1.removed]
+# Stage mapq_conditional [4_2_1]
+# Stage mapq_conditional [4_2_2.removed]
+# Stage mapq_conditional [4_2_2]
+# Stage mapq_conditional [4_5_1.removed]
+# Stage mapq_conditional [4_05_2.removed]
+# Stage mapq_conditional [4_5_2]
+# Stage mapq_conditional [4_1_2.removed]
+# Stage mapq_conditional [4_5_1]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed.bam]
+# Stage mapq_conditional [4_5_2.removed]
+# Stage mapq_conditional [WSN33_Plasmid_control.dups.removed]
+python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/4_2_1.removed.csv 04_removed_duplicates/4_2_1.removed.bam Variants/4_2_1.removed.mapq.sum.csv Variants/4_2_1.removed.mapq.reads.csv
 # Stage combine
 python /home/mccrone/variant_pipeline/scripts/combine.py ./Variants reads.csv all.reads.csv
 python /home/mccrone/variant_pipeline/scripts/combine.py ./Variants sum.csv all.sum.csv
@@ -239,240 +212,5 @@ python /home/mccrone/variant_pipeline/scripts/combine.py ./deepSNV cov.csv all.c
 # Stage done
 date
 echo variantPipeline SUCCESS
-# ###### Finished at Wed Dec 30 23:27:25 EST 2015 Duration = 2 hours, 52 minutes, 8.987 seconds ######
-
-
-####################################################################################################
-# Starting pipeline at Fri Jan 15 14:34:25 EST 2016
-# Input files:  [/scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.2.1.fastq]
-# Output Log:  .bpipe/logs/25286.log
-# Stage bowtie2 [05_2]
-# Stage bowtie2 [5_1]
-# Stage bowtie2 [1_1]
-# Stage bowtie2 [5_2]
-# Stage bowtie2 [PC]
-# Stage bowtie2 [2_1]
-# Stage bowtie2 [05_1]
-# Stage bowtie2 [2_2]
-# Stage bowtie2 [1_2]
-# Stage bowtie2 [PC_4]
-# Stage picard_sortsam [05_1]
-# Stage picard_sortsam [1_2]
-# Stage picard_sortsam [1_1]
-# Stage picard_sortsam [5_1]
-# Stage picard_sortsam [2_2]
-# Stage picard_sortsam [05_2]
-# Stage picard_sortsam [5_2]
-# Stage picard_sortsam [PC]
-# Stage picard_sortsam [PC_4]
-# Stage picard_sortsam [2_1]
-# Stage picard_removedups [05_1]
-# Stage picard_removedups [PC]
-# Stage picard_removedups [1_1]
-# Stage picard_removedups [05_2]
-# Stage picard_removedups [1_2]
-# Stage picard_removedups [5_1]
-# Stage picard_removedups [PC_4]
-# Stage picard_removedups [5_2]
-# Stage picard_removedups [2_2]
-# Stage picard_removedups [2_1]
-# Stage get_control
-# Stage deepsnv [05_2]
-# Stage deepsnv [05_1]
-# Stage deepsnv [2_2]
-# Stage deepsnv [1_1]
-# Stage deepsnv [5_1]
-# Stage deepsnv [2_1]
-# Stage deepsnv [1_2]
-# Stage deepsnv [5_2]
-# Stage deepsnv [PC]
-# Stage deepsnv [PC_4]
-touch deepSNV/PC_4.removed.bam.deepsnv.csv
-# Stage mapq_conditional [PC_4.removed.bam]
-# ################ Finished at Fri Jan 15 14:34:33 EST 2016 Duration = 7.878 seconds #################
-
-
-####################################################################################################
-# Starting pipeline at Mon Jan 18 11:57:53 EST 2016
-# Input files:  [/scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/05_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/1_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/2_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_1.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/5_2.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC.2.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.1.1.fastq, /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/raw/2015-11-14/PC_4.2.1.fastq]
-# Output Log:  .bpipe/logs/43228.log
-# Stage bowtie2 [2_1]
-# Stage bowtie2 [1_1]
-# Stage bowtie2 [05_2]
-# Stage bowtie2 [05_1]
-# Stage bowtie2 [PC]
-# Stage bowtie2 [5_1]
-# Stage bowtie2 [1_2]
-# Stage bowtie2 [2_2]
-# Stage bowtie2 [5_2]
-# Stage bowtie2 [PC_4]
-# Stage picard_sortsam [1_1]
-# Stage picard_sortsam [2_2]
-# Stage picard_sortsam [5_2]
-# Stage picard_sortsam [05_1]
-# Stage picard_sortsam [2_1]
-# Stage picard_sortsam [5_1]
-# Stage picard_sortsam [05_2]
-# Stage picard_sortsam [PC]
-# Stage picard_sortsam [PC_4]
-# Stage picard_sortsam [1_2]
-# Stage picard_removedups [2_2]
-# Stage picard_removedups [1_1]
-# Stage picard_removedups [5_1]
-# Stage picard_removedups [05_1]
-# Stage picard_removedups [05_2]
-# Stage picard_removedups [PC_4]
-# Stage picard_removedups [PC]
-# Stage picard_removedups [5_2]
-# Stage picard_removedups [2_1]
-# Stage picard_removedups [1_2]
-# Stage get_control
-# Stage deepsnv [1_1]
-# Stage deepsnv [05_1]
-# Stage deepsnv [2_2]
-# Stage deepsnv [2_1]
-# Stage deepsnv [5_1]
-# Stage deepsnv [05_2]
-# Stage deepsnv [1_2]
-# Stage deepsnv [5_2]
-# Stage deepsnv [PC_4]
-# Stage deepsnv [PC]
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/2_2.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/05_1.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/1_1.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/1_2.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/5_1.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/05_2.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/2_1.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/5_2.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-Rscript  /home/mccrone/variant_pipeline/scripts/deepSNV.R /scratch/alauring_fluxm/mccrone/Benchmarking_paper/data/reference/wsn33_wt_plasmid.fa 04_removed_duplicates/PC.removed.bam 04_removed_duplicates/PC_4.removed.bam bonferroni 0.9 fisher two.sided
-touch deepSNV/PC_4.removed.bam.deepsnv.csv
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/05_2.removed.csv 04_removed_duplicates/05_2.removed.bam Variants/05_2.removed.mapq.sum.csv Variants/05_2.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/05_1.removed.csv 04_removed_duplicates/05_1.removed.bam Variants/05_1.removed.mapq.sum.csv Variants/05_1.removed.mapq.reads.csv
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [PC_4.removed]
-# Stage mapq_conditional [05_1]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/1_1.removed.csv 04_removed_duplicates/1_1.removed.bam Variants/1_1.removed.mapq.sum.csv Variants/1_1.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/1_2.removed.csv 04_removed_duplicates/1_2.removed.bam Variants/1_2.removed.mapq.sum.csv Variants/1_2.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/2_2.removed.csv 04_removed_duplicates/2_2.removed.bam Variants/2_2.removed.mapq.sum.csv Variants/2_2.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/5_1.removed.csv 04_removed_duplicates/5_1.removed.bam Variants/5_1.removed.mapq.sum.csv Variants/5_1.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [5_2]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [5_2.removed]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/5_2.removed.csv 04_removed_duplicates/5_2.removed.bam Variants/5_2.removed.mapq.sum.csv Variants/5_2.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [5_2.removed]
-# Stage mapq_conditional [5_2]
-# Stage mapq_conditional [PC.removed]
-# Stage mapq_conditional [PC]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/PC.removed.csv 04_removed_duplicates/PC.removed.bam Variants/PC.removed.mapq.sum.csv Variants/PC.removed.mapq.reads.csv
-# Stage mapq_conditional [05_1.removed]
-# Stage mapq_conditional [05_1]
-# Stage mapq_conditional [05_2.removed]
-# Stage mapq_conditional [05_2]
-# Stage mapq_conditional [1_1.removed]
-# Stage mapq_conditional [1_1]
-# Stage mapq_conditional [1_2.removed]
-# Stage mapq_conditional [1_2]
-# Stage mapq_conditional [2_1.removed]
-# Stage mapq_conditional [2_1]
-# Stage mapq_conditional [2_2.removed]
-# Stage mapq_conditional [2_2]
-# Stage mapq_conditional [5_1]
-# Stage mapq_conditional [5_2.removed]
-# Stage mapq_conditional [5_1.removed]
-# Stage mapq_conditional [5_2]
-# Stage mapq_conditional [PC.removed]
-# Stage mapq_conditional [PC_4.removed.bam]
-# Stage mapq_conditional [PC]
-# Stage mapq_conditional [PC_4.removed]
-python /home/mccrone/variant_pipeline/scripts/mapq.py deepSNV/2_1.removed.csv 04_removed_duplicates/2_1.removed.bam Variants/2_1.removed.mapq.sum.csv Variants/2_1.removed.mapq.reads.csv
-# Stage combine
-python /home/mccrone/variant_pipeline/scripts/combine.py ./Variants reads.csv all.reads.csv
-python /home/mccrone/variant_pipeline/scripts/combine.py ./Variants sum.csv all.sum.csv
-python /home/mccrone/variant_pipeline/scripts/combine.py ./deepSNV cov.csv all.coverage.csv
-# Stage done
-date
-echo variantPipeline SUCCESS
-# ########## Finished at Mon Jan 18 12:19:22 EST 2016 Duration = 21 minutes, 28.987 seconds ##########
+# ##### Finished at Tue May 03 21:48:55 EDT 2016 Duration = 3 hours, 28 minutes, 30.033 seconds ######
 

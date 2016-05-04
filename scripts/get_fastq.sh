@@ -1,6 +1,6 @@
 #!/bin/bash
 SRA=($(cut -f1 -d ',' $1 |grep -v "Run"))
-    for (( i=0; i<${SRA[@]}; i++ )); do 
+    for (( i=0; i<${#SRA[@]}; i++ )); do 
       echo downloading ${SRA[i]}
       prefetch ${SRA[i]}
       sra_file=$(ls ~/ncbi/public/sra/${SRA[i]}.sra) 
