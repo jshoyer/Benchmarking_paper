@@ -74,4 +74,4 @@ data/raw/2015-11-14/%.fastq: data/raw/2015-11-14/SraRunInfo.csv
 
 
 ./results/figures.md: 
-	Rscript -e "knitr::knit('./results/figures.Rmd')"	
+	cd ./results/ ; Rscript -e "knitr::knit('./figures.Rmd')"	
