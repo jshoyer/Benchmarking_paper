@@ -73,5 +73,5 @@ data/raw/2015-11-14/%.fastq: data/raw/2015-11-14/SraRunInfo.csv
 
 
 
-./results/figures.pdf: ./data/process/2014-5-30/Variants/all.sum.csv ./data/process/2015-6-23/Variants/all.sum.csv ./data/process/2015-11-14/Variants/all.sum.csv ./data/process/2015-6-23/Lofreq/lofreq_vcf/all.lofreq.csv
-	Rscript -e "knitr::knit('./results/figures.Rmd')"	
+./results/figures.md: 
+	cd ./results/ ; Rscript -e "knitr::knit('./figures.Rmd')"	
