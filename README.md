@@ -2,7 +2,7 @@
 
 This repository holds the analysis used in *McCrone and Lauring,2016* it relies heavily on our other repo variant_pipeline.
 
-Note :  Currently the analysis can be reliably reproduced using the commands in the Makefile and the original fastq files; however, there is a slight issue with using the fastq files downloaded from the SRA. This does not change any of the conclusions in the paper, but results in minor changes in some figure tables. The issue mostlikely has to do with the file conversions requried to upload and download fastq files from the SRA. We are currenlty working on a remedy and will have it fixed prior to publication.
+Disclaimer :  Currently the analysis can be reliably reproduced using the commands in the Makefile and the original fastq files; however, there is a slight issue with using the fastq files downloaded from the SRA. This does not change any of the conclusions in the paper, but results in minor changes in some figure tables. The issue is due to the fact that the SRA does not save read names. In our analysis we use Picard MarkDuplicates to remove all duplicates including optical duplicates. Optical duplicates are identified at least in part based on their position relative to other reads on the flow cell. This information is stored in the read name and is lost when the fastq files are downloaded from the SRA. The SRA plans to correct this in the future, but for the time being it is out of our hands, and we apologize for any inconvience it may cause. 
 
 
 #Overview
