@@ -839,10 +839,9 @@ ggdraw() +
 
 ```{r,duplicates,fig.height=5,fig.width=3.4}
 dup.df<-read.csv("../data/process/2015-11-14/Variants/all.sum.csv",stringsAsFactors = F,comment.char = "#")
-#sum.df<-read.csv("~/Box Sync/Lab_work/NGS/Benchmarking/data/2015-11-14/all.sum.csv")
 pat<-"([0-9]+)_([0-9]+)_([0-9]+)"
 mutate(dup.df, exp.freq = sub(pat,"\\2",Id),
-       dup = as.numeric(sub(pat,"\\3",Id)),
+       dup = as.numeric(sub(pat,"\\3",Id))
 )-> dup.df
 
 #dup.df<-subset(dup.df,Id!="PC") # remove the plasmid control that was run
@@ -850,10 +849,10 @@ mutate(dup.df,Id=paste(4,exp.freq,sep="_"),exp.freq=ifelse(test = grepl("0",exp.
 
 
 dup.df<-mutate(dup.df,category=mutation %in% true_snv$mutant) # add Column for True and false variants
-dup.df$category[dup.df$mutation %in% wt_mut]<-"wt"
+#dup.df$category[dup.df$mutation %in% wt_mut]<-"wt" There are no wt mutants see wt_mut. For some reason this was causing an error.
 dup.df$category[dup.df$mutation %in% mfe.df$mutation]<-"mfe"
 
-cut.df<-subset(dup.df,Phred>35 & MapQ>30 & Read_pos<94 & Read_pos>32)
+cut.df<-subset(dup.df,Phred>=35 & MapQ>=30 & Read_pos<=94 & Read_pos>=32)
 
 dups<-ddply(cut.df,~exp.freq+mutation,summarize,freq1=freq.var[1],freq2=freq.var[2],p.val1=p.val[1],p.val2=p.val[2],category=category[1],Id=Id[1])
 dups$freq2[is.na(dups$freq2)]<-0

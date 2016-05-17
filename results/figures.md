@@ -3,9 +3,7 @@ Benchmarking figures
 
     ## Warning: package 'ggplot2' was built under R version 3.2.4
 
-    ## Warning: package 'gridExtra' was built under R version 3.2.4
-
-    ## Warning: package 'cowplot' was built under R version 3.2.5
+    ## Warning: package 'cowplot' was built under R version 3.2.3
 
 ### Figure 2
 
@@ -64,8 +62,8 @@ Benchmarking figures
 
 ### Table 1.
 
-    ## % latex table generated in R 3.2.3 by xtable 1.8-2 package
-    ## % Tue May 10 17:14:46 2016
+    ## % latex table generated in R 3.2.1 by xtable 1.7-4 package
+    ## % Mon May 16 23:01:56 2016
     ## \begin{table}[ht]
     ## \centering
     ## \begin{tabular}{cccccc}
@@ -92,7 +90,7 @@ Table 2
 Other analysis
 --------------
 
-    ## R version 3.2.3 (2015-12-10)
+    ## R version 3.2.1 (2015-06-18)
     ## Platform: x86_64-apple-darwin13.4.0 (64-bit)
     ## Running under: OS X 10.10.5 (Yosemite)
     ## 
@@ -104,15 +102,15 @@ Other analysis
     ##  [8] datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] xtable_1.8-2        knitr_1.12.27       png_0.1-7          
-    ##  [4] gtable_0.2.0        cowplot_0.6.2       gridExtra_2.2.1    
-    ##  [7] pROC_1.8            reshape2_1.4.1      Biostrings_2.36.4  
-    ## [10] XVector_0.8.0       IRanges_2.2.9       S4Vectors_0.6.6    
+    ##  [1] xtable_1.7-4        knitr_1.12.27       png_0.1-7          
+    ##  [4] gtable_0.1.2        cowplot_0.6.0       gridExtra_2.0.0    
+    ##  [7] pROC_1.8            reshape2_1.4.1      Biostrings_2.36.1  
+    ## [10] XVector_0.8.0       IRanges_2.2.5       S4Vectors_0.6.2    
     ## [13] BiocGenerics_0.14.0 plyr_1.8.3          ggplot2_2.1.0      
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.4      magrittr_1.5     zlibbioc_1.14.0  munsell_0.4.3   
-    ##  [5] colorspace_1.2-6 stringr_1.0.0    tools_3.2.3      htmltools_0.3.5 
+    ##  [1] Rcpp_0.12.1      magrittr_1.5     zlibbioc_1.14.0  munsell_0.4.2   
+    ##  [5] colorspace_1.2-6 stringr_1.0.0    tools_3.2.1      htmltools_0.2.6 
     ##  [9] yaml_2.1.13      digest_0.6.9     formatR_1.3      codetools_0.2-14
     ## [13] evaluate_0.9     rmarkdown_0.9.6  labeling_0.3     stringi_1.0-1   
-    ## [17] scales_0.4.0
+    ## [17] scales_0.3.0
